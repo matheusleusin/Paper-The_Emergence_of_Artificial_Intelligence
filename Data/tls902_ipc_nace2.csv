@@ -1,0 +1,851 @@
+ipc;not_with_ipc;unless_with_ipc;nace2_code;nace2_weight;nace2_descr
+A01B;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+A01C;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+A01D;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+A01F;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+A01G;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+A01H;;;10;1;Manufacture of Food Products
+A01J;;;10.5;1;Manufacture of Dairy Products
+A01K;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+A01L;;;25.9;1;Manufacture of Other Fabricated Metal Products
+A01M;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+A01N;;;20.2;1;Manufacture of pesticides and other agrochemical products
+A01P;;;20.2;1;Manufacture of Pesticides and Other Agrochemical Products
+A21B;;;27.5;1;Manufacture of Domestic Appliances
+A21C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A21D;;;10;1;Manufacture of Food Products
+A22B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A22C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A23B;;;10;1;Manufacture of Food Products
+A23C;;;10;1;Manufacture of Food Products
+A23D;;;10;1;Manufacture of Food Products
+A23F;;;10;1;Manufacture of Food Products
+A23G;;;10;1;Manufacture of Food Products
+A23J;;;10;1;Manufacture of Food Products
+A23K;;;10;1;Manufacture of Food Products
+A23L   1;;;10;1;Manufacture of Food Products
+A23L   2;;;11;1;Manufacture of Beverages
+A23L   3;;;10;1;Manufacture of Food Products
+A23L   5;;;10;1;Manufacture of Food Products
+A23L   7;;;10;1;Manufacture of Food Products
+A23L   9;;;10;1;Manufacture of Food Products
+A23L  11;;;10;1;Manufacture of Food Products
+A23L  13;;;10;1;Manufacture of Food Products
+A23L  15;;;10;1;Manufacture of Food Products
+A23L  17;;;10;1;Manufacture of Food Products
+A23L  19;;;10;1;Manufacture of Food Products
+A23L  21;;;10;1;Manufacture of Food Products
+A23L  23;;;10;1;Manufacture of Food Products
+A23L  25;;;10;1;Manufacture of Food Products
+A23L  27;;;10;1;Manufacture of Food Products
+A23L  29;;;10;1;Manufacture of Food Products
+A23L  31;;;10;1;Manufacture of Food Products
+A23L  33;;;10;1;Manufacture of Food Products
+A23L  35;;;10;1;Manufacture of Food Products
+A23N;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A23P;;;10;1;Manufacture of Food Products
+A24B;;;12;1;Manufacture of Tobacco Products
+A24C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A24D;;;12;1;Manufacture of Tobacco Products
+A24F;;;12;1;Manufacture of Tobacco Products
+A41B;;;14;1;Manufacture of Wearing Apparel
+A41C;;;14;1;Manufacture of Wearing Apparel
+A41D;;;14;1;Manufacture of Wearing Apparel
+A41F;;;14;1;Manufacture of Wearing Apparel
+A41G;;;32;1;Other Manufacturing
+A41H;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A42B;;;32;1;Other Manufacturing
+A42C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A43B;;;15;1;Manufacture of Leather and Related Products
+A43C;;;15;1;Manufacture of Leather and Related Products
+A43D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+A44B;;;25.1;1;Manufacture of Structural Metal Products
+A44C;;;32;1;Other Manufacturing
+A45B;;;32;1;Other Manufacturing
+A45C;;;32;1;Other Manufacturing
+A45D;;;27.5;1;Manufacture of Domestic Appliances
+A45F;;;32;1;Other Manufacturing
+A46B;;;32;1;Other Manufacturing
+A46D;;;32;1;Other Manufacturing
+A47B;;;31;1;Manufacture of Furniture
+A47C;;;31;1;Manufacture of Furniture
+A47D;;;31;1;Manufacture of Furniture
+A47F;;;31;1;Manufacture of Furniture
+A47G;;;27.5;1;Manufacture of Domestic Appliances
+A47H;;;25.1;1;Manufacture of Structural Metal Products
+A47J;;;27.5;1;Manufacture of Domestic Appliances
+A47K;;;28.14;1;Manufacture of Other Taps and Valves
+A47L;;;27.5;1;Manufacture of Domestic Appliances
+A61B;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61C;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61D;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61F;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61G;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61H;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61J;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61K;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K   6;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K   8;;;20.4;1;Manufacture of Soap and Detergents, Cleaning and Polishing Preparations, Perfumes and Toilet Preparations
+A61K   9;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  31;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  33;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  35;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  36;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  38;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  39;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  41;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  45;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  47;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  48;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  49;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  50;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K  51;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 101;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 103;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 125;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 127;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 129;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 131;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 133;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61K 135;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61L;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61M;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A61N;;;26.6;1;Manufacture of irradiation, electromedical and electrotherapeutic equipment
+A61P;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+A61Q;;;20.42;1;Manufacture of Perfumes and Toilet Preparations
+A62B;;;32.5;1;Manufacture of medical and dental instruments and supplies
+A62C;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+A62D;;;20.5;1;Manufacture of Other Chemical Products
+A63B;;;32;1;Other Manufacturing
+A63C;;;32;1;Other Manufacturing
+A63D;;;32;1;Other Manufacturing
+A63F;;;32;1;Other Manufacturing
+A63G;;;32;1;Other Manufacturing
+A63H;;;32;1;Other Manufacturing
+A63J;;;32;1;Other Manufacturing
+A63K;;;32;1;Other Manufacturing
+A99Z;;;;0;
+B01B;;;27.5;1;Manufacture of Domestic Appliances
+B01D;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+B01F;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+B01J;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+B01L;;;32.5;1;Manufacture of medical and dental instruments and supplies
+B02B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B02C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B03B;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+B03C;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+B03D;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+B04B;;;32.5;1;Manufacture of medical and dental instruments and supplies
+B04C;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+B05B;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+B05C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B05D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B06B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B07B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B07C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B08B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B09B;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+B09C;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+B21B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B21C;;;24;1;Manufacture of Basic Metals
+B21D;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B21F;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B21G;;;25.1;1;Manufacture of Structural Metal Products
+B21H;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B21J;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B21K;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B21L;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B22C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B22D;;;24;1;Manufacture of Basic Metals
+B22F;;;25.5;1;"Forging, Pressing, Stamping and Roll-Forming of Metal; Powder Metallurgy"
+B23B;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B23C;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B23D;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B23F;;;28.1;1;Manufacture of General-Purpose Machinery
+B23G;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B23H;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B23K;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B23P;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B23Q;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B24B;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B24C;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B24D;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B25B;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B25C;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B25D;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B25F;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B25G;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B25H;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B25J;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B26B;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B26D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B26F;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B27B;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B27C;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B27D;;;16;1;"Manufacture of Wood and of Products of Wood and Cork, Except Furniture; Manufacture of Articles of Straw and Plaiting Materials"
+B27F;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B27G;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B27H;;;16;1;"Manufacture of Wood and of Products of Wood and Cork, Except Furniture; Manufacture of Articles of Straw and Plaiting Materials"
+B27J;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B27K;;;20.3;1;Manufacture of Paints, Varnishes and Similar Coatings, Printing Ink and Mastics
+B27L;;;28.3;1;Manufacture of Agricultural and Forestry Machinery
+B27M;;;16;1;"Manufacture of Wood and of Products of Wood and Cork, Except Furniture; Manufacture of Articles of Straw and Plaiting Materials"
+B27N;;;16;1;"Manufacture of Wood and of Products of Wood and Cork, Except Furniture; Manufacture of Articles of Straw and Plaiting Materials"
+B28B;;;23.3;1;Manufacture of Clay Building Materials
+B28C;;;23.3;1;Manufacture of Clay Building Materials
+B28D;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B29B;;;22.2;1;Manufacture of Plastics Products
+B29C;;;22;1;Manufacture of Rubber and Plastic Products
+B29D;;;22;1;Manufacture of Rubber and Plastic Products
+B29K;;;;0;
+B29L;;;;0;
+B30B;;;28.4;1;Manufacture of Metal Forming Machinery and Machine Tools
+B31B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B31C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B31D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B31F;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B32B;;;23;1;Manufacture of Other Non-Metallic Mineral Products
+B33Y;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B41B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B41C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B41D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B41F;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B41G;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B41J;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+B41K;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+B41L;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B41M;;;18.1;1;Printing and Service Activities Related to Printing
+B41N;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B42B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B42C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B42D;;;18.1;1;Printing and Service Activities Related to Printing
+B42F;;;17;1;Manufacture of Paper and Paper Products
+B43K;;;32;1;Other Manufacturing
+B43L;;;32;1;Other Manufacturing
+B43M;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+B44B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B44C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B44D;;;32;1;Other Manufacturing
+B44F;;;18.1;1;Printing and Service Activities Related to Printing
+B60B;;;29.1;1;Manufacture of Motor Vehicles
+B60C;;;22;1;Manufacture of Rubber and Plastic Products
+B60D;;;29.1;1;Manufacture of Motor Vehicles
+B60F;;;30;1;Manufacture of Other Transport Equipment
+B60G;;;29.1;1;Manufacture of Motor Vehicles
+B60H;;;29.1;1;Manufacture of Motor Vehicles
+B60J;;;29.1;1;Manufacture of Motor Vehicles
+B60K;;;29.1;1;Manufacture of Motor Vehicles
+B60L;;;29.1;1;Manufacture of Motor Vehicles
+B60M;;;27.9;1;Manufacture of Other Electrical Equipment
+B60N;;;29.1;1;Manufacture of Motor Vehicles
+B60P;;;29.1;1;Manufacture of Motor Vehicles
+B60Q;;;29.1;1;Manufacture of Motor Vehicles
+B60R;;;29.1;1;Manufacture of Motor Vehicles
+B60S;;;28.22;1;Manufacture of Lifting and Handling Equipment
+B60T;;;29.1;1;Manufacture of Motor Vehicles
+B60V;;;30;1;Manufacture of Other Transport Equipment
+B60W;;;29.3;1;Manufacture of Parts and Accessories for Motor Vehicles
+B61B;;;28.22;1;Manufacture of Lifting and Handling Equipment
+B61C;;;30;1;Manufacture of Other Transport Equipment
+B61D;;;30;1;Manufacture of Other Transport Equipment
+B61F;;;30;1;Manufacture of Other Transport Equipment
+B61G;;;30;1;Manufacture of Other Transport Equipment
+B61H;;;30;1;Manufacture of Other Transport Equipment
+B61J;;;30;1;Manufacture of Other Transport Equipment
+B61K;;;30;1;Manufacture of Other Transport Equipment
+B61L;;;27.9;1;Manufacture of other electrical equipment
+B62B;;;32;1;Other Manufacturing
+B62C;;;30;1;Manufacture of Other Transport Equipment
+B62D;;;29.1;1;Manufacture of Motor Vehicles
+B62H;;;30;1;Manufacture of Other Transport Equipment
+B62J;;;30;1;Manufacture of Other Transport Equipment
+B62K;;;30;1;Manufacture of Other Transport Equipment
+B62L;;;30;1;Manufacture of Other Transport Equipment
+B62M;;;30;1;Manufacture of Other Transport Equipment
+B63B;;;30;1;Manufacture of Other Transport Equipment
+B63C;;;30;1;Manufacture of Other Transport Equipment
+B63G;;;25.4;1;Manufacture of Weapons and Ammunition
+B63H;;;30;1;Manufacture of Other Transport Equipment
+B63J;;;30;1;Manufacture of Other Transport Equipment
+B64B;;;30;1;Manufacture of Other Transport Equipment
+B64C;;;30;1;Manufacture of Other Transport Equipment
+B64D;;;30;1;Manufacture of Other Transport Equipment
+B64F;;;30;1;Manufacture of Other Transport Equipment
+B64G;;;30;1;Manufacture of Other Transport Equipment
+B65B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B65C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B65D;;;32.9;1;Manufacturing N.E.C.
+B65F;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B65F   1;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B65F   3;;;30;1;Manufacture of Other Transport Equipment
+B65F   5;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B65F   7;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B65F   9;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B65G;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+B65H;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B66B;;;28.22;1;Manufacture of Lifting and Handling Equipment
+B66C;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+B66D;;;28.22;1;Manufacture of Lifting and Handling Equipment
+B66F;;;28.22;1;Manufacture of Lifting and Handling Equipment
+B67B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B67C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B67D;;;22;1;Manufacture of Rubber and Plastic Products
+B68B;;;15;1;Manufacture of Leather and Related Products
+B68C;;;15;1;Manufacture of Leather and Related Products
+B68F;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+B68G;;;32;1;Other Manufacturing
+B81B;;;26.11;1;Manufacture of Electronic Components
+B81C;;;26.11;1;Manufacture of Electronic Components
+B82B;;;26.11;1;Manufacture of Electronic Components
+B82Y;;;26.11;1;Manufacture of Electronic Components
+B99Z;;;;0;
+C01B;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C01C;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C01D;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C01F;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C01G;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C02F;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C03B;;;23.1;1;Manufacture of Glass and Glass Products
+C03C;;;23.1;1;Manufacture of Glass and Glass Products
+C04B;;;23.5;1;Manufacture of Cement, Lime and Plaster
+C05B;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C05C;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C05D;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C05F;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C05G;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C06B;;;20.51;1;Manufacture of Explosives
+C06C;;;20.5;1;Manufacture of Other Chemical Products
+C06D;;;20.5;1;Manufacture of Other Chemical Products
+C06F;;;32;1;Other Manufacturing
+C07B;A61K   6;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K   9;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  31;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  33;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  35;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  36;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  38;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  39;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  41;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  45;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  47;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  48;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  49;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  50;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K  51;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 101;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 103;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 125;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 127;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 129;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 131;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 133;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07B;A61K 135;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K   6;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K   9;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  31;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  33;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  35;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  36;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  38;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  39;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  41;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  45;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  47;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  48;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  49;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  50;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K  51;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 101;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 103;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 125;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 127;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 129;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 131;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 133;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07C;A61K 135;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07D;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+C07F;A61K   6;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K   9;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  31;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  33;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  35;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  36;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  38;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  39;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  41;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  45;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  47;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  48;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  49;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  50;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K  51;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 101;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 103;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 125;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 127;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 129;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 131;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 133;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07F;A61K 135;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K   6;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K   9;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  31;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  33;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  35;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  36;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  38;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  39;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  41;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  45;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  47;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  48;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  49;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  50;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K  51;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 101;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 103;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 125;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 127;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 129;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 131;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 133;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07G;A61K 135;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C07H;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+C07J;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+C07K;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+C08B;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C08C;;;22.1;1;Manufacture of Rubber Products
+C08F;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C08G;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C08H;;;20.5;1;Manufacture of Other Chemical Products
+C08J;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C08K;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C08L;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C09B;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C09C;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C09D;;;20.3;1;Manufacture of Paints, Varnishes and Similar Coatings, Printing Ink and Mastics
+C09F;;;20.4;1;Manufacture of Soap and Detergents, Cleaning and Polishing Preparations, Perfumes and Toilet Preparations
+C09G;;;20.5;1;Manufacture of Other Chemical Products
+C09H;;;20.5;1;Manufacture of Other Chemical Products
+C09J;;;20.5;1;Manufacture of Other Chemical Products
+C09K;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C10B;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C10C;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C10F;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+C10G;;;19;1;Manufacture of Coke and Refined Petroleum Products
+C10H;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C10J;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C10K;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C10L;;;19;1;Manufacture of Coke and Refined Petroleum Products
+C10M;;;20.5;1;Manufacture of Other Chemical Products
+C10N;;;20.5;1;Manufacture of Other Chemical Products
+C11B;;;20.5;1;Manufacture of Other Chemical Products
+C11C;;;20.5;1;Manufacture of Other Chemical Products
+C11D;;;20.4;1;Manufacture of Soap and Detergents, Cleaning and Polishing Preparations, Perfumes and Toilet Preparations
+C12C;;;11;1;Manufacture of Beverages
+C12F;;;11;1;Manufacture of Beverages
+C12G;;;11;1;Manufacture of Beverages
+C12H;;;11;1;Manufacture of Beverages
+C12J;;;10;1;Manufacture of Food Products
+C12L;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+C12M;A61K   6;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K   9;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  31;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  33;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  35;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  36;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  38;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  39;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  41;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  45;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  47;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  48;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  49;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  50;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K  51;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 101;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 103;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 125;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 127;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 129;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 131;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 133;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12M;A61K 135;A61K   8;32.5;1;Manufacture of medical and dental instruments and supplies
+C12N;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+C12P;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+C12Q;;;21;1;Manufacture of Basic Pharmaceutical Products and Pharmaceutical Preparations
+C12R;;;;0;
+C12S;A61K   6;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K   9;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  31;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  33;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  35;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  36;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  38;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  39;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  41;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  45;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  47;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  48;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  49;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  50;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K  51;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 101;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 103;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 125;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 127;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 129;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 131;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 133;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C12S;A61K 135;A61K   8;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C13B;;;10;1;Manufacture of Food Products
+C13C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+C13D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+C13F;;;10;1;Manufacture of Food Products
+C13G;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+C13H;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+C13J;;;10;1;Manufacture of Food Products
+C13K;;;10;1;Manufacture of Food Products
+C14B;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+C14C;;;20.5;1;Manufacture of Other Chemical Products
+C21B;;;24;1;Manufacture of Basic Metals
+C21C;;;24;1;Manufacture of Basic Metals
+C21D;;;24;1;Manufacture of Basic Metals
+C22B;;;24;1;Manufacture of Basic Metals
+C22C;;;24;1;Manufacture of Basic Metals
+C22F;;;24;1;Manufacture of Basic Metals
+C23C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+C23D;;;25.6;1;"Treatment and Coating of Metals; Machining"
+C23F;;;20.5;1;Manufacture of Other Chemical Products
+C23G;;;20.5;1;Manufacture of Other Chemical Products
+C25B;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+C25C;;;24;1;Manufacture of Basic Metals
+C25D;;;25.6;1;"Treatment and Coating of Metals; Machining"
+C25F;;;24;1;Manufacture of Basic Metals
+C30B;;;26.1;1;Manufacture of Electronic Components and Boards
+C40B;A61K   6;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K   9;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  31;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  33;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  35;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  36;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  38;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  39;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  41;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  45;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  47;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  48;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  49;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  50;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K  51;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 101;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 103;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 125;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 127;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 129;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 131;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 133;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C40B;A61K 135;A61K   8;20.5;1;Manufacture of Other Chemical Products
+C99Z;;;;0;
+D01B;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D01C;;;20.5;1;Manufacture of Other Chemical Products
+D01D;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D01F;;;20.6;1;Manufacture of Man-Made Fibres
+D01G;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D01H;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D02G;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D02H;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D02J;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D03C;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D03D;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D03J;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D04B;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D04C;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D04D;;;13;1;Manufacture of Textiles
+D04G;;;13;1;Manufacture of Textiles
+D04H;;;13;1;Manufacture of Textiles
+D05B;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D05C;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D06B;;;28.94;1;Manufacture of Machinery for Textile, Apparel and Leather Production
+D06C;;;13;1;Manufacture of Textiles
+D06F;;;27.5;1;Manufacture of Domestic Appliances
+D06G;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+D06H;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+D06J;;;13;1;Manufacture of Textiles
+D06L;;;20.4;1;Manufacture of Soap and Detergents, Cleaning and Polishing Preparations, Perfumes and Toilet Preparations
+D06M;;;13;1;Manufacture of Textiles
+D06N;;;13;1;Manufacture of Textiles
+D06P;;;13;1;Manufacture of Textiles
+D06Q;;;13;1;Manufacture of Textiles
+D07B;;;32;1;Other Manufacturing
+D21B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+D21C;;;17;1;Manufacture of Paper and Paper Products
+D21D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+D21F;;;28.95;1;Manufacture of Machinery for Paper and Paperboard Production
+D21G;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+D21H;;;17;1;Manufacture of Paper and Paper Products
+D21J;;;17;1;Manufacture of Paper and Paper Products
+D99Z;;;;0;
+E01B;;;30;1;Manufacture of Other Transport Equipment
+E01C;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+E01D;;;28.92;1;Manufacture of Machinery for Mining, Quarrying and Construction
+E01F;;;28.92;1;Manufacture of Machinery for Mining, Quarrying and Construction
+E01H;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+E02B;;;42.91;1;Construction of Water Projects
+E02C;;;28.22;1;Manufacture of Lifting and Handling Equipment
+E02D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+E02F;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+E03B;;;42.2;1;Construction of Utility Projects
+E03C;;;42.2;1;Construction of Utility Projects
+E03D;;;23.42;1;Manufacture of Ceramic Sanitary Fixtures
+E03F;;;43;1;Specialised Construction Activities
+E04B;;;43;1;Specialised Construction Activities
+E04C;;;43;1;Specialised Construction Activities
+E04D;;;43;1;Specialised Construction Activities
+E04F;;;43;1;Specialised Construction Activities
+E04G;;;43;1;Specialised Construction Activities
+E04H;;;43;1;Specialised Construction Activities
+E05B;;;25.7;1;Manufacture of Cutlery, Tools and General Hardware
+E05C;;;25.94;1;Manufacture of Fasteners and Screw Machine Products
+E05D;;;25.7;1;Manufacture of Cutlery, Tools and General Hardware
+E05F;;;25.7;1;Manufacture of Cutlery, Tools and General Hardware
+E05G;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+E06B;;;25.7;1;Manufacture of Cutlery, Tools and General Hardware
+E06C;;;27.5;1;Manufacture of Domestic Appliances
+E21B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+E21C;;;28.92;1;Manufacture of Machinery for Mining, Quarrying and Construction
+E21D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+E21F;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+E99Z;;;;0;
+F01B;;;28.1;1;Manufacture of General-Purpose Machinery
+F01C;;;28.1;1;Manufacture of General-Purpose Machinery
+F01D;;;28.1;1;Manufacture of General-Purpose Machinery
+F01K;;;28.11;1;Manufacture of Engines and Turbines, Except Aircraft, Vehicle and Cycle Engines
+F01L;;;29.1;1;Manufacture of Motor Vehicles
+F01M;;;28.11;1;Manufacture of Engines and Turbines, Except Aircraft, Vehicle and Cycle Engines
+F01N;;;28.11;1;Manufacture of Engines and Turbines, Except Aircraft, Vehicle and Cycle Engines
+F01P;;;28.11;1;Manufacture of Engines and Turbines, Except Aircraft, Vehicle and Cycle Engines
+F02B;;;29.1;1;Manufacture of Motor Vehicles
+F02C;;;28.11;1;Manufacture of Engines and Turbines, Except Aircraft, Vehicle and Cycle Engines
+F02D;;;29.1;1;Manufacture of Motor Vehicles
+F02F;;;29.1;1;Manufacture of Motor Vehicles
+F02G;;;28.11;1;Manufacture of Engines and Turbines, Except Aircraft, Vehicle and Cycle Engines
+F02K;;;28.11;1;Manufacture of Engines and Turbines, Except Aircraft, Vehicle and Cycle Engines
+F02M;;;29.1;1;Manufacture of Motor Vehicles
+F02N;;;29.1;1;Manufacture of Motor Vehicles
+F02P;;;29.1;1;Manufacture of Motor Vehicles
+F03B;;;28.1;1;Manufacture of General-Purpose Machinery
+F03C;;;28.1;1;Manufacture of General-Purpose Machinery
+F03D;;;28.1;1;Manufacture of General-Purpose Machinery
+F03G;;;28.1;1;Manufacture of General-Purpose Machinery
+F03H;;;30;1;Manufacture of Other Transport Equipment
+F04B;;;28.1;1;Manufacture of General-Purpose Machinery
+F04C;;;28.1;1;Manufacture of General-Purpose Machinery
+F04D;;;28.1;1;Manufacture of General-Purpose Machinery
+F04F;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+F15B;;;28.1;1;Manufacture of General-Purpose Machinery
+F15C;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+F15D;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+F16B;;;25.9;1;Manufacture of Other Fabricated Metal Products
+F16C;;;28.1;1;Manufacture of General-Purpose Machinery
+F16D;;;28.1;1;Manufacture of General-Purpose Machinery
+F16F;;;28.1;1;Manufacture of General-Purpose Machinery
+F16G;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F16H;;;28.1;1;Manufacture of General-Purpose Machinery
+F16J;;;29.1;1;Manufacture of Motor Vehicles
+F16K;;;28.1;1;Manufacture of General-Purpose Machinery
+F16L;;;32;1;Other Manufacturing
+F16M;;;28.1;1;Manufacture of General-Purpose Machinery
+F16N;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+F16P;;;28.99;1;Manufacture of Other Special-Purpose Machinery N.E.C.
+F16S;;; ;0;
+F16T;;;25.2;1;Manufacture of Tanks, Reservoirs and Containers of Metal
+F17B;;;25.2;1;Manufacture of Tanks, Reservoirs and Containers of Metal
+F17C;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+F17D;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+F21H;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21K;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21L;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21M;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21P;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21Q;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21S;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21V;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21W;;;27.4;1;Manufacture of Electric Lighting Equipment
+F21Y;;;27.4;1;Manufacture of Electric Lighting Equipment
+F22B;;;25.2;1;Manufacture of Tanks, Reservoirs and Containers of Metal
+F22D;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F22G;;;25.2;1;Manufacture of Tanks, Reservoirs and Containers of Metal
+F23B;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23C;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23D;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23G;;;28.21;1;Manufacture of Ovens, Furnaces and Furnace Burners
+F23H;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23J;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23K;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23L;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23M;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23N;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F23Q;;;32;1;Other Manufacturing
+F23R;;;28.1;1;Manufacture of General-Purpose Machinery
+F24B;;;27.5;1;Manufacture of Domestic Appliances
+F24C;;;27.5;1;Manufacture of Domestic Appliances
+F24D;;;27.5;1;Manufacture of Domestic Appliances
+F24F;;;28.25;1;Manufacture of Non-Domestic Cooling and Ventilation Equipment
+F24H;;;28.25;1;Manufacture of Non-Domestic Cooling and Ventilation Equipment
+F24J;;;25.2;1;Manufacture of Tanks, Reservoirs and Containers of Metal
+F25B;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F25C;;;27.5;1;Manufacture of Domestic Appliances
+F25D;;;27.5;1;Manufacture of Domestic Appliances
+F25J;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+F26B;;;28.9;1;Manufacture of Other Special-Purpose Machinery
+F27B;;;28.21;1;Manufacture of Ovens, Furnaces and Furnace Burners
+F27D;;;25.1;1;Manufacture of Structural Metal Products
+F28B;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F28C;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F28D;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F28F;;;28.25;1;Manufacture of Non-Domestic Cooling and Ventilation Equipment
+F28G;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+F41A;;;25.4;1;Manufacture of Weapons and Ammunition
+F41B;;;25.4;1;Manufacture of Weapons and Ammunition
+F41C;;;25.4;1;Manufacture of Weapons and Ammunition
+F41F;;;25.4;1;Manufacture of Weapons and Ammunition
+F41G;;;25.4;1;Manufacture of Weapons and Ammunition
+F41H;;;25.4;1;Manufacture of Weapons and Ammunition
+F41J;;;25.4;1;Manufacture of Weapons and Ammunition
+F42B;;;20.51;1;Manufacture of Explosives
+F42C;;;25.4;1;Manufacture of Weapons and Ammunition
+F42D;;;20.51;1;Manufacture of Explosives
+F99Z;;;;0;
+G01B;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01C;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01D;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01F;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01G;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+G01H;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01J;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01K;;;26.51;1;Manufacture of Instruments and Appliances for Measuring, Testing and Navigation
+G01L;;;26.51;1;Manufacture of Instruments and Appliances for Measuring, Testing and Navigation
+G01M;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01N;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01P;;;29.1;1;Manufacture of Motor Vehicles
+G01Q;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01R;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01S;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G01T;;;32.5;1;Manufacture of medical and dental instruments and supplies
+G01V;;;26.51;1;Manufacture of Instruments and Appliances for Measuring, Testing and Navigation
+G01W;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G02B;;;26.7;1;Manufacture of Optical Instruments and Photographic Equipment
+G02C;;;26.7;1;Manufacture of Optical Instruments and Photographic Equipment
+G02F;;;26.2;1;Manufacture of computers and peripheral equipment
+G03B;;;26.7;1;Manufacture of Optical Instruments and Photographic Equipment
+G03C;;;26.8;1;Manufacture of Magnetic and Optical Media
+G03D;;;32.9;1;Manufacturing N.E.C.
+G03F;;;32.9;1;Manufacturing N.E.C.
+G03G;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G03H;;;26.3;1;Manufacture of Communication Equipment
+G04B;;;26.52;1;Manufacture of Watches and Clocks
+G04C;;;26.52;1;Manufacture of Watches and Clocks
+G04D;;;26.52;1;Manufacture of Watches and Clocks
+G04F;;;26.52;1;Manufacture of Watches and Clocks
+G04G;;;26.52;1;Manufacture of Watches and Clocks
+G04R;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G05B;;;26.51;1;Manufacture of Instruments and Appliances for Measuring, Testing and Navigation
+G05D;;;28.1;1;Manufacture of General-Purpose Machinery
+G05F;;;26.51;1;Manufacture of Instruments and Appliances for Measuring, Testing and Navigation
+G05G;;;28.1;1;Manufacture of General-Purpose Machinery
+G06C;;;26.2;1;Manufacture of computers and peripheral equipment
+G06D;;;26.2;1;Manufacture of computers and peripheral equipment
+G06E;;;26.2;1;Manufacture of computers and peripheral equipment
+G06F;;;26.2;1;Manufacture of computers and peripheral equipment
+G06G;;;26.2;1;Manufacture of computers and peripheral equipment
+G06J;;;26.2;1;Manufacture of computers and peripheral equipment
+G06K;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G06M;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G06N;;;26.2;1;Manufacture of computers and peripheral equipment
+G06Q;;;62;1;Computer Programming, Consultancy and Related Activities
+G06T;;;26.2;1;Manufacture of computers and peripheral equipment
+G07B;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G07C;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G07D;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G07F;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G07G;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G08B;;;26.3;1;Manufacture of Communication Equipment
+G08C;;;26.51;1;Manufacture of Instruments and Appliances for Measuring, Testing and Navigation
+G08G;;;27.9;1;Manufacture of other electrical equipment
+G09B;;;32.9;1;Manufacturing N.E.C.
+G09C;;;26.2;1;Manufacture of computers and peripheral equipment
+G09D;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G09F;;;32.9;1;Manufacturing N.E.C.
+G09G;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G10B;;;32;1;Other Manufacturing
+G10C;;;32;1;Other Manufacturing
+G10D;;;32;1;Other Manufacturing
+G10F;;;32;1;Other Manufacturing
+G10G;;;32;1;Other Manufacturing
+G10H;;;32;1;Other Manufacturing
+G10K;;;27.9;1;Manufacture of other electrical equipment
+G10L;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G11B;;;28.23;1;Manufacture of Office Machinery and Equipment (Except Computers and Peripheral Equipment)
+G11C;;;26.1;1;Manufacture of Electronic Components and Boards
+G12B;;;26.5;1;"Manufacture of Instruments and Appliances for Measuring, Testing and Navigation; Watches and Clocks"
+G21B;;;25.3;1;Manufacture of Steam Generators, Except Central Heating Hot Water Boilers
+G21C;;;25.3;1;Manufacture of Steam Generators, Except Central Heating Hot Water Boilers
+G21D;;;25.3;1;Manufacture of Steam Generators, Except Central Heating Hot Water Boilers
+G21F;;;20.1;1;Manufacture of Basic Chemicals, Fertilisers and Nitrogen Compounds, Plastics and Synthetic Rubber in Primary Forms
+G21G;;;32.5;1;Manufacture of medical and dental instruments and supplies
+G21H;;;24.46;1;Processing of Nuclear Fuel
+G21J;;;25.4;1;Manufacture of Weapons and Ammunition
+G21K;;;26.6;1;Manufacture of irradiation, electromedical and electrotherapeutic equipment
+G99Z;;;;0;
+H01B;;;27.3;1;Manufacture of Wiring and Wiring Devices
+H01C;;;26.1;1;Manufacture of Electronic Components and Boards
+H01F;;;26.1;1;Manufacture of Electronic Components and Boards
+H01G;;;26.1;1;Manufacture of Electronic Components and Boards
+H01H;;;27.33;1;Manufacture of Wiring Devices
+H01J;;;26.1;1;Manufacture of Electronic Components and Boards
+H01K;;;27.4;1;Manufacture of Electric Lighting Equipment
+H01L;;;26.1;1;Manufacture of Electronic Components and Boards
+H01M;;;27.2;1;Manufacture of Batteries and Accumulators
+H01P;;;27.9;1;Manufacture of other electrical equipment
+H01Q;;;26.3;1;Manufacture of Communication Equipment
+H01R;;;27.33;1;Manufacture of Wiring Devices
+H01S;;;26.3;1;Manufacture of Communication Equipment
+H01T;;;27.9;1;Manufacture of other electrical equipment
+H02B;;;27.12;1;Manufacture of Electricity Distribution and Control Apparatus
+H02G;;;27.33;1;Manufacture of Wiring Devices
+H02H;;;27.9;1;Manufacture of other electrical equipment
+H02J;;;27.12;1;Manufacture of Electricity Distribution and Control Apparatus
+H02K;;;27.1;1;Manufacture of Electric Motors, Generators, Transformers and Electricity Distribution and Control Apparatus
+H02M;;;27.9;1;Manufacture of other electrical equipment
+H02N;;;27.1;1;Manufacture of Electric Motors, Generators, Transformers and Electricity Distribution and Control Apparatus
+H02P;;;27.1;1;Manufacture of Electric Motors, Generators, Transformers and Electricity Distribution and Control Apparatus
+H02S;;;27.1;1;Manufacture of Electric Motors, Generators, Transformers and Electricity Distribution and Control Apparatus
+H03B;;;26.3;1;Manufacture of Communication Equipment
+H03C;;;26.3;1;Manufacture of Communication Equipment
+H03D;;;26.3;1;Manufacture of Communication Equipment
+H03F;;;26.4;1;Manufacture of Consumer Electronics
+H03G;;;26.3;1;Manufacture of Communication Equipment
+H03H;;;26.3;1;Manufacture of Communication Equipment
+H03J;;;26.3;1;Manufacture of Communication Equipment
+H03K;;;26.4;1;Manufacture of Consumer Electronics
+H03L;;;26.4;1;Manufacture of Consumer Electronics
+H03M;;;26.3;1;Manufacture of Communication Equipment
+H04B;;;26.3;1;Manufacture of Communication Equipment
+H04H;;;26.3;1;Manufacture of Communication Equipment
+H04J;;;26.3;1;Manufacture of Communication Equipment
+H04K;;;26.3;1;Manufacture of Communication Equipment
+H04L;;;26.3;1;Manufacture of Communication Equipment
+H04M;;;26.3;1;Manufacture of Communication Equipment
+H04N;;;26.3;1;Manufacture of Communication Equipment
+H04Q;;;26.3;1;Manufacture of Communication Equipment
+H04R;;;26.3;1;Manufacture of Communication Equipment
+H04S;;;26.3;1;Manufacture of Communication Equipment
+H04W;;;26.3;1;Manufacture of Communication Equipment
+H05B;;;27.5;1;Manufacture of Domestic Appliances
+H05C;;;27.9;1;Manufacture of other electrical equipment
+H05F;;;28.29;1;Manufacture of Other General-Purpose Machinery N.E.C.
+H05G;;;26.6;1;Manufacture of irradiation, electromedical and electrotherapeutic equipment
+H05H;;;26.6;1;Manufacture of irradiation, electromedical and electrotherapeutic equipment
+H05K;;;26.1;1;Manufacture of Electronic Components and Boards
+H99Z;;;;0;
