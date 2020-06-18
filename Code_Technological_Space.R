@@ -225,13 +225,19 @@ reg_tech3 <- Nace_all_patents_Part3 %>%
   ungroup()
 
 rm(Nace_all_patents_Part3)
-reg_tech_temp <- rbind(c(reg_tech1, reg_tech2, reg_tech3))
+reg_tech_temp <- rbind(reg_tech1, reg_tech2)
 rm(reg_tech1)
 rm(reg_tech2)
+reg_tech_temp <- rbind(reg_tech_temp, reg_tech3)
 rm(reg_tech3)
 
+reg_tech_temp2 <- reg_tech_temp
 
-
+reg_tech_temp2 %<>%
+  group_by(ctry_code, nace2_code) %>%
+  summarise(n_tech_reg = sum(field_weight)) %>%
+  ungroup() %>%
+  drop_na() 
 
 #Second Part:
 c <- 45233329 -40000000
