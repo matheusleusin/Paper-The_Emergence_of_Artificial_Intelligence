@@ -38,12 +38,6 @@ Nace_all_patents_Part3$ctry_code2 <- Nace_all_patents_Part3$ctry_code
 #set the working directory to the folder where we opened this code:
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-nace2_names <- read.csv("Data/tls902_ipc_nace2.csv", sep = ";", header = TRUE)%>%
-  select(nace2_code, nace2_descr) %>%
-  distinct(nace2_code, .keep_all = TRUE) %>%
-  mutate(nace2_code = nace2_code) %>%
-  arrange(nace2_code)
-
 create_sparse_matrix <- function(i.input, j.input){
   require(Matrix)
   mat <- spMatrix(nrow = i.input %>% n_distinct(),
@@ -150,21 +144,34 @@ add_matrices_2 <- function(matrix1, matrix2) {
 
 mat_tech_AI_Final <- add_matrices_2(mat_tech_AI_Final1, mat_tech_AI_Final2)
 
-setwd("C:/Users/Matheus/Desktop")
-write.csv2(mat_tech_AI_Final, file = "Matrix.csv", row.names = TRUE)
-matrix4 <- read.csv("Matrix.csv", sep = ";", header = T)
-matrix4 <- as.matrix(matrix4)
+write.csv2(mat_tech_AI_Final, file = "Data/Matrix_Nace.csv", row.names = TRUE)
 
 #drop again the big files we don't need;
 rm(Nace_all_patents_Part1)
 rm(Nace_all_patents_Part2)
 rm(Nace_all_patents_Part3)
 
+library(janitor)
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+matrix2 <- read.csv("Data/Matrix_Nace.csv", sep = ";", header = F)
+matrix2 <- matrix2 %>%
+  row_to_names(row_number = 1)
+matrix <- matrix2[,-1]
+rownames(matrix) <- matrix2[,1]
+matrix <- as.matrix(matrix)
+mat_tech_AI_Final <- matrix
+
 #ALL RIGHT UNTIL HERE
 mat_tech_rel_AI <- mat_tech_AI_Final %>% 
   relatedness(method = "cosine")
 
 library(tidygraph)
+
+nace2_names <- read.csv("Data/tls902_ipc_nace2.csv", sep = ";", header = TRUE)%>%
+  select(nace2_code, nace2_descr) %>%
+  distinct(nace2_code, .keep_all = TRUE) %>%
+  mutate(nace2_code = nace2_code) %>%
+  arrange(nace2_code)
 
 g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
   left_join(nace2_names %>% mutate(nace2_code = nace2_code %>% as.character()), by = c("name" = "nace2_code")) %>%
