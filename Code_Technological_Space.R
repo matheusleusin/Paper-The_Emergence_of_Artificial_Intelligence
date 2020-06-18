@@ -165,8 +165,6 @@ mat_tech_AI_Final <- matrix
 mat_tech_rel_AI <- mat_tech_AI_Final %>% 
   relatedness(method = "cosine")
 
-library(tidygraph)
-
 nace2_names <- read.csv("Data/tls902_ipc_nace2.csv", sep = ";", header = TRUE)%>%
   select(nace2_code, nace2_descr) %>%
   distinct(nace2_code, .keep_all = TRUE) %>%
@@ -194,29 +192,109 @@ g_tech_AI %N>%
 
 #1.2.Nace By Country AI----
 setwd("C:/Users/Matheus/Desktop") #for loading the big file
-Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part1.csv", header = F)
+c <- 58935336-40000000
+Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000)
 names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 Nace_all_patents_Part1 <- Nace_all_patents_Part1[, c((-4), (-5))]
 
-Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part2.csv", header = F)
+reg_tech1 <- Nace_all_patents_Part1 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
+
+rm(Nace_all_patents_Part1)
+
+Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000, skip = 20000000)
 names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 Nace_all_patents_Part2 <- Nace_all_patents_Part2[, c((-4), (-5))]
 
-Nace_all_patents <- rbind(Nace_all_patents_Part1, Nace_all_patents_Part2)
+reg_tech2 <- Nace_all_patents_Part2 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
 
-rm(Nace_all_patents_Part1)
 rm(Nace_all_patents_Part2)
+
+Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = c, skip = 40000000)
+names(Nace_all_patents_Part3) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[, c((-4), (-5))]
+
+reg_tech3 <- Nace_all_patents_Part3 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
+
+rm(Nace_all_patents_Part3)
+reg_tech_temp <- rbind(c(reg_tech1, reg_tech2, reg_tech3))
+rm(reg_tech1)
+rm(reg_tech2)
+rm(reg_tech3)
+
+
+
+
+#Second Part:
+c <- 45233329 -40000000
+Nace_all_patents_Part4 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000)
+names(Nace_all_patents_Part4) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+Nace_all_patents_Part4 <- Nace_all_patents_Part4[, c((-4), (-5))]
+
+reg_tech4 <- Nace_all_patents_Part4 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
+
+rm(Nace_all_patents_Part4)
+
+
+Nace_all_patents_Part5 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
+names(Nace_all_patents_Part5) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+Nace_all_patents_Part5 <- Nace_all_patents_Part5[, c((-4), (-5))]
+
+reg_tech5 <- Nace_all_patents_Part5 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
+
+rm(Nace_all_patents_Part5)
+
+Nace_all_patents_Part6 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = c, skip = 40000000)
+names(Nace_all_patents_Part6) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+Nace_all_patents_Part6 <- Nace_all_patents_Part6[, c((-4), (-5))]
+
+reg_tech6 <- Nace_all_patents_Part6 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
+
+rm(Nace_all_patents_Part6)
+
+#Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000, skip = 20000000)
+#Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = c, skip = 40000000)
+
+#names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+#Nace_all_patents_Part1 <- Nace_all_patents_Part1[, c((-4), (-5))]
+
+#Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part2.csv", header = F)
+#names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+#Nace_all_patents_Part2 <- Nace_all_patents_Part2[, c((-4), (-5))]
+
+#Nace_all_patents <- rbind(Nace_all_patents_Part1, Nace_all_patents_Part2)
+
+#rm(Nace_all_patents_Part1)
+#rm(Nace_all_patents_Part2)
+
+#Nace_all_patents_applnId <- Nace_all_patents[, (1)]
+
 
 #here commes the first big problem: I don't have the Nace_all_patents file anymore, which I need for calculating the weights;
 #maybe I can load both files and merge by rows (rbind)
+
+#I'll do the one below at the end:
 countries_geo <- Nace_all_patents %>%
   distinct(ctry_code, .keep_all = TRUE) %>%
   select(ctry_code)
 
-reg_tech <- Nace_all_patents %>%
-  group_by(appln_id) %>%
-  mutate(field_weight = 1 / n()) %>%
-  ungroup()
 
 reg_tech %<>%
   group_by(ctry_code, nace2_code) %>%
