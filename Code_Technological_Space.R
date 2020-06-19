@@ -195,48 +195,109 @@ g_tech_AI %N>%
 #1.2.Nace By Country AI----
 setwd("C:/Users/Matheus/Desktop") 
 #rm(list=ls())
-Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 100000)
-Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 100000, skip = 100000)
-Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 200000)
+
+group_by_applnID <- function (data){
+  data %>%
+    group_by(appln_id) %>%
+    mutate(field_weight = 1 / n()) %>%
+    ungroup()
+}
+
+group_by_ctry_and_nace <- function (data){
+  data %<>%
+    group_by(ctry_code, nace2_code) %>%
+    summarise(n_tech_reg = sum(field_weight)) %>%
+    ungroup() %>%
+    drop_na() 
+}
+
+#First part
+setwd("C:/Users/Matheus/Desktop") 
+c <- 58935336-40000000
+Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000)
+Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000, skip = 20000000)
+Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = c, skip = 40000000)
 
 names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 names(Nace_all_patents_Part3) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 
-reg_tech1 <- Nace_all_patents_Part1 %>%
-  group_by(appln_id) %>%
-  mutate(field_weight = 1 / n()) %>%
-  ungroup()
+Nace_all_patents_Part1 <- Nace_all_patents_Part1[, c((-4), (-5))]
+Nace_all_patents_Part2 <- Nace_all_patents_Part2[, c((-4), (-5))]
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[, c((-4), (-5))]
 
-reg_tech1 %<>%
-  group_by(ctry_code, nace2_code) %>%
-  summarise(n_tech_reg = sum(field_weight)) %>%
-  ungroup() %>%
-  drop_na() 
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-write.csv2(reg_tech1, file = "reg_tech1.csv", row.names = F)
+reg_tech1 <- group_by_applnID(Nace_all_patents_Part1)
+rm(Nace_all_patents_Part1)
+reg_tech1 <- group_by_ctry_and_nace(reg_tech1)
+write.csv2(reg_tech1, file = "Data/reg_tech1.csv", row.names = F)
 
-reg_tech2 <- Nace_all_patents_Part2 %>%
-  group_by(appln_id) %>%
-  mutate(field_weight = 1 / n()) %>%
-  ungroup()
+reg_tech2 <- group_by_applnID(Nace_all_patents_Part2)
+rm(Nace_all_patents_Part2)
+reg_tech2 <- group_by_ctry_and_nace(reg_tech2)
+write.csv2(reg_tech2, file = "Data/reg_tech2.csv", row.names = F)
 
-reg_tech2 %<>%
-  group_by(ctry_code, nace2_code) %>%
-  summarise(n_tech_reg = sum(field_weight)) %>%
-  ungroup() %>%
-  drop_na() 
+reg_tech3 <- group_by_applnID(Nace_all_patents_Part3)
+rm(Nace_all_patents_Part3)
+reg_tech3 <- group_by_ctry_and_nace(reg_tech3)
+write.csv2(reg_tech3, file = "Data/reg_tech3.csv", row.names = F)
 
-write.csv2(reg_tech2, file = "reg_tech2.csv", row.names = F)
+#Second part
+setwd("C:/Users/Matheus/Desktop") 
+c <- 45233329 -40000000
+Nace_all_patents_Part4 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000)
+Nace_all_patents_Part5 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
+Nace_all_patents_Part6 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = c, skip = 40000000)
 
-data1 <- read.csv("reg_tech1.csv", sep = ";", header = TRUE, dec=",")
-data2 <- read.csv("reg_tech2.csv", sep = ";", header = TRUE, dec=",")
+names(Nace_all_patents_Part4) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part5) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part6) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+
+Nace_all_patents_Part4 <- Nace_all_patents_Part4[, c((-4), (-5))]
+Nace_all_patents_Part5 <- Nace_all_patents_Part5[, c((-4), (-5))]
+Nace_all_patents_Part6 <- Nace_all_patents_Part6[, c((-4), (-5))]
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+reg_tech4 <- group_by_applnID(Nace_all_patents_Part4)
+rm(Nace_all_patents_Part4)
+reg_tech4 <- group_by_ctry_and_nace(reg_tech4)
+write.csv2(reg_tech4, file = "Data/reg_tech4.csv", row.names = F)
+
+reg_tech5 <- group_by_applnID(Nace_all_patents_Part5)
+rm(Nace_all_patents_Part5)
+reg_tech5 <- group_by_ctry_and_nace(reg_tech5)
+write.csv2(reg_tech5, file = "Data/reg_tech5.csv", row.names = F)
+
+reg_tech6 <- group_by_applnID(Nace_all_patents_Part6)
+rm(Nace_all_patents_Part6)
+reg_tech6 <- group_by_ctry_and_nace(reg_tech6)
+write.csv2(reg_tech6, file = "Data/reg_tech6.csv", row.names = F)
+
+rm(list=ls())
+
+data1 <- read.csv("Data/reg_tech1.csv", sep = ";", header = TRUE, dec=",")
+data2 <- read.csv("Data/reg_tech2.csv", sep = ";", header = TRUE, dec=",")
+data3 <- read.csv("Data/reg_tech3.csv", sep = ";", header = TRUE, dec=",")
+data4 <- read.csv("Data/reg_tech4.csv", sep = ";", header = TRUE, dec=",")
+data5 <- read.csv("Data/reg_tech5.csv", sep = ";", header = TRUE, dec=",")
+data6 <- read.csv("Data/reg_tech6.csv", sep = ";", header = TRUE, dec=",")
 
 tabledata2 <- merge(data1, data2, all=T, by=c("ctry_code", "nace2_code"))
-tabledata2[is.na(tabledata2)] <- 0
-tabledata2$sum <- rowSums(tabledata2[,c(3:4)])
+tabledata2 <- merge(tabledata2, data3, all=T, by=c("ctry_code", "nace2_code"))
 
-write.csv2(tabledata2, file = "Testdata.csv", row.names = F)
+tabledata3 <- merge(data4, data5, all=T, by=c("ctry_code", "nace2_code"))
+tabledata3 <- merge(tabledata3, data6, all=T, by=c("ctry_code", "nace2_code"))
+
+tabledatafinal <- merge(tabledata2, tabledata3, all=T, by=c("ctry_code", "nace2_code"))
+tabledatafinal[is.na(tabledatafinal)] <- 0
+
+tabledatafinal$sum <- rowSums(tabledatafinal[,c(3:8)])
+tabledatafinal <- tabledatafinal[, c((-3), (-4), (-5), (-6), (-7), (-8))]
+names(tabledatafinal) <- c("ctry_code", "nace2_code", "n_tech_reg")
+
+write.csv2(tabledatafinal, file = "Data/Data_reg_tech.csv", row.names = F)
 
 
 #for loading the big file
