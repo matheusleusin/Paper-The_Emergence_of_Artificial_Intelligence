@@ -16,13 +16,11 @@ library("data.table") #for reading the big files using fread and for replacing c
 #On this first part we will create the sparse matrix, calculate the similarity matrix and save it in a csv file 
 #named "Matrix_Nace"
 rm(list=ls())
-#setwd("C:/Users/mathe/OneDrive/?rea de Trabalho")
 setwd("C:/Users/Matheus/Desktop") #for loading the big file
 
 #Now we will load a first big file containing all priorities and their related Nace codes published in or after 2004. This file has
-#58,935,336 lines;
+#58,935,336 lines. I will read it in 3 parts:
 c <- 58935336-40000000
-
 Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000)
 Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000, skip = 20000000)
 Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = c, skip = 40000000)
@@ -30,12 +28,6 @@ Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part1.csv", header = F, n
 names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 names(Nace_all_patents_Part3) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
-
-#I'll copy the country codes to another columns, so I don't loose this information when I replace the country codes by the code "AI_pat" (which
-#I'm doing to identify the AI domain)
-Nace_all_patents_Part1$ctry_code2 <- Nace_all_patents_Part1$ctry_code
-Nace_all_patents_Part2$ctry_code2 <- Nace_all_patents_Part2$ctry_code
-Nace_all_patents_Part3$ctry_code2 <- Nace_all_patents_Part3$ctry_code
 
 #set the working directory to the folder where we opened this code:
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
@@ -74,6 +66,7 @@ mat_tech_AI3 %<>%
   crossprod() %>% 
   as.matrix()
 
+#now we create a function to put these 3 matrixes together:
 add_matrices_3 <- function(matrix1, matrix2, matrix3) {
   a <- list(matrix1, matrix2, matrix3)
   cols <- sort(unique(unlist(lapply(a, colnames))))
@@ -83,6 +76,7 @@ add_matrices_3 <- function(matrix1, matrix2, matrix3) {
   out
 }
 
+#and the newly created function:
 mat_tech_AI_Final1 <- add_matrices_3(mat_tech_AI1, mat_tech_AI2, mat_tech_AI3)
 
 #now, we drop the big files and load the remaining ones;
@@ -90,7 +84,7 @@ rm(Nace_all_patents_Part1)
 rm(Nace_all_patents_Part2)
 rm(Nace_all_patents_Part3)
 
-#Now we will load the second big file containing all priorities and their related Nace codes published in or before 2003. This file has
+#We will load the second big file containing all priorities and their related Nace codes published in or before 2003. This file has
 #45,233,329 lines;
 setwd("C:/Users/Matheus/Desktop")
 c <- 45233329 -40000000
@@ -102,15 +96,10 @@ names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weigh
 names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 names(Nace_all_patents_Part3) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
 
-#I'll copy the country codes to another columns, so I don't loose this information when I replace the country codes by the code "AI_pat" (which
-#I'm doing to identify the AI domain)
-Nace_all_patents_Part1$ctry_code2 <- Nace_all_patents_Part1$ctry_code
-Nace_all_patents_Part2$ctry_code2 <- Nace_all_patents_Part2$ctry_code
-Nace_all_patents_Part3$ctry_code2 <- Nace_all_patents_Part3$ctry_code
-
 #set the working directory to the folder where we opened this code:
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
+#we do all again as before:
 mat_tech_AI1 <- create_sparse_matrix(i = Nace_all_patents_Part1 %>% pull(appln_id),
                                      j = Nace_all_patents_Part1 %>% pull(nace2_code))
 
@@ -134,6 +123,7 @@ mat_tech_AI3 %<>%
 
 mat_tech_AI_Final2 <- add_matrices_3(mat_tech_AI1, mat_tech_AI2, mat_tech_AI3)
 
+#now we create a function similar to the previous, but for summing 2 matrices:
 add_matrices_2 <- function(matrix1, matrix2) {
   a <- list(matrix1, matrix2)
   cols <- sort(unique(unlist(lapply(a, colnames))))
@@ -145,17 +135,14 @@ add_matrices_2 <- function(matrix1, matrix2) {
 
 mat_tech_AI_Final <- add_matrices_2(mat_tech_AI_Final1, mat_tech_AI_Final2)
 
+#Finally, we save the file. We will use it in the section 1.3.
 write.csv2(mat_tech_AI_Final, file = "Data/Matrix_Nace.csv", row.names = TRUE)
 
-#drop again the big files we don't need;
-rm(Nace_all_patents_Part1)
-rm(Nace_all_patents_Part2)
-rm(Nace_all_patents_Part3)
-
 #1.2.Technology Space ----
-#Now we will create the technology spaces, dividem them in 3 periods;
+#Now we will create the technology spaces, dividing them in 3 periods;
 setwd("C:/Users/Matheus/Desktop") 
-#rm(list=ls())
+rm(list=ls())
+#First, we create the 2 functions we will use for every period:
 
 group_by_applnID <- function (data){
   data %>%
@@ -173,7 +160,91 @@ group_by_ctry_and_nace <- function (data){
 }
 
 #1.2.1.First Period ----
-#For the first period, we need only the dataset from Part2:
+#For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
+setwd("C:/Users/Matheus/Desktop") 
+c <- 45233329 -40000000
+Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000)
+Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
+Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = c, skip = 40000000)
+
+names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part3) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+
+#we want to pick only the registers from the period we want (from 1974 to 1988, including both cited years)
+a = 1973
+b = 1989
+
+Nace_all_patents_Part1 <- Nace_all_patents_Part1[Nace_all_patents_Part1$priority_year < b,]
+Nace_all_patents_Part1 <- Nace_all_patents_Part1[Nace_all_patents_Part1$priority_year > a,]
+
+Nace_all_patents_Part2 <- Nace_all_patents_Part2[Nace_all_patents_Part2$priority_year < b,]
+Nace_all_patents_Part2 <- Nace_all_patents_Part2[Nace_all_patents_Part2$priority_year > a,]
+
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[Nace_all_patents_Part3$priority_year < b,]
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[Nace_all_patents_Part3$priority_year > a,]
+
+Nace_all_patents_Part1 <- Nace_all_patents_Part1[, c((-4), (-5))]
+Nace_all_patents_Part2 <- Nace_all_patents_Part2[, c((-4), (-5))]
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[, c((-4), (-5))]
+
+#we combine the 3 files:
+Nace_all_patents_FirstPeriod <- rbind(Nace_all_patents_Part1, Nace_all_patents_Part2, Nace_all_patents_Part3)
+#and exclude the 3 big ones we just used, so we have back our memory:
+rm(Nace_all_patents_Part1, Nace_all_patents_Part2, Nace_all_patents_Part3)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+#now we apply the 2 functions we created at the begining of this section:
+reg_tech1 <- group_by_applnID(Nace_all_patents_FirstPeriod)
+rm(Nace_all_patents_FirstPeriod)
+reg_tech1 <- group_by_ctry_and_nace(reg_tech1)
+
+#and save the final file, so we can use it again in section 1.3. (around the line 330)
+write.csv2(reg_tech1, file = "Data/reg_tech_FirstPeriod.csv", row.names = F)
+
+#1.2.2.Second Period ----
+#For the second period, which goes from 1989 to 2003, we again need only the dataset from Part2:
+setwd("C:/Users/Matheus/Desktop") 
+c <- 45233329 -40000000
+Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000)
+Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
+Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = c, skip = 40000000)
+
+names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part3) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+
+a = 1988
+b = 2004
+
+Nace_all_patents_Part1 <- Nace_all_patents_Part1[Nace_all_patents_Part1$priority_year < b,]
+Nace_all_patents_Part1 <- Nace_all_patents_Part1[Nace_all_patents_Part1$priority_year > a,]
+
+Nace_all_patents_Part2 <- Nace_all_patents_Part2[Nace_all_patents_Part2$priority_year < b,]
+Nace_all_patents_Part2 <- Nace_all_patents_Part2[Nace_all_patents_Part2$priority_year > a,]
+
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[Nace_all_patents_Part3$priority_year < b,]
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[Nace_all_patents_Part3$priority_year > a,]
+
+Nace_all_patents_Part1 <- Nace_all_patents_Part1[, c((-4), (-5))]
+Nace_all_patents_Part2 <- Nace_all_patents_Part2[, c((-4), (-5))]
+Nace_all_patents_Part3 <- Nace_all_patents_Part3[, c((-4), (-5))]
+
+Nace_all_patents_SecondPeriod <- rbind(Nace_all_patents_Part1, Nace_all_patents_Part2, Nace_all_patents_Part3)
+rm(Nace_all_patents_Part1, Nace_all_patents_Part2, Nace_all_patents_Part3)
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+reg_tech2 <- group_by_applnID(Nace_all_patents_SecondPeriod)
+rm(Nace_all_patents_SecondPeriod)
+reg_tech2 <- group_by_ctry_and_nace(reg_tech2)
+write.csv2(reg_tech2, file = "Data/reg_tech_SecondPeriod.csv", row.names = F)
+
+#1.2.3.Third Period ----
+#For the third period, which goes from 2004 to 2018, we  need only the dataset from Part1. This
+#specific dataset only has patents from 2004 to 2018, so we don't have to filter it. But calculating
+#the reg_tech is very computationally expansive, so we have to divide that in 3 parts.
 setwd("C:/Users/Matheus/Desktop") 
 c <- 58935336-40000000
 Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000)
@@ -188,121 +259,43 @@ Nace_all_patents_Part1 <- Nace_all_patents_Part1[, c((-4), (-5))]
 Nace_all_patents_Part2 <- Nace_all_patents_Part2[, c((-4), (-5))]
 Nace_all_patents_Part3 <- Nace_all_patents_Part3[, c((-4), (-5))]
 
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-reg_tech1 <- group_by_applnID(Nace_all_patents_Part1)
+#here we divide our calculations of the reg_tech (which was not necessary on the 2 previous periods)
+reg_tech4 <- group_by_applnID(Nace_all_patents_Part1)
 rm(Nace_all_patents_Part1)
-reg_tech1 <- group_by_ctry_and_nace(reg_tech1)
-write.csv2(reg_tech1, file = "Data/reg_tech1.csv", row.names = F)
-
-reg_tech2 <- group_by_applnID(Nace_all_patents_Part2)
-rm(Nace_all_patents_Part2)
-reg_tech2 <- group_by_ctry_and_nace(reg_tech2)
-write.csv2(reg_tech2, file = "Data/reg_tech2.csv", row.names = F)
-
-reg_tech3 <- group_by_applnID(Nace_all_patents_Part3)
-rm(Nace_all_patents_Part3)
-reg_tech3 <- group_by_ctry_and_nace(reg_tech3)
-write.csv2(reg_tech3, file = "Data/reg_tech3.csv", row.names = F)
-
-#Second part
-setwd("C:/Users/Matheus/Desktop") 
-c <- 45233329 -40000000
-Nace_all_patents_Part4 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000)
-Nace_all_patents_Part5 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
-Nace_all_patents_Part6 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = c, skip = 40000000)
-
-names(Nace_all_patents_Part4) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
-names(Nace_all_patents_Part5) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
-names(Nace_all_patents_Part6) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
-
-Nace_all_patents_Part4 <- Nace_all_patents_Part4[, c((-4), (-5))]
-Nace_all_patents_Part5 <- Nace_all_patents_Part5[, c((-4), (-5))]
-Nace_all_patents_Part6 <- Nace_all_patents_Part6[, c((-4), (-5))]
-
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-reg_tech4 <- group_by_applnID(Nace_all_patents_Part4)
-rm(Nace_all_patents_Part4)
 reg_tech4 <- group_by_ctry_and_nace(reg_tech4)
-write.csv2(reg_tech4, file = "Data/reg_tech4.csv", row.names = F)
 
-reg_tech5 <- group_by_applnID(Nace_all_patents_Part5)
-rm(Nace_all_patents_Part5)
+reg_tech5 <- group_by_applnID(Nace_all_patents_Part2)
+rm(Nace_all_patents_Part2)
 reg_tech5 <- group_by_ctry_and_nace(reg_tech5)
-write.csv2(reg_tech5, file = "Data/reg_tech5.csv", row.names = F)
 
-reg_tech6 <- group_by_applnID(Nace_all_patents_Part6)
-rm(Nace_all_patents_Part6)
+reg_tech6 <- group_by_applnID(Nace_all_patents_Part3)
+rm(Nace_all_patents_Part3)
 reg_tech6 <- group_by_ctry_and_nace(reg_tech6)
-write.csv2(reg_tech6, file = "Data/reg_tech6.csv", row.names = F)
 
-rm(list=ls())
+#now we merge them
+tabledata2 <- merge(reg_tech4, reg_tech5, all=T, by=c("ctry_code", "nace2_code"))
+tabledata2 <- merge(tabledata2, reg_tech6, all=T, by=c("ctry_code", "nace2_code"))
 
-data1 <- read.csv("Data/reg_tech1.csv", sep = ";", header = TRUE, dec=",")
-data2 <- read.csv("Data/reg_tech2.csv", sep = ";", header = TRUE, dec=",")
-data3 <- read.csv("Data/reg_tech3.csv", sep = ";", header = TRUE, dec=",")
-data4 <- read.csv("Data/reg_tech4.csv", sep = ";", header = TRUE, dec=",")
-data5 <- read.csv("Data/reg_tech5.csv", sep = ";", header = TRUE, dec=",")
-data6 <- read.csv("Data/reg_tech6.csv", sep = ";", header = TRUE, dec=",")
+#remove the big files
+rm(reg_tech4, reg_tech5, reg_tech6)
 
-tabledata2 <- merge(data1, data2, all=T, by=c("ctry_code", "nace2_code"))
-tabledata2 <- merge(tabledata2, data3, all=T, by=c("ctry_code", "nace2_code"))
+#replace NAs, so we don't have problems when summing:
+tabledata2[is.na(tabledata2)] <- 0
 
-tabledata3 <- merge(data4, data5, all=T, by=c("ctry_code", "nace2_code"))
-tabledata3 <- merge(tabledata3, data6, all=T, by=c("ctry_code", "nace2_code"))
+#do the summ, exclude the tables used, and rename the dataset accordingly:
+tabledata2$sum <- rowSums(tabledata2[,c(3:5)])
+tabledata2 <- tabledata2[, c((-3), (-4), (-5))]
+names(tabledata2) <- c("ctry_code", "nace2_code", "n_tech_reg")
 
-tabledatafinal <- merge(tabledata2, tabledata3, all=T, by=c("ctry_code", "nace2_code"))
-tabledatafinal[is.na(tabledatafinal)] <- 0
-
-tabledatafinal$sum <- rowSums(tabledatafinal[,c(3:8)])
-tabledatafinal <- tabledatafinal[, c((-3), (-4), (-5), (-6), (-7), (-8))]
-names(tabledatafinal) <- c("ctry_code", "nace2_code", "n_tech_reg")
-
-write.csv2(tabledatafinal, file = "Data/Data_reg_tech.csv", row.names = F)
-
-####
-rm(list=ls())
-reg_tech <- read.csv("Data/Data_reg_tech.csv", sep = ";", header = TRUE, dec=",")
-
-mat_reg_tech <- reg_tech %>%
-  arrange(nace2_code, ctry_code) %>%
-  pivot_wider(names_from = nace2_code, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
-
-rownames(mat_reg_tech) <- mat_reg_tech %>% pull(ctry_code)
-
-mat_reg_tech %<>% select(-ctry_code) %>%
-  as.matrix() %>%
-  round()
-mat_reg_tech[1:10, 1:10]
-
-reg_RCA <- mat_reg_tech %>% location.quotient(binary = TRUE) %>% 
-  as.data.frame() %>% 
-  rownames_to_column("ctry_code") %>% 
-  as_tibble() %>% 
-  gather(key = "nace2_code", value = "RCA", -ctry_code) %>%
-  arrange(ctry_code, nace2_code)
-reg_RCA %>% head()
-
-mat_reg_tech %>% 
-  Herfindahl() %>% 
-  as.data.frame() %>% 
-  rownames_to_column("ctry_code") %>% 
-  rename(HH = ".") %>% 
-  arrange(desc(HH)) %>% 
-  head(10)
-
-mat_reg_tech %>% 
-  entropy() %>% 
-  as.data.frame() %>% 
-  rownames_to_column("ctry_code") %>% 
-  rename(SE = ".") %>% 
-  arrange(desc(SE)) %>%
-  head(10)
-
-#calculate the g_tech_AI:
-library(janitor)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+write.csv2(tabledata2, file = "Data/reg_tech_ThirdPeriod.csv", row.names = F)
+
+#1.3.Calculate the g_tech_AI ----
+#Now we load all the files we already saved. We start by loading the janitor library, which is used here for converting
+#the first column of data to row names.
+library(janitor)
+rm(list=ls())
+#now we load the similarity matrix which was saved in line 139:
 matrix2 <- read.csv("Data/Matrix_Nace.csv", sep = ";", header = F)
 matrix2 <- matrix2 %>%
   row_to_names(row_number = 1)
@@ -339,78 +332,269 @@ g_tech_AI %N>%
   as_tibble() %>%
   slice(1:10)
 
-#1.5.Nace Visualization -----
-library(ggplot2)
+#Now we read the data per period and calculate the RCAs:
+reg_tech1 <- read.csv("Data/reg_tech_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+reg_tech2 <- read.csv("Data/reg_tech_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
+reg_tech3 <- read.csv("Data/reg_tech_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+###First Period:
+mat_reg_tech1 <- reg_tech1 %>%
+  arrange(nace2_code, ctry_code) %>%
+  pivot_wider(names_from = nace2_code, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech1) <- mat_reg_tech1 %>% pull(ctry_code)
+
+mat_reg_tech1 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "nace2_code", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, nace2_code)
+
+###second period:
+mat_reg_tech2 <- reg_tech2 %>%
+  arrange(nace2_code, ctry_code) %>%
+  pivot_wider(names_from = nace2_code, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech2) <- mat_reg_tech2 %>% pull(ctry_code)
+
+mat_reg_tech2 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA2 <- mat_reg_tech2 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "nace2_code", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, nace2_code)
+
+###Third Period:
+mat_reg_tech3 <- reg_tech3 %>%
+  arrange(nace2_code, ctry_code) %>%
+  pivot_wider(names_from = nace2_code, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech3) <- mat_reg_tech3 %>% pull(ctry_code)
+
+mat_reg_tech3 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "nace2_code", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, nace2_code)
+
+#1.4.Nace Visualization -----
+#Finally, we start with the visualizations. For the Global perspective, considering the whole data, we have:
+Nace_Total <-g_tech_AI %>%
+  ggraph(layout =  coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = dgr, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 4, repel = TRUE) +
+  theme_graph()+
+  ggtitle("Technology Space: Nace codes")
+
+jpeg("Figures/Nace_all.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace_Total
+dev.off()
+
+#Now we start the analysis per country:
+#1st period
 country_select <- c("CN", "US", "JP", "KR")
 i = 1
 Nace1 <- g_tech_AI %N>%
-  left_join(reg_RCA %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("Technology Space: RCA China (Nace codes)")
+  ggtitle("Nace Technology Space: China (1974-1988)")
 
 i = 2
 Nace2 <- g_tech_AI %N>%
-  left_join(reg_RCA %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("Technology Space: RCA USA (Nace codes)")
+  ggtitle("Nace Technology Space: USA (1974-1988)")
 
 i = 3
 Nace3 <- g_tech_AI %N>%
-  left_join(reg_RCA %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("Technology Space: RCA South Korea (Nace codes)")
+  ggtitle("Nace Technology Space: South Korea (1974-1988)")
 
 i = 4
 Nace4 <- g_tech_AI %N>%
-  left_join(reg_RCA %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("Technology Space: RCA Japan (Nace codes)")
-
-Nace1
-Nace2
-Nace3
-Nace4
+  ggtitle("Nace Technology Space: Japan (1974-1988)")
 
 
 #For saving the pictures:
-jpeg("Nace_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures/Nace_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace1
 dev.off()
 
-jpeg("Nace_all_US_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures/Nace_all_US_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace2
 dev.off()
 
-jpeg("Nace_all_JP_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures/Nace_all_JP_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace3
 dev.off()
 
-jpeg("Nace_all_KR_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures/Nace_all_KR_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace4
 dev.off()
 
+#Per Country 2nd period
+i = 1
+Nace1 <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: China (1989-2003)")
 
-#1.3.Nace Visualization -----
+i = 2
+Nace2 <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: USA (1989-2003)")
+
+i = 3
+Nace3 <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: South Korea (1989-2003)")
+
+i = 4
+Nace4 <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: Japan (1989-2003)")
+
+#For saving the pictures:
+jpeg("Figures/Nace_all_CN_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace1
+dev.off()
+
+jpeg("Figures/Nace_all_US_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace2
+dev.off()
+
+jpeg("Figures/Nace_all_JP_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace3
+dev.off()
+
+jpeg("Figures/Nace_all_KR_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace4
+dev.off()
+
+#Per Country 3rd period
+i = 1
+Nace1 <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: China (2004-2018)")
+
+i = 2
+Nace2 <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: USA (2004-2018)")
+
+i = 3
+Nace3 <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: South Korea (2004-2018)")
+
+i = 4
+Nace4 <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: Japan (2004-2018)")
+
+#For saving the pictures:
+jpeg("Figures/Nace_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace1
+dev.off()
+
+jpeg("Figures/Nace_all_US_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace2
+dev.off()
+
+jpeg("Figures/Nace_all_JP_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace3
+dev.off()
+
+jpeg("Figures/Nace_all_KR_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace4
+dev.off()
+
+#1.6.AI evolution-----
 #I have to figure it out where to put the 20 lines below:
 #Now we load the data containing all nace codes used in our dataset of AI patents:
 patents_AI_specific <- read.csv("Data/Nace2_AI csv.csv", sep = ";", header = TRUE, dec=",")
