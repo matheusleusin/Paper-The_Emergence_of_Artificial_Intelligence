@@ -153,6 +153,8 @@ rm(Nace_all_patents_Part3)
 
 library(janitor)
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#matrix2 <- read.csv.ffdf(file="Data/Matrix_Nace.csv", header = F, sep = ";")
+
 matrix2 <- read.csv("Data/Matrix_Nace.csv", sep = ";", header = F)
 matrix2 <- matrix2 %>%
   row_to_names(row_number = 1)
@@ -191,7 +193,55 @@ g_tech_AI %N>%
   slice(1:10)
 
 #1.2.Nace By Country AI----
-setwd("C:/Users/Matheus/Desktop") #for loading the big file
+setwd("C:/Users/Matheus/Desktop") 
+#rm(list=ls())
+Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 100000)
+Nace_all_patents_Part2 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 100000, skip = 100000)
+Nace_all_patents_Part3 <- fread("All_patents_and_Naces_Part2.csv", header = F, nrow = 200000)
+
+names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part2) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+names(Nace_all_patents_Part3) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
+
+reg_tech1 <- Nace_all_patents_Part1 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
+
+reg_tech1 %<>%
+  group_by(ctry_code, nace2_code) %>%
+  summarise(n_tech_reg = sum(field_weight)) %>%
+  ungroup() %>%
+  drop_na() 
+
+write.csv2(reg_tech1, file = "reg_tech1.csv", row.names = F)
+
+reg_tech2 <- Nace_all_patents_Part2 %>%
+  group_by(appln_id) %>%
+  mutate(field_weight = 1 / n()) %>%
+  ungroup()
+
+reg_tech2 %<>%
+  group_by(ctry_code, nace2_code) %>%
+  summarise(n_tech_reg = sum(field_weight)) %>%
+  ungroup() %>%
+  drop_na() 
+
+write.csv2(reg_tech2, file = "reg_tech2.csv", row.names = F)
+
+data1 <- read.csv("reg_tech1.csv", sep = ";", header = TRUE, dec=",")
+data2 <- read.csv("reg_tech2.csv", sep = ";", header = TRUE, dec=",")
+
+tabledata2 <- merge(data1, data2, all=T, by=c("ctry_code", "nace2_code"))
+tabledata2[is.na(tabledata2)] <- 0
+tabledata2$sum <- rowSums(tabledata2[,c(3:4)])
+
+write.csv2(tabledata2, file = "Testdata.csv", row.names = F)
+
+
+#for loading the big file
+
+
 c <- 58935336-40000000
 Nace_all_patents_Part1 <- fread("All_patents_and_Naces_Part1.csv", header = F, nrow = 20000000)
 names(Nace_all_patents_Part1) <- c("appln_id", "ctry_code", "nace2_code", "weight", "priority_year")
