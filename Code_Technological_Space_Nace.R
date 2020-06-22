@@ -655,6 +655,20 @@ Nace_all_patents_FirstPeriod[patents_AI_specific, on = c("appln_id"), ctry_code 
 ####   ### #######   ### ###
 #now we go back to our old code and apply the 2 functions we had already created:
 ####   ### #######   ### ###
+group_by_applnID <- function (data){
+  data %>%
+    group_by(appln_id) %>%
+    mutate(field_weight = 1 / n()) %>%
+    ungroup()
+}
+
+group_by_ctry_and_nace <- function (data){
+  data %<>%
+    group_by(ctry_code, nace2_code) %>%
+    summarise(n_tech_reg = sum(field_weight)) %>%
+    ungroup() %>%
+    drop_na() 
+}
 
 reg_tech1 <- group_by_applnID(Nace_all_patents_FirstPeriod)
 rm(Nace_all_patents_FirstPeriod)
@@ -692,18 +706,6 @@ Nace_AI <- g_tech_AI %N>%
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Technology Space: AI patents (1974-1988)")
-
-Nace_AI1 <-g_tech_AI %>%
-  ggraph(layout =  coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = dgr, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 4, repel = TRUE) +
-  theme_graph()+
-  ggtitle("Technology Space: AI Nace codes")
-
-jpeg("Figures_Nace/Nace_all_AI.jpg", width = 14, height = 10, units = 'in', res = 200)
-Nace_AI1
-dev.off()
 
 jpeg("Figures_Nace/Nace_all_AIpatents_specific_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace_AI
