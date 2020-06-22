@@ -11,7 +11,7 @@ library(EconGeo) # Economic Geography functions
 library(ggplot2)
 library("data.table") #for reading the big files using fread and for replacing countries names (by AI_pat for example)
 
-#1.IPC data -----
+#1.NACE data -----
 #1.1. Sparse matrix -----
 #On this first part we will create the sparse matrix, calculate the similarity matrix and save it in a csv file 
 #named "Matrix_Nace"
@@ -137,7 +137,7 @@ add_matrices_2 <- function(matrix1, matrix2) {
 mat_tech_AI_Final <- add_matrices_2(mat_tech_AI_Final1, mat_tech_AI_Final2)
 
 #Finally, we save the file. We will use it in the section 1.3.
-write.csv2(mat_tech_AI_Final, file = "Data/Matrix_Nace.csv", row.names = TRUE)
+write.csv2(mat_tech_AI_Final, file = "Data_Nace/Matrix_Nace.csv", row.names = TRUE)
 
 #1.2.Technology Space ----
 #Now we will create the technology spaces, dividing them in 3 periods;
@@ -203,7 +203,7 @@ rm(Nace_all_patents_FirstPeriod)
 reg_tech1 <- group_by_ctry_and_nace(reg_tech1)
 
 #and save the final file, so we can use it again in section 1.3. (around the line 330)
-write.csv2(reg_tech1, file = "Data/reg_tech_FirstPeriod.csv", row.names = F)
+write.csv2(reg_tech1, file = "Data_Nace/reg_tech_FirstPeriod.csv", row.names = F)
 
 #1.2.2.Second Period ----
 #For the second period, which goes from 1989 to 2003, we again need only the dataset from Part2:
@@ -242,7 +242,7 @@ setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 reg_tech2 <- group_by_applnID(Nace_all_patents_SecondPeriod)
 rm(Nace_all_patents_SecondPeriod)
 reg_tech2 <- group_by_ctry_and_nace(reg_tech2)
-write.csv2(reg_tech2, file = "Data/reg_tech_SecondPeriod.csv", row.names = F)
+write.csv2(reg_tech2, file = "Data_Nace/reg_tech_SecondPeriod.csv", row.names = F)
 
 #1.2.3.Third Period ----
 #For the third period, which goes from 2004 to 2018, we  need only the dataset from Part1. This
@@ -291,46 +291,6 @@ tabledata2 <- tabledata2[, c((-3), (-4), (-5))]
 names(tabledata2) <- c("ctry_code", "nace2_code", "n_tech_reg")
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-write.csv2(tabledata2, file = "Data/reg_tech_ThirdPeriod.csv", row.names = F)
+write.csv2(tabledata2, file = "Data_Nace/reg_tech_ThirdPeriod.csv", row.names = F)
 
 #1.3.Calculate the g_tech_AI ----
-#Now we load all the files we already saved. We start by loading the janitor library, which is used here for converting
-#the first column of data to row names.
-library(janitor)
-rm(list=ls())
-#now we load the similarity matrix which was saved in line 139:
-matrix2 <- read.csv("Data/Matrix_Nace.csv", sep = ";", header = F)
-matrix2 <- matrix2 %>%
-  row_to_names(row_number = 1)
-matrix <- matrix2[,-1]
-rownames(matrix) <- matrix2[,1]
-matrix <- as.matrix(matrix)
-mat_tech_AI_Final <- matrix
-
-mat_tech_rel_AI <- mat_tech_AI_Final %>% 
-  relatedness(method = "cosine")
-
-nace2_names <- read.csv("Data/tls902_ipc_nace2.csv", sep = ";", header = TRUE)%>%
-  select(nace2_code, nace2_descr) %>%
-  distinct(nace2_code, .keep_all = TRUE) %>%
-  mutate(nace2_code = nace2_code) %>%
-  arrange(nace2_code)
-
-g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
-  left_join(nace2_names %>% mutate(nace2_code = nace2_code %>% as.character()), by = c("name" = "nace2_code")) %>%
-  mutate(dgr = centrality_eigen(weights = weight)) %E>%
-  filter(weight >= mean(weight))
-
-coords_tech_AI <- g_tech_AI %>% igraph::layout.fruchterman.reingold() %>% as_tibble()
-colnames(coords_tech_AI) <- c("x", "y")
-
-#let's take a look at the most and less complex Nace fields:
-g_tech_AI %N>% 
-  arrange(desc(dgr)) %>%
-  as_tibble() %>%
-  slice(1:10)
-
-g_tech_AI %N>% 
-  arrange(dgr) %>%
-  as_tibble() %>%
-  slice(1:10)
