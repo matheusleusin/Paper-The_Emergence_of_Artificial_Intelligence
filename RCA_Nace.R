@@ -196,7 +196,7 @@ reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = F) %>%
   gather(key = "nace2_code", value = "RCA", -ctry_code) %>%
   arrange(ctry_code, nace2_code)
 
-#1.3. AI perspective
+#1.3. AI perspective ----
 #1.3.1.First Period -  ----
 #For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
