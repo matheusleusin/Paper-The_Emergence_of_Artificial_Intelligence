@@ -3,7 +3,6 @@ library("data.table") #for reading the big files using fread and for replacing c
 library(tidyverse) # Collection of all the good stuff like dplyr, ggplot2 ect.
 library(magrittr) # For extra-piping operators (eg. %<>%)
 library(stringr) #for separating the IPC codes in subclasses
-library(plyr)
 
 group_by_applnID <- function (data){
   data %>%
@@ -255,7 +254,7 @@ rm(mat_reg_tech2)
 #3.1. General Perspective ----
 #For the third period, which goes from 2004 to 2018, we  need only the dataset from Part1. This
 #specific dataset only has patents from 2004 to 2018, so we don't have to filter it. But calculating
-#the reg_tech is very computationally expansive, so we have to divide that in 6 parts.
+#the reg_tech is very computationally expansive, so we divide that into 6 parts.
 setwd("C:/Users/Matheus/Desktop") 
 c <- 120419184-100000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 20000000)
@@ -408,7 +407,7 @@ names(Data3period) <- c("ctry_code", "Subclass", "RCA_Gen", "RCA_AI", "Period")
 write.csv2(Data3period, file = "Data_IPC/Data3period_RCA.csv", row.names = F)
 
 IPC_RCAs <- rbind(Data1period, Data2period, Data3period)
-
+write.csv2(IPC_RCAs, file = "Data_IPC/IPC_RCAs.csv", row.names = F)
 #1.4.Visualization RCAs ----
 
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
@@ -447,6 +446,8 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   }
 }
 
+library(plyr)
+
 #Select the 4 countries we want
 IPC_RCAs_Top4 <- IPC_RCAs[IPC_RCAs$ctry_code == "CN" | 
                               IPC_RCAs$ctry_code == "KR"| 
@@ -461,7 +462,6 @@ IPC_RCAs_Top4$Label <- IPC2LabelData$Summary[match(IPC_RCAs_Top4$Subclass, IPC2L
 
 #select only the top10 labels
 IPC_RCAs_Top5 <- IPC_RCAs_Top4
-table(IPC_RCAs_Top4$Label)
 IPC_RCAs_Top4<- IPC_RCAs_Top4[rowSums(is.na(IPC_RCAs_Top4)) == 0,]
 
 #replace names:
