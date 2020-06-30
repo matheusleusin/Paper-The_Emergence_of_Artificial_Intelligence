@@ -564,7 +564,7 @@ mat_reg_tech1 %<>% select(-ctry_code) %>%
   as.matrix() %>%
   round()
 
-reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = TRUE) %>% 
+reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = T) %>% 
   as.data.frame() %>% 
   rownames_to_column("ctry_code") %>% 
   as_tibble() %>% 
@@ -573,6 +573,7 @@ reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = TRUE) %>%
 
 Labels$Subclass <- as.vector(Labels$Subclass)
 reg_RCA1$name <- Labels$Number[match(reg_RCA1$Subclass, Labels$Subclass)]
+reg_RCA1$name <- as.character(reg_RCA1$name)
 
 ###second period:
 mat_reg_tech2 <- reg_tech2 %>%
@@ -592,6 +593,9 @@ reg_RCA2 <- mat_reg_tech2 %>% location.quotient(binary = TRUE) %>%
   gather(key = "Subclass", value = "RCA", -ctry_code) %>%
   arrange(ctry_code, Subclass)
 
+reg_RCA2$name <- Labels$Number[match(reg_RCA2$Subclass, Labels$Subclass)]
+reg_RCA2$name <- as.character(reg_RCA2$name)
+
 ###Third Period:
 mat_reg_tech3 <- reg_tech3 %>%
   arrange(Subclass, ctry_code) %>%
@@ -609,6 +613,9 @@ reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>%
   as_tibble() %>% 
   gather(key = "Subclass", value = "RCA", -ctry_code) %>%
   arrange(ctry_code, Subclass)
+
+reg_RCA3$name <- Labels$Number[match(reg_RCA3$Subclass, Labels$Subclass)]
+reg_RCA3$name <- as.character(reg_RCA3$name)
 
 #1.4.IPC Visualization -----
 #Finally, we start with the visualizations. For the Global perspective, considering the whole data, we have:
@@ -638,7 +645,7 @@ IPC_Total3 <-g_tech_AI %>%
 
 IPC_Total4 <- g_tech_AI %>%
   ggraph(layout =  coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = sector, size = dgr)) + 
   geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   theme_graph()+
@@ -666,71 +673,49 @@ dev.off()
 country_select <- c("CN", "US", "JP", "KR")
 i = 1
 
-reg_RCA1$name <- as.character(reg_RCA1$name)
-
 IPC1 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey22") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
+#  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("4-digits IPC Technology Space: China (1974-1988)")
-
-g_tech_AI %N>% 
-  arrange(desc(dgr)) %>%
-  as_tibble() %>%
-  slice(1:10)
-write.csv2(reg_RCA1, file = "reg_RCA1_test.csv", row.names = TRUE)
 
 jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC1
 dev.off()
 
-IPC1B <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
-  ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey22") + 
-  geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(filter=RCA > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
-  scale_color_gradient(low = "skyblue", high = "red") +
-  theme_graph() +
-  ggtitle("4-digits IPC Technology Space: China (1974-1988)")
-
-jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period1b.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC1B
-dev.off()
-
 i = 2
 IPC2 <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
+ # geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("4-digits IPC Technology Space: USA (1974-1988)")
 
 i = 3
 IPC3 <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
+#  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("4-digits IPC Technology Space: Japan (1974-1988)")
 
 i = 4
 IPC4 <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
+#  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("4-digits IPC Technology Space: South Korea (1974-1988)")
@@ -756,9 +741,9 @@ dev.off()
 #Per Country 2nd period
 i = 1
 IPC1 <- g_tech_AI %N>%
-  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 # geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -771,9 +756,9 @@ dev.off()
 
 i = 2
 IPC2 <- g_tech_AI %N>%
-  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -782,9 +767,9 @@ IPC2 <- g_tech_AI %N>%
 
 i = 3
 IPC3 <- g_tech_AI %N>%
-  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -793,9 +778,9 @@ IPC3 <- g_tech_AI %N>%
 
 i = 4
 IPC4 <- g_tech_AI %N>%
-  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -822,9 +807,9 @@ dev.off()
 #Per Country 3rd period
 i = 1
 IPC1 <- g_tech_AI %N>%
-  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -837,9 +822,9 @@ dev.off()
 
 i = 2
 IPC2 <- g_tech_AI %N>%
-  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -848,9 +833,9 @@ IPC2 <- g_tech_AI %N>%
 
 i = 3
 IPC3 <- g_tech_AI %N>%
-  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -859,9 +844,9 @@ IPC3 <- g_tech_AI %N>%
 
 i = 4
 IPC4 <- g_tech_AI %N>%
-  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
 #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
@@ -883,4 +868,386 @@ dev.off()
 
 jpeg("Figures_IPC_4digits/IPC_all_KR_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC4
+dev.off()
+
+#1.5.AI perspective-----
+#Now we will create the technology spaces, dividing them in 3 periods;
+setwd("C:/Users/Matheus/Desktop")
+
+group_by_applnID <- function (data){
+  data %>%
+    group_by(appln_id) %>%
+    mutate(field_weight = 1 / n()) %>%
+    ungroup()
+}
+
+group_by_ctry_and_IPC <- function (data){
+  data %<>%
+    group_by(ctry_code, Subclass) %>%
+    summarise(n_tech_reg = sum(field_weight)) %>%
+    ungroup() %>%
+    drop_na() 
+}
+
+c <- 97664418 -80000000
+IPC_all_patents_Part1 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000)
+IPC_all_patents_Part2 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
+IPC_all_patents_Part3 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 40000000)
+IPC_all_patents_Part4 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 60000000)
+IPC_all_patents_Part5 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = c, skip = 80000000)
+
+names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part4) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part5) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+
+#we want to pick only the registers from the period we want (from 1974 to 1988, including both cited years)
+a = 1973
+b = 1989
+
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year < b,]
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year > a,]
+
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year < b,]
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year > a,]
+
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year < b,]
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year > a,]
+
+IPC_all_patents_Part4 <- IPC_all_patents_Part4[IPC_all_patents_Part4$priority_year < b,]
+IPC_all_patents_Part4 <- IPC_all_patents_Part4[IPC_all_patents_Part4$priority_year > a,]
+
+IPC_all_patents_Part5 <- IPC_all_patents_Part5[IPC_all_patents_Part5$priority_year < b,]
+IPC_all_patents_Part5 <- IPC_all_patents_Part5[IPC_all_patents_Part5$priority_year > a,]
+
+#we pick just the subclass for analysis:
+IPC_all_patents_Part1$Subclass <- substr(IPC_all_patents_Part1$ipc_class_symbol,1,4)
+IPC_all_patents_Part2$Subclass <- substr(IPC_all_patents_Part2$ipc_class_symbol,1,4)
+IPC_all_patents_Part3$Subclass <- substr(IPC_all_patents_Part3$ipc_class_symbol,1,4)
+IPC_all_patents_Part4$Subclass <- substr(IPC_all_patents_Part4$ipc_class_symbol,1,4)
+IPC_all_patents_Part5$Subclass <- substr(IPC_all_patents_Part5$ipc_class_symbol,1,4)
+
+#we combine the 5 files:
+IPC_all_patents_FirstPeriod <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
+#and exclude the 5 big ones we just used, so we have back our memory:
+rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
+
+####   ### #######   ### ###
+#Now we insert our AI data. This is the only part that changes from the previous code.
+####   ### #######   ### ###
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+patents_AI_specific <- read.csv("Data_IPC/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+
+#now we replace the AI data on the IPC dataset;
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_FirstPeriod)
+IPC_all_patents_FirstPeriod[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+
+####   ### #######   ### ###
+#now we go back to our old code and apply the 2 functions we had already created:
+####   ### #######   ### ###
+
+reg_tech1 <- group_by_applnID(IPC_all_patents_FirstPeriod)
+rm(IPC_all_patents_FirstPeriod)
+reg_tech1 <- group_by_ctry_and_IPC(reg_tech1)
+
+###First Period:
+mat_reg_tech1 <- reg_tech1 %>%
+  arrange(Subclass, ctry_code) %>%
+  pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech1) <- mat_reg_tech1 %>% pull(ctry_code)
+
+mat_reg_tech1 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = T) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "Subclass", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, Subclass)
+
+Labels$Subclass <- as.vector(Labels$Subclass)
+reg_RCA1$name <- Labels$Number[match(reg_RCA1$Subclass, Labels$Subclass)]
+reg_RCA1$name <- as.character(reg_RCA1$name)
+
+country_select <- c("AI_pat")
+i = 1
+IPC1 <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  #  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("4-digits IPC Technology Space: AI patents (1974-1988)")
+
+jpeg("Figures_IPC_4digits/IPC_all_AIpatents_specific_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1
+dev.off()
+
+#For the second period, which goes from 1989 to 2003, we need only the dataset from Part2:
+setwd("C:/Users/Matheus/Desktop")
+c <- 97664418 -80000000
+IPC_all_patents_Part1 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000)
+IPC_all_patents_Part2 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
+IPC_all_patents_Part3 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 40000000)
+IPC_all_patents_Part4 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 60000000)
+IPC_all_patents_Part5 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = c, skip = 80000000)
+
+names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part4) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part5) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+
+a = 1988
+b = 2004
+
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year < b,]
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year > a,]
+
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year < b,]
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year > a,]
+
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year < b,]
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year > a,]
+
+IPC_all_patents_Part4 <- IPC_all_patents_Part4[IPC_all_patents_Part4$priority_year < b,]
+IPC_all_patents_Part4 <- IPC_all_patents_Part4[IPC_all_patents_Part4$priority_year > a,]
+
+IPC_all_patents_Part5 <- IPC_all_patents_Part5[IPC_all_patents_Part5$priority_year < b,]
+IPC_all_patents_Part5 <- IPC_all_patents_Part5[IPC_all_patents_Part5$priority_year > a,]
+
+#we pick just the subclass for analysis:
+IPC_all_patents_Part1$Subclass <- substr(IPC_all_patents_Part1$ipc_class_symbol,1,4)
+IPC_all_patents_Part2$Subclass <- substr(IPC_all_patents_Part2$ipc_class_symbol,1,4)
+IPC_all_patents_Part3$Subclass <- substr(IPC_all_patents_Part3$ipc_class_symbol,1,4)
+IPC_all_patents_Part4$Subclass <- substr(IPC_all_patents_Part4$ipc_class_symbol,1,4)
+IPC_all_patents_Part5$Subclass <- substr(IPC_all_patents_Part5$ipc_class_symbol,1,4)
+
+IPC_all_patents_SecondPeriod <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
+#and exclude the 5 big ones we just used, so we have back our memory:
+rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
+
+####   ### #######   ### ###
+#Now we insert our AI data. This is the only part that changes from the previous code.
+####   ### #######   ### ###
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+patents_AI_specific <- read.csv("Data_IPC/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+#I want to select some patents on these IPC_all_patents dataset and change the patent_office to, let's say, AI;
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_SecondPeriod)
+IPC_all_patents_SecondPeriod[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+####   ### #######   ### ###
+#now we go back to our old code and apply the 2 functions we had already created:
+####   ### #######   ### ###
+
+#now we apply the 2 functions we created at the beginning of this section:
+reg_tech2 <- group_by_applnID(IPC_all_patents_SecondPeriod)
+rm(IPC_all_patents_SecondPeriod)
+reg_tech2 <- group_by_ctry_and_IPC(reg_tech2)
+
+###second period:
+mat_reg_tech2 <- reg_tech2 %>%
+  arrange(Subclass, ctry_code) %>%
+  pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech2) <- mat_reg_tech2 %>% pull(ctry_code)
+
+mat_reg_tech2 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA2 <- mat_reg_tech2 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "Subclass", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, Subclass)
+
+reg_RCA2$name <- Labels$Number[match(reg_RCA2$Subclass, Labels$Subclass)]
+reg_RCA2$name <- as.character(reg_RCA2$name)
+
+country_select <- c("AI_pat")
+i = 1
+IPC1 <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  # geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("4-digits IPC Technology Space: AI patents (1989-2003)")
+
+jpeg("Figures_IPC_4digits/IPC_all_AIpatents_specific_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1
+dev.off()
+
+#third period, divided into 2 parts:
+setwd("C:/Users/Matheus/Desktop") 
+c <- 120419184-100000000
+IPC_all_patents_Part1 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 20000000)
+IPC_all_patents_Part2 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 20000000, skip = 20000000)
+IPC_all_patents_Part3 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 20000000, skip = 40000000)
+
+names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+
+IPC_all_patents_Part1$Subclass <- substr(IPC_all_patents_Part1$ipc_class_symbol,1,4)
+IPC_all_patents_Part2$Subclass <- substr(IPC_all_patents_Part2$ipc_class_symbol,1,4)
+IPC_all_patents_Part3$Subclass <- substr(IPC_all_patents_Part3$ipc_class_symbol,1,4)
+
+####   ### #######   ### ###
+#Now we insert our AI data. This is the only part that changes from the previous code.
+####   ### #######   ### ###
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+patents_AI_specific <- read.csv("Data_IPC/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_Part1)
+setDT(IPC_all_patents_Part2)
+setDT(IPC_all_patents_Part3)
+IPC_all_patents_Part1[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+IPC_all_patents_Part2[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+IPC_all_patents_Part3[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+
+####   ### #######   ### ###
+#now we go back to our old code and apply the 2 functions we had already created:
+####   ### #######   ### ###
+
+#here we divide our calculations of the reg_tech (which was not necessary on the 2 previous periods)
+reg_tech4 <- group_by_applnID(IPC_all_patents_Part1)
+rm(IPC_all_patents_Part1)
+reg_tech4 <- group_by_ctry_and_IPC(reg_tech4)
+
+reg_tech5 <- group_by_applnID(IPC_all_patents_Part2)
+rm(IPC_all_patents_Part2)
+reg_tech5 <- group_by_ctry_and_IPC(reg_tech5)
+
+reg_tech6 <- group_by_applnID(IPC_all_patents_Part3)
+rm(IPC_all_patents_Part3)
+reg_tech6 <- group_by_ctry_and_IPC(reg_tech6)
+
+#now we merge them
+reg_tech3 <- merge(reg_tech4, reg_tech5, all=T, by=c("ctry_code", "Subclass"))
+reg_tech3 <- merge(reg_tech3, reg_tech6, all=T, by=c("ctry_code", "Subclass"))
+rm(reg_tech4, reg_tech5, reg_tech6)
+#second part:
+setwd("C:/Users/Matheus/Desktop") 
+IPC_all_patents_Part4 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 20000000, skip = 60000000)
+IPC_all_patents_Part5 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 20000000, skip = 80000000)
+IPC_all_patents_Part6 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = c, skip = 100000000)
+
+names(IPC_all_patents_Part4) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part5) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part6) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+
+IPC_all_patents_Part4$Subclass <- substr(IPC_all_patents_Part4$ipc_class_symbol,1,4)
+IPC_all_patents_Part5$Subclass <- substr(IPC_all_patents_Part5$ipc_class_symbol,1,4)
+IPC_all_patents_Part6$Subclass <- substr(IPC_all_patents_Part6$ipc_class_symbol,1,4)
+
+####   ### #######   ### ###
+#Now we insert our AI data. This is the only part that changes from the previous code.
+####   ### #######   ### ###
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+patents_AI_specific <- read.csv("Data_IPC/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_Part4)
+setDT(IPC_all_patents_Part5)
+setDT(IPC_all_patents_Part6)
+IPC_all_patents_Part4[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+IPC_all_patents_Part5[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+IPC_all_patents_Part6[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+
+####   ### #######   ### ###
+#now we go back to our old code and apply the 2 functions we had already created:
+####   ### #######   ### ###
+
+reg_tech7 <- group_by_applnID(IPC_all_patents_Part4)
+rm(IPC_all_patents_Part4)
+reg_tech7 <- group_by_ctry_and_IPC(reg_tech7)
+
+reg_tech8 <- group_by_applnID(IPC_all_patents_Part5)
+rm(IPC_all_patents_Part5)
+reg_tech8 <- group_by_ctry_and_IPC(reg_tech8)
+
+reg_tech9 <- group_by_applnID(IPC_all_patents_Part6)
+rm(IPC_all_patents_Part6)
+reg_tech9 <- group_by_ctry_and_IPC(reg_tech9)
+
+reg_tech4 <- merge(reg_tech7, reg_tech8, all=T, by=c("ctry_code", "Subclass"))
+reg_tech4 <- merge(reg_tech4, reg_tech9, all=T, by=c("ctry_code", "Subclass"))
+
+rm(reg_tech7, reg_tech8, reg_tech9)
+
+#replace NAs, so we don't have problems when summing:
+reg_tech3[is.na(reg_tech3)] <- 0
+reg_tech4[is.na(reg_tech4)] <- 0
+
+#do the summ, exclude the tables used, and rename the dataset accordingly:
+reg_tech3$sum <- rowSums(reg_tech3[,c(3:5)])
+reg_tech3 <- reg_tech3[, c((-3), (-4), (-5))]
+names(reg_tech3) <- c("ctry_code", "Subclass", "n_tech_reg")
+
+reg_tech4$sum <- rowSums(reg_tech4[,c(3:5)])
+reg_tech4 <- reg_tech4[, c((-3), (-4), (-5))]
+names(reg_tech4) <- c("ctry_code", "Subclass", "n_tech_reg")
+
+reg_tech5 <- merge(reg_tech3, reg_tech4, all=T, by=c("ctry_code", "Subclass"))
+reg_tech5[is.na(reg_tech5)] <- 0
+reg_tech5$sum <- rowSums(reg_tech5[,c(3:4)])
+reg_tech5 <- reg_tech5[, c((-3), (-4))]
+names(reg_tech5) <- c("ctry_code", "Subclass", "n_tech_reg")
+
+###Third Period:
+mat_reg_tech3 <- reg_tech5 %>%
+  arrange(Subclass, ctry_code) %>%
+  pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech3) <- mat_reg_tech3 %>% pull(ctry_code)
+
+mat_reg_tech3 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "Subclass", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, Subclass)
+
+reg_RCA3$name <- Labels$Number[match(reg_RCA3$Subclass, Labels$Subclass)]
+reg_RCA3$name <- as.character(reg_RCA3$name)
+
+country_select <- c("AI_pat")
+i = 1
+IPC1 <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey7") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  #  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("4-digits IPC Technology Space: AI patents (2004-2018)")
+
+jpeg("Figures_IPC_4digits/IPC_all_AIpatents_specific_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1
 dev.off()
