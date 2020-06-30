@@ -501,12 +501,12 @@ write.csv2(reg_tech5, file = "Data_IPC_4digits/reg_tech_ThirdPeriod_4digits.csv"
 #1.3.Calculate the g_tech_AI ----
 #Now we load all the files we already saved. We start by loading the janitor library, which is used here for converting
 #the first column of data to row names.
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 library(janitor)
 rm(list=ls())
-#now we load the similarity matrix
+#now we load the similarity matrix. For some reason it gives an error when calculating the mat_tech_rel_AI if
+#I don't replace the 4 digit codes by a number. So I did that and save it as Matrix_IPC_4digits2.
 matrix2 <- read.csv("Data_IPC_4digits/Matrix_IPC_4digits2.csv", sep = ";", header = F)
-#matrix2 <- read.csv("Data_IPC_4digits/Matrix_IPC_4digits.csv", sep = ";", header = F)
-#matrix2 <- read.csv("Data_IPC_4digits/Matrix_IPC.csv", sep = ";", header = F)
 matrix2 <- matrix2 %>%
   row_to_names(row_number = 1)
 matrix <- matrix2[,-1]
@@ -517,6 +517,7 @@ mat_tech_AI_Final <- matrix
 mat_tech_rel_AI <- mat_tech_AI_Final %>% 
   relatedness(method = "cosine")
 
+#now we load the original labels (which I used for generating the number used above)
 Labels <- read.csv("Data_IPC_4digits/Labels_Matrix_IPC_4digits.csv", sep = ";", header = T)
 Ipc_technology <- read.csv("Data_IPC/ipc_technology.csv", sep = ";", header = T)
 Ipc_technology$sim_ipc_maingroup_symbol <- substr(Ipc_technology$ipc_maingroup_symbol,1,4)
@@ -548,14 +549,14 @@ g_tech_AI %N>%
   slice(1:10)
 
 #Now we read the data per period and calculate the RCAs:
-reg_tech1 <- read.csv("Data_IPC_4digits/reg_tech_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
-reg_tech2 <- read.csv("Data_IPC_4digits/reg_tech_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
-reg_tech3 <- read.csv("Data_IPC_4digits/reg_tech_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+reg_tech1 <- read.csv("Data_IPC_4digits/reg_tech_FirstPeriod_4digits.csv", sep = ";", header = TRUE, dec=",")
+reg_tech2 <- read.csv("Data_IPC_4digits/reg_tech_SecondPeriod_4digits.csv", sep = ";", header = TRUE, dec=",")
+reg_tech3 <- read.csv("Data_IPC_4digits/reg_tech_ThirdPeriod_4digits.csv", sep = ";", header = TRUE, dec=",")
 
 ###First Period:
 mat_reg_tech1 <- reg_tech1 %>%
-  arrange(techn_field_nr, ctry_code) %>%
-  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+  arrange(Subclass, ctry_code) %>%
+  pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
 
 rownames(mat_reg_tech1) <- mat_reg_tech1 %>% pull(ctry_code)
 
@@ -567,13 +568,16 @@ reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = TRUE) %>%
   as.data.frame() %>% 
   rownames_to_column("ctry_code") %>% 
   as_tibble() %>% 
-  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
-  arrange(ctry_code, techn_field_nr)
+  gather(key = "Subclass", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, Subclass)
+
+Labels$Subclass <- as.vector(Labels$Subclass)
+reg_RCA1$name <- Labels$Number[match(reg_RCA1$Subclass, Labels$Subclass)]
 
 ###second period:
 mat_reg_tech2 <- reg_tech2 %>%
-  arrange(techn_field_nr, ctry_code) %>%
-  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+  arrange(Subclass, ctry_code) %>%
+  pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
 
 rownames(mat_reg_tech2) <- mat_reg_tech2 %>% pull(ctry_code)
 
@@ -585,13 +589,13 @@ reg_RCA2 <- mat_reg_tech2 %>% location.quotient(binary = TRUE) %>%
   as.data.frame() %>% 
   rownames_to_column("ctry_code") %>% 
   as_tibble() %>% 
-  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
-  arrange(ctry_code, techn_field_nr)
+  gather(key = "Subclass", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, Subclass)
 
 ###Third Period:
 mat_reg_tech3 <- reg_tech3 %>%
-  arrange(techn_field_nr, ctry_code) %>%
-  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+  arrange(Subclass, ctry_code) %>%
+  pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
 
 rownames(mat_reg_tech3) <- mat_reg_tech3 %>% pull(ctry_code)
 
@@ -603,8 +607,8 @@ reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>%
   as.data.frame() %>% 
   rownames_to_column("ctry_code") %>% 
   as_tibble() %>% 
-  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
-  arrange(ctry_code, techn_field_nr)
+  gather(key = "Subclass", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, Subclass)
 
 #1.4.IPC Visualization -----
 #Finally, we start with the visualizations. For the Global perspective, considering the whole data, we have:
@@ -620,7 +624,7 @@ IPC_Total2 <- g_tech_AI %>%
   ggraph(layout =  coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.1, colour = "black") + 
   geom_node_point(aes(colour = sector, size = dgr)) + 
-  # geom_node_text(aes(label = F), size = 4, repel = TRUE) +
+# geom_node_text(aes(label = F), size = 4, repel = TRUE) +
   theme_graph()+
   ggtitle("Technology Space: 4-digits IPC codes")
 
@@ -632,9 +636,18 @@ IPC_Total3 <-g_tech_AI %>%
   theme_graph()+
   ggtitle("Technology Space: 4-digits IPC codes")
 
-jpeg("Figures_IPC_4digits/IPC_all_option1_4digits.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC_Total1
-dev.off()
+IPC_Total4 <- g_tech_AI %>%
+  ggraph(layout =  coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
+  geom_node_point(aes(colour = sector, size = dgr)) + 
+  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
+  theme_graph()+
+  ggtitle("Technology Space: 4-digits IPC codes")
+
+
+#jpeg("Figures_IPC_4digits/IPC_all_option1_4digits.jpg", width = 14, height = 10, units = 'in', res = 200)
+#IPC_Total1
+#dev.off()
 
 jpeg("Figures_IPC_4digits/IPC_all_option2_4digits.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_Total2
@@ -644,72 +657,99 @@ jpeg("Figures_IPC_4digits/IPC_all_option3_4digits.jpg", width = 14, height = 10,
 IPC_Total3
 dev.off()
 
+jpeg("Figures_IPC_4digits/IPC_all_option4_4digits.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC_Total4
+dev.off()
+
 #Now we start the analysis per country:
 #1st period
 country_select <- c("CN", "US", "JP", "KR")
 i = 1
+
+reg_RCA1$name <- as.character(reg_RCA1$name)
+
 IPC1 <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey22") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-# geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("4-digits IPC Technology Space: China (1974-1988)")
 
-jpeg("Figures_IPC/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+g_tech_AI %N>% 
+  arrange(desc(dgr)) %>%
+  as_tibble() %>%
+  slice(1:10)
+write.csv2(reg_RCA1, file = "reg_RCA1_test.csv", row.names = TRUE)
+
+jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC1
+dev.off()
+
+IPC1B <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "name")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey22") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("4-digits IPC Technology Space: China (1974-1988)")
+
+jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period1b.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1B
 dev.off()
 
 i = 2
 IPC2 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (1974-1988)")
+  ggtitle("4-digits IPC Technology Space: USA (1974-1988)")
 
 i = 3
 IPC3 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (1974-1988)")
+  ggtitle("4-digits IPC Technology Space: Japan (1974-1988)")
 
 i = 4
 IPC4 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=dgr > .5, label = field_name), colour = "black", size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (1974-1988)")
+  ggtitle("4-digits IPC Technology Space: South Korea (1974-1988)")
 
 
 #For saving the pictures:
-jpeg("Figures_IPC/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC1
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_US_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_US_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC2
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_JP_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_JP_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC3
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_KR_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_KR_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC4
 dev.off()
 
@@ -718,60 +758,64 @@ i = 1
 IPC1 <- g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+# geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1989-2003)")
+  ggtitle("4-digits IPC Technology Space: China (1989-2003)")
+
+jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1
+dev.off()
 
 i = 2
 IPC2 <- g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+#  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (1989-2003)")
+  ggtitle("4-digits IPC Technology Space: USA (1989-2003)")
 
 i = 3
 IPC3 <- g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+#  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (1989-2003)")
+  ggtitle("4-digits IPC Technology Space: Japan (1989-2003)")
 
 i = 4
 IPC4 <- g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+#  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (1989-2003)")
+  ggtitle("4-digits IPC Technology Space: South Korea (1989-2003)")
 
 #For saving the pictures:
-jpeg("Figures_IPC/IPC_all_CN_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC1
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_US_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_US_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC2
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_JP_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_JP_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC3
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_KR_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_KR_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC4
 dev.off()
 
@@ -780,59 +824,63 @@ i = 1
 IPC1 <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+#  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: China (2004-2018)")
+  ggtitle("4-digits IPC Technology Space: China (2004-2018)")
+
+jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1
+dev.off()
 
 i = 2
 IPC2 <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+#  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (2004-2018)")
+  ggtitle("4-digits IPC Technology Space: USA (2004-2018)")
 
 i = 3
 IPC3 <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+#  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (2004-2018)")
+  ggtitle("4-digits IPC Technology Space: Japan (2004-2018)")
 
 i = 4
 IPC4 <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_edge_link(aes(width = weight), alpha = 0.1, colour = "grey48") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+#  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (2004-2018)")
+  ggtitle("4-digits IPC Technology Space: South Korea (2004-2018)")
 
 #For saving the pictures:
-jpeg("Figures_IPC/IPC_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC1
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_US_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_US_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC2
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_JP_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_JP_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC3
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_KR_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Figures_IPC_4digits/IPC_all_KR_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC4
 dev.off()
