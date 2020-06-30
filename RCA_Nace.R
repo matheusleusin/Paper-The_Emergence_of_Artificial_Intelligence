@@ -406,6 +406,6 @@ FigAI <- ggplot(Nace_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period)
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
   ylab(NULL)
 
-tiff("Figures_Nace/Plot_RCAs.jpg", width = 14, height = 7, units = 'in', res = 200)
+tiff("Figures_Nace/Plot_Nace_RCA.jpg", width = 14, height = 7, units = 'in', res = 200)
 multiplot(FigGen, FigAI, cols=1)
 dev.off()
