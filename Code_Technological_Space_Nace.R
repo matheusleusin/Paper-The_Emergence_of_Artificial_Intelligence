@@ -422,6 +422,27 @@ Nace1 <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("Nace Technology Space: China (1974-1988)")
 
+#option B
+Nace1b <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: China (1974-1988)")
+
+Nace1c <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .9, label = substr(nace2_descr, 15, 30)), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: China (1974-1988)")
+
 i = 2
 Nace2 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
@@ -461,6 +482,14 @@ jpeg("Figures_Nace/Nace_all_CN_persp_Period1.jpg", width = 14, height = 10, unit
 Nace1
 dev.off()
 
+jpeg("Figures_Nace/Nace_all_CN_persp_Period1_optionB.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace1b
+dev.off()
+
+jpeg("Figures_Nace/Nace_all_CN_persp_Period1_optionC.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace1c
+dev.off()
+
 jpeg("Figures_Nace/Nace_all_US_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace2
 dev.off()
@@ -481,6 +510,17 @@ Nace1 <- g_tech_AI %N>%
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: China (1989-2003)")
+
+#option B
+Nace1b <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: China (1989-2003)")
@@ -523,6 +563,10 @@ jpeg("Figures_Nace/Nace_all_CN_persp_Period2.jpg", width = 14, height = 10, unit
 Nace1
 dev.off()
 
+jpeg("Figures_Nace/Nace_all_CN_persp_Period2_optionB.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace1b
+dev.off()
+
 jpeg("Figures_Nace/Nace_all_US_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace2
 dev.off()
@@ -543,6 +587,17 @@ Nace1 <- g_tech_AI %N>%
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("Nace Technology Space: China (2004-2018)")
+
+#Option B
+Nace1b <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: China (2004-2018)")
@@ -583,6 +638,10 @@ Nace4 <- g_tech_AI %N>%
 #For saving the pictures:
 jpeg("Figures_Nace/Nace_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 Nace1
+dev.off()
+
+jpeg("Figures_Nace/Nace_all_CN_persp_Period3_optionB.jpg", width = 14, height = 10, units = 'in', res = 200)
+Nace1b
 dev.off()
 
 jpeg("Figures_Nace/Nace_all_US_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)

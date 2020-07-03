@@ -433,6 +433,17 @@ IPC1 <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("IPC Technology Space: China (1974-1988)")
 
+#option "b" for China
+IPC1b <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (1974-1988)")
+
 i = 2
 IPC2 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -472,6 +483,10 @@ jpeg("Figures_IPC/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units 
 IPC1
 dev.off()
 
+jpeg("Figures_IPC/IPC_all_CN_persp_Period1_optionB.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1b
+dev.off()
+
 jpeg("Figures_IPC/IPC_all_US_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC2
 dev.off()
@@ -492,6 +507,16 @@ IPC1 <- g_tech_AI %N>%
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (1989-2003)")
+
+IPC1b <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("IPC Technology Space: China (1989-2003)")
@@ -534,6 +559,10 @@ jpeg("Figures_IPC/IPC_all_CN_persp_Period2.jpg", width = 14, height = 10, units 
 IPC1
 dev.off()
 
+jpeg("Figures_IPC/IPC_all_CN_persp_Period2_optionB.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1b
+dev.off()
+
 jpeg("Figures_IPC/IPC_all_US_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC2
 dev.off()
@@ -554,6 +583,16 @@ IPC1 <- g_tech_AI %N>%
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
+  scale_color_gradient(low = "skyblue", high = "red") +
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (2004-2018)")
+
+IPC1b <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = RCA, size = dgr)) + 
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("IPC Technology Space: China (2004-2018)")
@@ -594,6 +633,10 @@ IPC4 <- g_tech_AI %N>%
 #For saving the pictures:
 jpeg("Figures_IPC/IPC_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC1
+dev.off()
+
+jpeg("Figures_IPC/IPC_all_CN_persp_Period3_optionB.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC1b
 dev.off()
 
 jpeg("Figures_IPC/IPC_all_US_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
