@@ -9,7 +9,7 @@ library(devtools)
 library(EconGeo) # Economic Geography functions
 
 library(ggplot2)
-library("data.table") #for reading the big files using fread and for replacing countries names (by AI_pat for example)
+library(data.table) #for reading the big files using fread and for replacing countries names (by AI_pat for example)
 
 #1.NACE data -----
 #1.1. Sparse matrix -----
