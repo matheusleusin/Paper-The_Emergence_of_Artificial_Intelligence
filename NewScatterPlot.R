@@ -348,16 +348,173 @@ setwd("C:/Users/Matheus/Desktop") #for loading the big file
 
 #Now we will load a first big file containing all priorities and their related IPC codes published in or after 2004. This file has
 #58,841,893 lines. I will read it in 3 parts:
-c <- 58841893-40000000
-IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000)[ ,c((2),(3))]
-IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000, skip = 20000000)[ ,c((2),(3))]
-IPC_all_patents_Part3 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = c, skip = 40000000)[ ,c((2),(3))]
+c <- 45182803 -40000000
+IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)[ ,c(-4)]
+IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)[ ,c(-4)]
+IPC_all_patents_Part3 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = c, skip = 40000000)[ ,c(-4)]
 
-IPC_all_patents_3rd <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
+a = 1973
+b = 1989
+
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$V5 < b,]
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$V5 > a,]
+
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$V5 < b,]
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$V5 > a,]
+
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$V5 < b,]
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$V5 > a,]
+
+IPC_all_patents_1st <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
 rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
-names(IPC_all_patents_3rd) <- c("ctry_code", "techn_field_nr")
-IPC_all_patents_3rd$count <- 1
-mat_3rd <- get.matrix(IPC_all_patents_3rd)
-Indicators <- Herfindahl(mat_3rd)
+
+names(IPC_all_patents_1st) <- c("appln_id", "ctry_code", "techn_field_nr", "priority_year")
+IPC_all_patents_1st$ctry_code2 <- IPC_all_patents_1st$ctry_code
+
+#read AI patents
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+patents_AI_specific <- read.csv("Data_IPC/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_1st)
+IPC_all_patents_1st[patents_AI_specific, on = c("appln_id"), ctry_code2 := i.ctry_code]
+
+IPC_all_patents_1st_US <- IPC_all_patents_1st[IPC_all_patents_1st$ctry_code == "US", ]
+IPC_all_patents_1st_CN <- IPC_all_patents_1st[IPC_all_patents_1st$ctry_code == "CN", ]
+IPC_all_patents_1st_KR <- IPC_all_patents_1st[IPC_all_patents_1st$ctry_code == "KR", ]
+IPC_all_patents_1st_JP <- IPC_all_patents_1st[IPC_all_patents_1st$ctry_code == "JP", ]
+IPC_all_patents_1st_AI <- IPC_all_patents_1st[IPC_all_patents_1st$ctry_code2 == "AI_pat", ]
+#rm(IPC_all_patents_1st)
+
+IPC_all_patents_1st_US <- IPC_all_patents_1st_US[,c((-1), (-4), (-5))]
+IPC_all_patents_1st_US$count <- 1
+#mat_1st_US <- get.matrix(IPC_all_patents_1st_US)
+mat_1st_US3 <- as.data.frame(table(IPC_all_patents_1st_US$ctry_code, IPC_all_patents_1st_US$techn_field_nr))
+
+IPC_all_patents_1st_CN <- IPC_all_patents_1st_CN[,c((-1), (-4), (-5))]
+IPC_all_patents_1st_CN$count <- 1
+#mat_1st_CN <- get.matrix(IPC_all_patents_1st_CN)
+mat_1st_CN3 <- as.data.frame(table(IPC_all_patents_1st_CN$ctry_code, IPC_all_patents_1st_CN$techn_field_nr))
+
+IPC_all_patents_1st_KR <- IPC_all_patents_1st_KR[,c((-1), (-4), (-5))]
+IPC_all_patents_1st_KR$count <- 1
+#mat_1st_KR <- get.matrix(IPC_all_patents_1st_KR)
+mat_1st_KR3 <- as.data.frame(table(IPC_all_patents_1st_KR$ctry_code, IPC_all_patents_1st_KR$techn_field_nr))
+
+IPC_all_patents_1st_JP <- IPC_all_patents_1st_JP[,c((-1), (-4), (-5))]
+IPC_all_patents_1st_JP$count <- 1
+#mat_1st_JP <- get.matrix(IPC_all_patents_1st_JP)
+mat_1st_JP3 <- as.data.frame(table(IPC_all_patents_1st_JP$ctry_code, IPC_all_patents_1st_JP$techn_field_nr))
+
+IPC_all_patents_1st_AI <- IPC_all_patents_1st_AI[,c((5), (3))]
+IPC_all_patents_1st_AI$count <- 1
+#mat_1st_AI <- get.matrix(IPC_all_patents_1st_AI)
+mat_1st_AI3 <- as.data.frame(table(IPC_all_patents_1st_AI$ctry_code2, IPC_all_patents_1st_AI$techn_field_nr))
+
+multiFull3 <- merge(merge(merge(merge(
+  mat_1st_US3,
+  mat_1st_JP3, all = TRUE, by="Var2"),
+  mat_1st_CN3, all = TRUE, by="Var2"),
+  mat_1st_KR3, all = TRUE, by="Var2"),
+  mat_1st_AI3, all = TRUE, by="Var2")
+#US, JP, CN, KR, AI_pat
+multiFull3 <- multiFull3[,c((-2), (-4), (-6), (-8), (-10))]
+names(multiFull3) <-c("techn_field_nr", "US", "JP", "CN", "KR", "AI_pat")
+multiFull32 <- t(multiFull3)
+multiFull32 <- multiFull32 %>%
+  row_to_names(row_number = 1)
+multiFull33 <- apply(multiFull32, 2, as.numeric)
+multiFull33[is.na(multiFull33)] <- 0
+Indicators <- as.data.frame(Herfindahl(multiFull33))
+names(Indicators) <- "Herfindahl"
+Indicators$countries <- c("US", "JP", "CN", "KR", "AI_pat")
+Indicators$entropy <- entropy(multiFull33)
+Indicators$Period <- "1st"
+
+
+
+
+mat_1st_US2 <- as.data.frame(mat_1st_US, optional = FALSE, make.names = TRUE)
+mat_1st_JP2 <- as.data.frame(t(mat_1st_JP))
+mat_1st_CN2 <- as.data.frame(t(mat_1st_CN))
+mat_1st_KR2 <- as.data.frame(t(mat_1st_KR))
+mat_1st_AI2 <- as.data.frame(t(mat_1st_AI))
+
+myDF <- data.frame(columnNameILike = row.names(myMatrix), myMatrix)
+
+a <- merge(mat_1st_US2, mat_1st_JP2, by=0, all=TRUE)
+b <- merge(mat_1st_KR2, mat_1st_CN2, by=0, all=TRUE)
+c <- merge(a, b, by="Row.names", all=TRUE)
+
+
+#b <- cbind(mat_1st_US2, mat_1st_CN2, mat_1st_CN2)
+#ufoMerged <- do.call("rbind", list(mat_1st_US2, mat_1st_CN2, mat_1st_CN2))
+
+
+multiFull3 <- merge(merge(merge(merge(
+  mat_1st_US2,
+  mat_1st_JP2, all = TRUE, by=0),
+  mat_1st_CN2, all = TRUE, by=0),
+  mat_1st_KR2, all = TRUE, by=0),
+  mat_1st_AI2, all = TRUE, by=0)
+rm(multiFull2, multiFull)
+multiFull2 <- t(multiFull)  
+  
+
+a <- rbind(mat_1st_US, c(mat_1st_JP[, colnames(mat_1st_US)], mat_1st_CN[, colnames(mat_1st_US)]))
+
+#dplyr::bind_rows(mat_1st_US, mat_1st_JP)
+#a <- merge(mat_1st_US, mat_1st_JP, by=1, all=TRUE)
+#d, e, by=0, all=TRUE
+
+rbind(mat_1st_US, mat_1st_CN, mat_1st_KR, mat_1st_JP, mat_1st_AI)
+
+Indicators <- Herfindahl(mat_1st_US, mat_1st_CN, mat_1st_KR, mat_1st_JP, mat_1st_AI)
+
+relatedness(mat_1st_US, method = "association")
+relatedness(mat_1st_US, method = "cosine") #the one we are currently using
+relatedness(mat_tech_AI1, method = "Jaccard")
+
+
+create_sparse_matrix <- function(i.input, j.input){
+  require(Matrix)
+  mat <- spMatrix(nrow = i.input %>% n_distinct(),
+                  ncol = j.input %>% n_distinct(),
+                  i = i.input %>% factor() %>% as.numeric(),
+                  j = j.input %>% factor() %>% as.numeric(),
+                  x = rep(1, i.input %>% length() ) )
+  
+  row.names(mat) <- i.input %>% factor() %>% levels()
+  colnames(mat) <- j.input %>% factor() %>% levels()
+  return(mat)
+}
+
+mat_tech_AI1 <- create_sparse_matrix(i = IPC_all_patents_Part1 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part1 %>% pull(techn_field_nr))
+mat_tech_AI1 %<>% 
+  crossprod() %>% 
+  as.matrix() 
+
+TEST<- relatedness(mat_tech_AI1, method = "Jaccard")
+
+mean(TEST)
+
+mat_tech_AI1
+IPC_all_patents_1st_2 <- IPC_all_patents_1st[IPC_all_patents_1st$ctry_code == "CN" | 
+                                               IPC_all_patents_1st$ctry_code == "KR"| 
+                                               IPC_all_patents_1st$ctry_code == "US"| 
+                                               IPC_all_patents_1st$ctry_code == "JP"|
+                                               IPC_all_patents_1st$ctry_code2 == "AI_pat", ]
+rm(IPC_all_patents_1st)
+IPC_all_patents_1st_2_allcountries <- IPC_all_patents_1st_2[,c((-1), (-4))]
+IPC_all_patents_1st_2_allcountries$count <- 1
+mat_1st_allcountries <- get.matrix(IPC_all_patents_1st_2_allcountries)
+
+IPC_all_patents_1st_2_AI <- IPC_all_patents_1st_2[,c((-1), (-2))]
+IPC_all_patents_1st_2_AI$count <- 1
+mat_1st_AI <- get.matrix(IPC_all_patents_1st_2_AI)
+
+Indicators <- Herfindahl(mat_1st)
 names(Indicators) <- c("ctry_code", "techn_field_nr", "Herfindahl")
 entropy(mat2)
