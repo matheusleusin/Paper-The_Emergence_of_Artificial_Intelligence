@@ -399,7 +399,7 @@ Indicators$Entropy <- entropy(mat_1st)
 Indicators$Entropy_RCA <- entropy(mat_1st_RCAs)
 Indicators$Period <- "1st"
 
-write.csv2(Indicators, file = "Data_calculations/Indicators_1st_period_IPC.csv", row.names = TRUE)
+write.csv2(Indicators, file = "Data_calculations_IPC/Indicators_1st_period_IPC.csv", row.names = TRUE)
 #To do: index of knowledge complexity per area
 #here it would be possible to calculate the knowledge complexity of AI per technological field (using the last
 #line of MergeAlldata_1st[5,] which is related to AI;) in relation to the 4 leaders or to the world; As I know the 4 
@@ -449,9 +449,9 @@ KnowledgeComp_PerCountry_1st_All <- rbind(KnowledgeComp_PerCountry_1st, Knowledg
 KnowledgeComp_PerCountry_1st_All_RCAs <- rbind(KnowledgeComp_PerCountry_1st_RCA, KnowledgeComp_PerCountry_1st_Step0_RCA,
                                                 KnowledgeComp_PerCountry_1st_Step1_RCA, KnowledgeComp_PerCountry_1st_Step2_RCA)
 
-write.csv2(KnowledgeComp_1st, file = "Data_calculations/KnowledgeComp_1st.csv", row.names = TRUE)
-write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations/KnowledgeComp_PerCountry_1st_All.csv", row.names = TRUE)
-write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations/KnowledgeComp_PerCountry_1st_All_RCAs.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_1st, file = "Data_calculations_IPC/KnowledgeComp_1st.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs.csv", row.names = TRUE)
 
 #3.1.3. Calculate the relatedness -----
 #create the function we need:
@@ -923,7 +923,7 @@ Relatedness_AI$Cosine_Top6<- mean(mat_tech_1st_AI_Top6_rel_cosi)
 Relatedness_FirstPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
 Relatedness_FirstPeriod <- Relatedness_FirstPeriod[,c((1:3), (5:13), (4))]
 
-write.csv2(Relatedness_FirstPeriod, file = "Data_calculations/Relatedness_1st_period_IPC.csv", row.names = TRUE)
+write.csv2(Relatedness_FirstPeriod, file = "Data_calculations_IPC/Relatedness_1st_period_IPC.csv", row.names = TRUE)
 
 #3.2. Second period ----
 #Starting with an empty global environment:
@@ -982,7 +982,7 @@ Indicators$Entropy <- entropy(mat_2nd)
 Indicators$Entropy_RCA <- entropy(mat_2nd_RCAs)
 Indicators$Period <- "2nd"
 
-write.csv2(Indicators, file = "Data_calculations/Indicators_2nd_period_IPC.csv", row.names = TRUE)
+write.csv2(Indicators, file = "Data_calculations_IPC/Indicators_2nd_period_IPC.csv", row.names = TRUE)
 
 #Knowledge complexity of fields and countries:
 KnowledgeComp_2nd <- as.data.frame(MORt(mat_2nd))
@@ -1027,9 +1027,9 @@ KnowledgeComp_PerCountry_2nd_All <- rbind(KnowledgeComp_PerCountry_2nd, Knowledg
 KnowledgeComp_PerCountry_2nd_All_RCAs <- rbind(KnowledgeComp_PerCountry_2nd_RCA, KnowledgeComp_PerCountry_2nd_Step0_RCA,
                                                KnowledgeComp_PerCountry_2nd_Step1_RCA, KnowledgeComp_PerCountry_2nd_Step2_RCA)
 
-write.csv2(KnowledgeComp_2nd, file = "Data_calculations/KnowledgeComp_2nd.csv", row.names = TRUE)
-write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations/KnowledgeComp_PerCountry_2nd_All.csv", row.names = TRUE)
-write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations/KnowledgeComp_PerCountry_2nd_All_RCAs.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_2nd, file = "Data_calculations_IPC/KnowledgeComp_2nd.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs.csv", row.names = TRUE)
 
 #3.2.3. Calculate the relatedness -----
 #create the function we need:
@@ -1501,7 +1501,7 @@ Relatedness_AI$Cosine_Top6<- mean(mat_tech_2nd_AI_Top6_rel_cosi)
 Relatedness_FirstPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
 Relatedness_FirstPeriod <- Relatedness_FirstPeriod[,c((1:3), (5:13), (4))]
 
-write.csv2(Relatedness_FirstPeriod, file = "Data_calculations/Relatedness_2nd_period_IPC.csv", row.names = TRUE)
+write.csv2(Relatedness_FirstPeriod, file = "Data_calculations_IPC/Relatedness_2nd_period_IPC.csv", row.names = TRUE)
 
 #3.3. Third period ----
 #Starting with an empty global environment:
@@ -1548,7 +1548,7 @@ Indicators$Entropy <- entropy(mat_3rd)
 Indicators$Entropy_RCA <- entropy(mat_3rd_RCAs)
 Indicators$Period <- "3rd"
 
-write.csv2(Indicators, file = "Data_calculations/Indicators_3rd_period_IPC.csv", row.names = TRUE)
+write.csv2(Indicators, file = "Data_calculations_IPC/Indicators_3rd_period_IPC.csv", row.names = TRUE)
 
 #Knowledge complexity of fields and countries:
 KnowledgeComp_3rd <- as.data.frame(MORt(mat_3rd))
@@ -1593,9 +1593,9 @@ KnowledgeComp_PerCountry_3rd_All <- rbind(KnowledgeComp_PerCountry_3rd, Knowledg
 KnowledgeComp_PerCountry_3rd_All_RCAs <- rbind(KnowledgeComp_PerCountry_3rd_RCA, KnowledgeComp_PerCountry_3rd_Step0_RCA,
                                                KnowledgeComp_PerCountry_3rd_Step1_RCA, KnowledgeComp_PerCountry_3rd_Step2_RCA)
 
-write.csv2(KnowledgeComp_3rd, file = "Data_calculations/KnowledgeComp_3rd.csv", row.names = TRUE)
-write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations/KnowledgeComp_PerCountry_3rd_All.csv", row.names = TRUE)
-write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations/KnowledgeComp_PerCountry_3rd_All_RCAs.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_3rd, file = "Data_calculations_IPC/KnowledgeComp_3rd.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs.csv", row.names = TRUE)
 
 #3.2.3. Calculate the relatedness -----
 #create the function we need:
@@ -2071,4 +2071,4 @@ Relatedness_AI$Cosine_Top6<- mean(mat_tech_3rd_AI_Top6_rel_cosi)
 Relatedness_FirstPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
 Relatedness_FirstPeriod <- Relatedness_FirstPeriod[,c((1:3), (5:13), (4))]
 
-write.csv2(Relatedness_FirstPeriod, file = "Data_calculations/Relatedness_3rd_period_IPC.csv", row.names = TRUE)
+write.csv2(Relatedness_FirstPeriod, file = "Data_calculations_IPC/Relatedness_3rd_period_IPC.csv", row.names = TRUE)
