@@ -453,6 +453,64 @@ write.csv2(KnowledgeComp_1st, file = "Data_calculations_IPC/KnowledgeComp_1st.cs
 write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs.csv", row.names = TRUE)
 
+#For AI complexity and Indicators:
+IPC_all_patents_1st_In <- IPC_all_patents_1st[,c((-1), (-4), (-2))]
+mat_1st <- as.data.frame(table(IPC_all_patents_1st_In$ctry_code2, IPC_all_patents_1st_In$techn_field_nr))
+mat_1st <- get.matrix(mat_1st)
+
+Indicators <- as.data.frame(Herfindahl(mat_1st))
+names(Indicators) <- "Herfindahl"
+mat_1st_RCAs <- location.quotient(mat_1st, binary = T)
+Indicators$Herfindahl_RCA <- Herfindahl(mat_1st_RCAs)
+Indicators$Entropy <- entropy(mat_1st)
+Indicators$Entropy_RCA <- entropy(mat_1st_RCAs)
+Indicators$Period <- "1st"
+
+write.csv2(Indicators, file = "Data_calculations_IPC/Indicators_1st_period_IPC_AI.csv", row.names = TRUE)
+KnowledgeComp_1st <- as.data.frame(MORt(mat_1st))
+KnowledgeComp_1st$Step0 <- MORt(mat_1st, steps = 0)
+KnowledgeComp_1st$Step1 <- MORt(mat_1st, steps = 1)
+KnowledgeComp_1st$Step2 <- MORt(mat_1st, steps = 2)
+
+KnowledgeComp_1st$RCA <- MORt(mat_1st_RCAs)
+KnowledgeComp_1st$RCA_Step0 <- MORt(mat_1st_RCAs, steps = 0)
+KnowledgeComp_1st$RCA_Step1 <- MORt(mat_1st_RCAs, steps = 1)
+KnowledgeComp_1st$RCA_Step2 <- MORt(mat_1st_RCAs, steps = 2)
+
+KnowledgeComp_PerCountry_1st <- as.data.frame(mat_1st*MORt(mat_1st))
+KnowledgeComp_PerCountry_1st$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_1st_Step0 <- as.data.frame(mat_1st*MORt(mat_1st, steps = 0))
+KnowledgeComp_PerCountry_1st_Step0$Step <- "Step0"
+
+KnowledgeComp_PerCountry_1st_Step1 <- as.data.frame(mat_1st*MORt(mat_1st, steps = 1))
+KnowledgeComp_PerCountry_1st_Step1$Step <- "Step1"
+
+KnowledgeComp_PerCountry_1st_Step2 <- as.data.frame(mat_1st*MORt(mat_1st, steps = 2))
+KnowledgeComp_PerCountry_1st_Step2$Step <- "Step2"
+
+#Considering RCAs:
+KnowledgeComp_PerCountry_1st_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs))
+KnowledgeComp_PerCountry_1st_RCA$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_1st_Step0_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs, steps = 0))
+KnowledgeComp_PerCountry_1st_Step0_RCA$Step <- "Step0"
+
+KnowledgeComp_PerCountry_1st_Step1_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs, steps = 1))
+KnowledgeComp_PerCountry_1st_Step1_RCA$Step <- "Step1"
+
+KnowledgeComp_PerCountry_1st_Step2_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs, steps = 2))
+KnowledgeComp_PerCountry_1st_Step2_RCA$Step <- "Step2"
+
+KnowledgeComp_PerCountry_1st_All <- rbind(KnowledgeComp_PerCountry_1st, KnowledgeComp_PerCountry_1st_Step0,
+                                          KnowledgeComp_PerCountry_1st_Step1, KnowledgeComp_PerCountry_1st_Step2)
+
+KnowledgeComp_PerCountry_1st_All_RCAs <- rbind(KnowledgeComp_PerCountry_1st_RCA, KnowledgeComp_PerCountry_1st_Step0_RCA,
+                                               KnowledgeComp_PerCountry_1st_Step1_RCA, KnowledgeComp_PerCountry_1st_Step2_RCA)
+
+write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_AI.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs_AI.csv", row.names = TRUE)
+
 #3.1.3. Calculate the relatedness -----
 #create the function we need:
 create_sparse_matrix <- function(i.input, j.input){
@@ -508,55 +566,49 @@ Relatedness$Jaccard_top4 <- mean(mat_tech_1st_US_Top4_rel_jacc)
 Relatedness$Association_top4 <- mean(mat_tech_1st_US_Top4_rel_asso)
 Relatedness$Cosine_top4<- mean(mat_tech_1st_US_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_1st_US_Top10 <- IPC_all_patents_1st_US[IPC_all_patents_1st_US$techn_field_nr == "6" | 
-                                                         IPC_all_patents_1st_US$techn_field_nr == "7"| 
-                                                         IPC_all_patents_1st_US$techn_field_nr == "10"| 
-                                                         IPC_all_patents_1st_US$techn_field_nr == "12"|
-                                                         IPC_all_patents_1st_US$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_1st_US_Top3 <- IPC_all_patents_1st_US[IPC_all_patents_1st_US$techn_field_nr == "4" | 
                                                          IPC_all_patents_1st_US$techn_field_nr == "5"| 
-                                                         IPC_all_patents_1st_US$techn_field_nr == "11"|
-                                                         IPC_all_patents_1st_US$techn_field_nr == "3"| 
-                                                         IPC_all_patents_1st_US$techn_field_nr == "2"| 
-                                                         IPC_all_patents_1st_US$techn_field_nr == "9", ]
+                                                         IPC_all_patents_1st_US$techn_field_nr == "11", ]
 
-mat_tech_1st_US_Top10 <- create_sparse_matrix(i = IPC_all_patents_1st_US_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_1st_US_Top10 %>% pull(techn_field_nr))
+mat_tech_1st_US_Top3 <- create_sparse_matrix(i = IPC_all_patents_1st_US_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_1st_US_Top3 %>% pull(techn_field_nr))
 
-mat_tech_1st_US_Top10 %<>% 
+mat_tech_1st_US_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_US_Top10_rel_jacc <- relatedness(mat_tech_1st_US_Top10, method = "Jaccard")
-mat_tech_1st_US_Top10_rel_asso <- relatedness(mat_tech_1st_US_Top10, method = "association")
-mat_tech_1st_US_Top10_rel_cosi <- relatedness(mat_tech_1st_US_Top10, method = "cosine")
+mat_tech_1st_US_Top3_rel_jacc <- relatedness(mat_tech_1st_US_Top3, method = "Jaccard")
+mat_tech_1st_US_Top3_rel_asso <- relatedness(mat_tech_1st_US_Top3, method = "association")
+mat_tech_1st_US_Top3_rel_cosi <- relatedness(mat_tech_1st_US_Top3, method = "cosine")
 
-Relatedness$Jaccard_Top10 <- mean(mat_tech_1st_US_Top10_rel_jacc)
-Relatedness$Association_Top10 <- mean(mat_tech_1st_US_Top10_rel_asso)
-Relatedness$Cosine_Top10<- mean(mat_tech_1st_US_Top10_rel_cosi)
+Relatedness$Jaccard_Top3 <- mean(mat_tech_1st_US_Top3_rel_jacc)
+Relatedness$Association_Top3 <- mean(mat_tech_1st_US_Top3_rel_asso)
+Relatedness$Cosine_Top3<- mean(mat_tech_1st_US_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_1st_US_Top6 <- IPC_all_patents_1st_US[IPC_all_patents_1st_US$techn_field_nr == "4"| 
-                                                        IPC_all_patents_1st_US$techn_field_nr == "5"| 
-                                                        IPC_all_patents_1st_US$techn_field_nr == "11"|
-                                                        IPC_all_patents_1st_US$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_1st_US_Top7 <- IPC_all_patents_1st_US[IPC_all_patents_1st_US$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_US$techn_field_nr == "2"| 
-                                                        IPC_all_patents_1st_US$techn_field_nr == "9", ]
+                                                        IPC_all_patents_1st_US$techn_field_nr == "3"|
+                                                        IPC_all_patents_1st_US$techn_field_nr == "4"| 
+                                                        IPC_all_patents_1st_US$techn_field_nr == "13"| 
+                                                        IPC_all_patents_1st_US$techn_field_nr == "25"| 
+                                                        IPC_all_patents_1st_US$techn_field_nr == "34", ]
 
-mat_tech_1st_US_Top6 <- create_sparse_matrix(i = IPC_all_patents_1st_US_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_1st_US_Top6 %>% pull(techn_field_nr))
+mat_tech_1st_US_Top7 <- create_sparse_matrix(i = IPC_all_patents_1st_US_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_1st_US_Top7 %>% pull(techn_field_nr))
 
-mat_tech_1st_US_Top6 %<>% 
+mat_tech_1st_US_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_US_Top6_rel_jacc <- relatedness(mat_tech_1st_US_Top6, method = "Jaccard")
-mat_tech_1st_US_Top6_rel_asso <- relatedness(mat_tech_1st_US_Top6, method = "association")
-mat_tech_1st_US_Top6_rel_cosi <- relatedness(mat_tech_1st_US_Top6, method = "cosine")
+mat_tech_1st_US_Top7_rel_jacc <- relatedness(mat_tech_1st_US_Top7, method = "Jaccard")
+mat_tech_1st_US_Top7_rel_asso <- relatedness(mat_tech_1st_US_Top7, method = "association")
+mat_tech_1st_US_Top7_rel_cosi <- relatedness(mat_tech_1st_US_Top7, method = "cosine")
 
-Relatedness$Jaccard_Top6 <- mean(mat_tech_1st_US_Top6_rel_jacc)
-Relatedness$Association_Top6 <- mean(mat_tech_1st_US_Top6_rel_asso)
-Relatedness$Cosine_Top6<- mean(mat_tech_1st_US_Top6_rel_cosi)
+Relatedness$Jaccard_Top7 <- mean(mat_tech_1st_US_Top7_rel_jacc)
+Relatedness$Association_Top7 <- mean(mat_tech_1st_US_Top7_rel_asso)
+Relatedness$Cosine_Top7<- mean(mat_tech_1st_US_Top7_rel_cosi)
 
 #China:
 mat_tech_1st_CN <- create_sparse_matrix(i = IPC_all_patents_1st_CN %>% pull(appln_id),
@@ -598,55 +650,50 @@ Relatedness_CN$Jaccard_top4 <- mean(mat_tech_1st_CN_Top4_rel_jacc)
 Relatedness_CN$Association_top4 <- mean(mat_tech_1st_CN_Top4_rel_asso)
 Relatedness_CN$Cosine_top4<- mean(mat_tech_1st_CN_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_1st_CN_Top10 <- IPC_all_patents_1st_CN[IPC_all_patents_1st_CN$techn_field_nr == "6" | 
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "7"| 
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "10"| 
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "12"|
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_1st_CN_Top3 <- IPC_all_patents_1st_CN[IPC_all_patents_1st_CN$techn_field_nr == "4" | 
                                                          IPC_all_patents_1st_CN$techn_field_nr == "5"| 
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "11"|
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "3"| 
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "2"| 
-                                                         IPC_all_patents_1st_CN$techn_field_nr == "9", ]
+                                                         IPC_all_patents_1st_CN$techn_field_nr == "11", ]
 
-mat_tech_1st_CN_Top10 <- create_sparse_matrix(i = IPC_all_patents_1st_CN_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_1st_CN_Top10 %>% pull(techn_field_nr))
 
-mat_tech_1st_CN_Top10 %<>% 
+mat_tech_1st_CN_Top3 <- create_sparse_matrix(i = IPC_all_patents_1st_CN_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_1st_CN_Top3 %>% pull(techn_field_nr))
+
+mat_tech_1st_CN_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_CN_Top10_rel_jacc <- relatedness(mat_tech_1st_CN_Top10, method = "Jaccard")
-mat_tech_1st_CN_Top10_rel_asso <- relatedness(mat_tech_1st_CN_Top10, method = "association")
-mat_tech_1st_CN_Top10_rel_cosi <- relatedness(mat_tech_1st_CN_Top10, method = "cosine")
+mat_tech_1st_CN_Top3_rel_jacc <- relatedness(mat_tech_1st_CN_Top3, method = "Jaccard")
+mat_tech_1st_CN_Top3_rel_asso <- relatedness(mat_tech_1st_CN_Top3, method = "association")
+mat_tech_1st_CN_Top3_rel_cosi <- relatedness(mat_tech_1st_CN_Top3, method = "cosine")
 
-Relatedness_CN$Jaccard_Top10 <- mean(mat_tech_1st_CN_Top10_rel_jacc)
-Relatedness_CN$Association_Top10 <- mean(mat_tech_1st_CN_Top10_rel_asso)
-Relatedness_CN$Cosine_Top10<- mean(mat_tech_1st_CN_Top10_rel_cosi)
+Relatedness_CN$Jaccard_Top3 <- mean(mat_tech_1st_CN_Top3_rel_jacc)
+Relatedness_CN$Association_Top3 <- mean(mat_tech_1st_CN_Top3_rel_asso)
+Relatedness_CN$Cosine_Top3<- mean(mat_tech_1st_CN_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_1st_CN_Top6 <- IPC_all_patents_1st_CN[IPC_all_patents_1st_CN$techn_field_nr == "4"| 
-                                                        IPC_all_patents_1st_CN$techn_field_nr == "5"| 
-                                                        IPC_all_patents_1st_CN$techn_field_nr == "11"|
-                                                        IPC_all_patents_1st_CN$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_1st_CN_Top7 <- IPC_all_patents_1st_CN[IPC_all_patents_1st_CN$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_CN$techn_field_nr == "2"| 
-                                                        IPC_all_patents_1st_CN$techn_field_nr == "9", ]
+                                                        IPC_all_patents_1st_CN$techn_field_nr == "3"|
+                                                        IPC_all_patents_1st_CN$techn_field_nr == "4"| 
+                                                        IPC_all_patents_1st_CN$techn_field_nr == "13"| 
+                                                        IPC_all_patents_1st_CN$techn_field_nr == "25"| 
+                                                        IPC_all_patents_1st_CN$techn_field_nr == "34", ]
 
-mat_tech_1st_CN_Top6 <- create_sparse_matrix(i = IPC_all_patents_1st_CN_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_1st_CN_Top6 %>% pull(techn_field_nr))
+mat_tech_1st_CN_Top7 <- create_sparse_matrix(i = IPC_all_patents_1st_CN_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_1st_CN_Top7 %>% pull(techn_field_nr))
 
-mat_tech_1st_CN_Top6 %<>% 
+mat_tech_1st_CN_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_CN_Top6_rel_jacc <- relatedness(mat_tech_1st_CN_Top6, method = "Jaccard")
-mat_tech_1st_CN_Top6_rel_asso <- relatedness(mat_tech_1st_CN_Top6, method = "association")
-mat_tech_1st_CN_Top6_rel_cosi <- relatedness(mat_tech_1st_CN_Top6, method = "cosine")
+mat_tech_1st_CN_Top7_rel_jacc <- relatedness(mat_tech_1st_CN_Top7, method = "Jaccard")
+mat_tech_1st_CN_Top7_rel_asso <- relatedness(mat_tech_1st_CN_Top7, method = "association")
+mat_tech_1st_CN_Top7_rel_cosi <- relatedness(mat_tech_1st_CN_Top7, method = "cosine")
 
-Relatedness_CN$Jaccard_Top6 <- mean(mat_tech_1st_CN_Top6_rel_jacc)
-Relatedness_CN$Association_Top6 <- mean(mat_tech_1st_CN_Top6_rel_asso)
-Relatedness_CN$Cosine_Top6<- mean(mat_tech_1st_CN_Top6_rel_cosi)
+Relatedness_CN$Jaccard_Top7 <- mean(mat_tech_1st_CN_Top7_rel_jacc)
+Relatedness_CN$Association_Top7 <- mean(mat_tech_1st_CN_Top7_rel_asso)
+Relatedness_CN$Cosine_Top7<- mean(mat_tech_1st_CN_Top7_rel_cosi)
 
 
 #KR
@@ -689,55 +736,50 @@ Relatedness_KR$Jaccard_top4 <- mean(mat_tech_1st_KR_Top4_rel_jacc)
 Relatedness_KR$Association_top4 <- mean(mat_tech_1st_KR_Top4_rel_asso)
 Relatedness_KR$Cosine_top4<- mean(mat_tech_1st_KR_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_1st_KR_Top10 <- IPC_all_patents_1st_KR[IPC_all_patents_1st_KR$techn_field_nr == "6" | 
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "7"| 
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "10"| 
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "12"|
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_1st_KR_Top3 <- IPC_all_patents_1st_KR[IPC_all_patents_1st_KR$techn_field_nr == "4" | 
                                                          IPC_all_patents_1st_KR$techn_field_nr == "5"| 
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "11"|
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "3"| 
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "2"| 
-                                                         IPC_all_patents_1st_KR$techn_field_nr == "9", ]
+                                                         IPC_all_patents_1st_KR$techn_field_nr == "11", ]
 
-mat_tech_1st_KR_Top10 <- create_sparse_matrix(i = IPC_all_patents_1st_KR_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_1st_KR_Top10 %>% pull(techn_field_nr))
 
-mat_tech_1st_KR_Top10 %<>% 
+mat_tech_1st_KR_Top3 <- create_sparse_matrix(i = IPC_all_patents_1st_KR_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_1st_KR_Top3 %>% pull(techn_field_nr))
+
+mat_tech_1st_KR_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_KR_Top10_rel_jacc <- relatedness(mat_tech_1st_KR_Top10, method = "Jaccard")
-mat_tech_1st_KR_Top10_rel_asso <- relatedness(mat_tech_1st_KR_Top10, method = "association")
-mat_tech_1st_KR_Top10_rel_cosi <- relatedness(mat_tech_1st_KR_Top10, method = "cosine")
+mat_tech_1st_KR_Top3_rel_jacc <- relatedness(mat_tech_1st_KR_Top3, method = "Jaccard")
+mat_tech_1st_KR_Top3_rel_asso <- relatedness(mat_tech_1st_KR_Top3, method = "association")
+mat_tech_1st_KR_Top3_rel_cosi <- relatedness(mat_tech_1st_KR_Top3, method = "cosine")
 
-Relatedness_KR$Jaccard_Top10 <- mean(mat_tech_1st_KR_Top10_rel_jacc)
-Relatedness_KR$Association_Top10 <- mean(mat_tech_1st_KR_Top10_rel_asso)
-Relatedness_KR$Cosine_Top10<- mean(mat_tech_1st_KR_Top10_rel_cosi)
+Relatedness_KR$Jaccard_Top3 <- mean(mat_tech_1st_KR_Top3_rel_jacc)
+Relatedness_KR$Association_Top3 <- mean(mat_tech_1st_KR_Top3_rel_asso)
+Relatedness_KR$Cosine_Top3<- mean(mat_tech_1st_KR_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_1st_KR_Top6 <- IPC_all_patents_1st_KR[IPC_all_patents_1st_KR$techn_field_nr == "4"| 
-                                                        IPC_all_patents_1st_KR$techn_field_nr == "5"| 
-                                                        IPC_all_patents_1st_KR$techn_field_nr == "11"|
-                                                        IPC_all_patents_1st_KR$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_1st_KR_Top7 <- IPC_all_patents_1st_KR[IPC_all_patents_1st_KR$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_KR$techn_field_nr == "2"| 
-                                                        IPC_all_patents_1st_KR$techn_field_nr == "9", ]
+                                                        IPC_all_patents_1st_KR$techn_field_nr == "3"|
+                                                        IPC_all_patents_1st_KR$techn_field_nr == "4"| 
+                                                        IPC_all_patents_1st_KR$techn_field_nr == "13"| 
+                                                        IPC_all_patents_1st_KR$techn_field_nr == "25"| 
+                                                        IPC_all_patents_1st_KR$techn_field_nr == "34", ]
 
-mat_tech_1st_KR_Top6 <- create_sparse_matrix(i = IPC_all_patents_1st_KR_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_1st_KR_Top6 %>% pull(techn_field_nr))
+mat_tech_1st_KR_Top7 <- create_sparse_matrix(i = IPC_all_patents_1st_KR_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_1st_KR_Top7 %>% pull(techn_field_nr))
 
-mat_tech_1st_KR_Top6 %<>% 
+mat_tech_1st_KR_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_KR_Top6_rel_jacc <- relatedness(mat_tech_1st_KR_Top6, method = "Jaccard")
-mat_tech_1st_KR_Top6_rel_asso <- relatedness(mat_tech_1st_KR_Top6, method = "association")
-mat_tech_1st_KR_Top6_rel_cosi <- relatedness(mat_tech_1st_KR_Top6, method = "cosine")
+mat_tech_1st_KR_Top7_rel_jacc <- relatedness(mat_tech_1st_KR_Top7, method = "Jaccard")
+mat_tech_1st_KR_Top7_rel_asso <- relatedness(mat_tech_1st_KR_Top7, method = "association")
+mat_tech_1st_KR_Top7_rel_cosi <- relatedness(mat_tech_1st_KR_Top7, method = "cosine")
 
-Relatedness_KR$Jaccard_Top6 <- mean(mat_tech_1st_KR_Top6_rel_jacc)
-Relatedness_KR$Association_Top6 <- mean(mat_tech_1st_KR_Top6_rel_asso)
-Relatedness_KR$Cosine_Top6<- mean(mat_tech_1st_KR_Top6_rel_cosi)
+Relatedness_KR$Jaccard_Top7 <- mean(mat_tech_1st_KR_Top7_rel_jacc)
+Relatedness_KR$Association_Top7 <- mean(mat_tech_1st_KR_Top7_rel_asso)
+Relatedness_KR$Cosine_Top7<- mean(mat_tech_1st_KR_Top7_rel_cosi)
 
 #Japan
 mat_tech_1st_JP <- create_sparse_matrix(i = IPC_all_patents_1st_JP %>% pull(appln_id),
@@ -779,55 +821,49 @@ Relatedness_JP$Jaccard_top4 <- mean(mat_tech_1st_JP_Top4_rel_jacc)
 Relatedness_JP$Association_top4 <- mean(mat_tech_1st_JP_Top4_rel_asso)
 Relatedness_JP$Cosine_top4<- mean(mat_tech_1st_JP_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_1st_JP_Top10 <- IPC_all_patents_1st_JP[IPC_all_patents_1st_JP$techn_field_nr == "6" | 
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "7"| 
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "10"| 
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "12"|
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_1st_JP_Top3 <- IPC_all_patents_1st_JP[IPC_all_patents_1st_JP$techn_field_nr == "4" | 
                                                          IPC_all_patents_1st_JP$techn_field_nr == "5"| 
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "11"|
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "3"| 
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "2"| 
-                                                         IPC_all_patents_1st_JP$techn_field_nr == "9", ]
+                                                         IPC_all_patents_1st_JP$techn_field_nr == "11", ]
 
-mat_tech_1st_JP_Top10 <- create_sparse_matrix(i = IPC_all_patents_1st_JP_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_1st_JP_Top10 %>% pull(techn_field_nr))
+mat_tech_1st_JP_Top3 <- create_sparse_matrix(i = IPC_all_patents_1st_JP_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_1st_JP_Top3 %>% pull(techn_field_nr))
 
-mat_tech_1st_JP_Top10 %<>% 
+mat_tech_1st_JP_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_JP_Top10_rel_jacc <- relatedness(mat_tech_1st_JP_Top10, method = "Jaccard")
-mat_tech_1st_JP_Top10_rel_asso <- relatedness(mat_tech_1st_JP_Top10, method = "association")
-mat_tech_1st_JP_Top10_rel_cosi <- relatedness(mat_tech_1st_JP_Top10, method = "cosine")
+mat_tech_1st_JP_Top3_rel_jacc <- relatedness(mat_tech_1st_JP_Top3, method = "Jaccard")
+mat_tech_1st_JP_Top3_rel_asso <- relatedness(mat_tech_1st_JP_Top3, method = "association")
+mat_tech_1st_JP_Top3_rel_cosi <- relatedness(mat_tech_1st_JP_Top3, method = "cosine")
 
-Relatedness_JP$Jaccard_Top10 <- mean(mat_tech_1st_JP_Top10_rel_jacc)
-Relatedness_JP$Association_Top10 <- mean(mat_tech_1st_JP_Top10_rel_asso)
-Relatedness_JP$Cosine_Top10<- mean(mat_tech_1st_JP_Top10_rel_cosi)
+Relatedness_JP$Jaccard_Top3 <- mean(mat_tech_1st_JP_Top3_rel_jacc)
+Relatedness_JP$Association_Top3 <- mean(mat_tech_1st_JP_Top3_rel_asso)
+Relatedness_JP$Cosine_Top3<- mean(mat_tech_1st_JP_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_1st_JP_Top6 <- IPC_all_patents_1st_JP[IPC_all_patents_1st_JP$techn_field_nr == "4"| 
-                                                        IPC_all_patents_1st_JP$techn_field_nr == "5"| 
-                                                        IPC_all_patents_1st_JP$techn_field_nr == "11"|
-                                                        IPC_all_patents_1st_JP$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_1st_JP_Top7 <- IPC_all_patents_1st_JP[IPC_all_patents_1st_JP$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_JP$techn_field_nr == "2"| 
-                                                        IPC_all_patents_1st_JP$techn_field_nr == "9", ]
+                                                        IPC_all_patents_1st_JP$techn_field_nr == "3"|
+                                                        IPC_all_patents_1st_JP$techn_field_nr == "4"| 
+                                                        IPC_all_patents_1st_JP$techn_field_nr == "13"| 
+                                                        IPC_all_patents_1st_JP$techn_field_nr == "25"| 
+                                                        IPC_all_patents_1st_JP$techn_field_nr == "34", ]
 
-mat_tech_1st_JP_Top6 <- create_sparse_matrix(i = IPC_all_patents_1st_JP_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_1st_JP_Top6 %>% pull(techn_field_nr))
+mat_tech_1st_JP_Top7 <- create_sparse_matrix(i = IPC_all_patents_1st_JP_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_1st_JP_Top7 %>% pull(techn_field_nr))
 
-mat_tech_1st_JP_Top6 %<>% 
+mat_tech_1st_JP_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_JP_Top6_rel_jacc <- relatedness(mat_tech_1st_JP_Top6, method = "Jaccard")
-mat_tech_1st_JP_Top6_rel_asso <- relatedness(mat_tech_1st_JP_Top6, method = "association")
-mat_tech_1st_JP_Top6_rel_cosi <- relatedness(mat_tech_1st_JP_Top6, method = "cosine")
+mat_tech_1st_JP_Top7_rel_jacc <- relatedness(mat_tech_1st_JP_Top7, method = "Jaccard")
+mat_tech_1st_JP_Top7_rel_asso <- relatedness(mat_tech_1st_JP_Top7, method = "association")
+mat_tech_1st_JP_Top7_rel_cosi <- relatedness(mat_tech_1st_JP_Top7, method = "cosine")
 
-Relatedness_JP$Jaccard_Top6 <- mean(mat_tech_1st_JP_Top6_rel_jacc)
-Relatedness_JP$Association_Top6 <- mean(mat_tech_1st_JP_Top6_rel_asso)
-Relatedness_JP$Cosine_Top6<- mean(mat_tech_1st_JP_Top6_rel_cosi)
+Relatedness_JP$Jaccard_Top7 <- mean(mat_tech_1st_JP_Top7_rel_jacc)
+Relatedness_JP$Association_Top7 <- mean(mat_tech_1st_JP_Top7_rel_asso)
+Relatedness_JP$Cosine_Top7<- mean(mat_tech_1st_JP_Top7_rel_cosi)
 
 #AI
 mat_tech_1st_AI <- create_sparse_matrix(i = IPC_all_patents_1st_AI %>% pull(appln_id),
@@ -869,55 +905,49 @@ Relatedness_AI$Jaccard_top4 <- mean(mat_tech_1st_AI_Top4_rel_jacc)
 Relatedness_AI$Association_top4 <- mean(mat_tech_1st_AI_Top4_rel_asso)
 Relatedness_AI$Cosine_top4<- mean(mat_tech_1st_AI_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_1st_AI_Top10 <- IPC_all_patents_1st_AI[IPC_all_patents_1st_AI$techn_field_nr == "6" | 
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "7"| 
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "10"| 
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "12"|
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "4"| 
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "5"| 
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "11"|
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "3"| 
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "2"| 
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "9", ]
-
-mat_tech_1st_AI_Top10 <- create_sparse_matrix(i = IPC_all_patents_1st_AI_Top10 %>% pull(appln_id),
-                                             j = IPC_all_patents_1st_AI_Top10 %>% pull(techn_field_nr))
-
-mat_tech_1st_AI_Top10 %<>% 
-  crossprod() %>% 
-  as.matrix() 
-
-mat_tech_1st_AI_Top10_rel_jacc <- relatedness(mat_tech_1st_AI_Top10, method = "Jaccard")
-mat_tech_1st_AI_Top10_rel_asso <- relatedness(mat_tech_1st_AI_Top10, method = "association")
-mat_tech_1st_AI_Top10_rel_cosi <- relatedness(mat_tech_1st_AI_Top10, method = "cosine")
-
-Relatedness_AI$Jaccard_Top10 <- mean(mat_tech_1st_AI_Top10_rel_jacc)
-Relatedness_AI$Association_Top10 <- mean(mat_tech_1st_AI_Top10_rel_asso)
-Relatedness_AI$Cosine_Top10<- mean(mat_tech_1st_AI_Top10_rel_cosi)
-
-#and finally the top 6 non-AI areas:
-IPC_all_patents_1st_AI_Top6 <- IPC_all_patents_1st_AI[IPC_all_patents_1st_AI$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_1st_AI_Top3 <- IPC_all_patents_1st_AI[IPC_all_patents_1st_AI$techn_field_nr == "4" | 
                                                          IPC_all_patents_1st_AI$techn_field_nr == "5"| 
-                                                         IPC_all_patents_1st_AI$techn_field_nr == "11"|
-                                                         IPC_all_patents_1st_AI$techn_field_nr == "3"| 
-                                                         IPC_all_patents_1st_AI$techn_field_nr == "2"| 
-                                                         IPC_all_patents_1st_AI$techn_field_nr == "9", ]
+                                                         IPC_all_patents_1st_AI$techn_field_nr == "11", ]
 
-mat_tech_1st_AI_Top6 <- create_sparse_matrix(i = IPC_all_patents_1st_AI_Top6 %>% pull(appln_id),
-                                              j = IPC_all_patents_1st_AI_Top6 %>% pull(techn_field_nr))
+mat_tech_1st_AI_Top3 <- create_sparse_matrix(i = IPC_all_patents_1st_AI_Top3 %>% pull(appln_id),
+                                             j = IPC_all_patents_1st_AI_Top3 %>% pull(techn_field_nr))
 
-mat_tech_1st_AI_Top6 %<>% 
+mat_tech_1st_AI_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_1st_AI_Top6_rel_jacc <- relatedness(mat_tech_1st_AI_Top6, method = "Jaccard")
-mat_tech_1st_AI_Top6_rel_asso <- relatedness(mat_tech_1st_AI_Top6, method = "association")
-mat_tech_1st_AI_Top6_rel_cosi <- relatedness(mat_tech_1st_AI_Top6, method = "cosine")
+mat_tech_1st_AI_Top3_rel_jacc <- relatedness(mat_tech_1st_AI_Top3, method = "Jaccard")
+mat_tech_1st_AI_Top3_rel_asso <- relatedness(mat_tech_1st_AI_Top3, method = "association")
+mat_tech_1st_AI_Top3_rel_cosi <- relatedness(mat_tech_1st_AI_Top3, method = "cosine")
 
-Relatedness_AI$Jaccard_Top6 <- mean(mat_tech_1st_AI_Top6_rel_jacc)
-Relatedness_AI$Association_Top6 <- mean(mat_tech_1st_AI_Top6_rel_asso)
-Relatedness_AI$Cosine_Top6<- mean(mat_tech_1st_AI_Top6_rel_cosi)
+Relatedness_AI$Jaccard_Top3 <- mean(mat_tech_1st_AI_Top3_rel_jacc)
+Relatedness_AI$Association_Top3 <- mean(mat_tech_1st_AI_Top3_rel_asso)
+Relatedness_AI$Cosine_Top3<- mean(mat_tech_1st_AI_Top3_rel_cosi)
+
+#and finally the top 7 non-AI areas:
+IPC_all_patents_1st_AI_Top7 <- IPC_all_patents_1st_AI[IPC_all_patents_1st_AI$techn_field_nr == "1"| 
+                                                        IPC_all_patents_1st_AI$techn_field_nr == "2"| 
+                                                        IPC_all_patents_1st_AI$techn_field_nr == "3"|
+                                                        IPC_all_patents_1st_AI$techn_field_nr == "4"| 
+                                                        IPC_all_patents_1st_AI$techn_field_nr == "13"| 
+                                                        IPC_all_patents_1st_AI$techn_field_nr == "25"| 
+                                                        IPC_all_patents_1st_AI$techn_field_nr == "34", ]
+
+mat_tech_1st_AI_Top7 <- create_sparse_matrix(i = IPC_all_patents_1st_AI_Top7 %>% pull(appln_id),
+                                              j = IPC_all_patents_1st_AI_Top7 %>% pull(techn_field_nr))
+
+mat_tech_1st_AI_Top7 %<>% 
+  crossprod() %>% 
+  as.matrix() 
+
+mat_tech_1st_AI_Top7_rel_jacc <- relatedness(mat_tech_1st_AI_Top7, method = "Jaccard")
+mat_tech_1st_AI_Top7_rel_asso <- relatedness(mat_tech_1st_AI_Top7, method = "association")
+mat_tech_1st_AI_Top7_rel_cosi <- relatedness(mat_tech_1st_AI_Top7, method = "cosine")
+
+Relatedness_AI$Jaccard_Top7 <- mean(mat_tech_1st_AI_Top7_rel_jacc)
+Relatedness_AI$Association_Top7 <- mean(mat_tech_1st_AI_Top7_rel_asso)
+Relatedness_AI$Cosine_Top7<- mean(mat_tech_1st_AI_Top7_rel_cosi)
 
 #and we merge it all together:
 Relatedness_FirstPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
@@ -1031,6 +1061,65 @@ write.csv2(KnowledgeComp_2nd, file = "Data_calculations_IPC/KnowledgeComp_2nd.cs
 write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs.csv", row.names = TRUE)
 
+#For AI complexity and Indicators:
+IPC_all_patents_2nd_In <- IPC_all_patents_2nd[,c((-1), (-4), (-2))]
+mat_2nd <- as.data.frame(table(IPC_all_patents_2nd_In$ctry_code2, IPC_all_patents_2nd_In$techn_field_nr))
+mat_2nd <- get.matrix(mat_2nd)
+
+Indicators <- as.data.frame(Herfindahl(mat_2nd))
+names(Indicators) <- "Herfindahl"
+mat_2nd_RCAs <- location.quotient(mat_2nd, binary = T)
+Indicators$Herfindahl_RCA <- Herfindahl(mat_2nd_RCAs)
+Indicators$Entropy <- entropy(mat_2nd)
+Indicators$Entropy_RCA <- entropy(mat_2nd_RCAs)
+Indicators$Period <- "2nd"
+
+write.csv2(Indicators, file = "Data_calculations_IPC/Indicators_2nd_period_IPC_AI.csv", row.names = TRUE)
+KnowledgeComp_2nd <- as.data.frame(MORt(mat_2nd))
+KnowledgeComp_2nd$Step0 <- MORt(mat_2nd, steps = 0)
+KnowledgeComp_2nd$Step1 <- MORt(mat_2nd, steps = 1)
+KnowledgeComp_2nd$Step2 <- MORt(mat_2nd, steps = 2)
+
+KnowledgeComp_2nd$RCA <- MORt(mat_2nd_RCAs)
+KnowledgeComp_2nd$RCA_Step0 <- MORt(mat_2nd_RCAs, steps = 0)
+KnowledgeComp_2nd$RCA_Step1 <- MORt(mat_2nd_RCAs, steps = 1)
+KnowledgeComp_2nd$RCA_Step2 <- MORt(mat_2nd_RCAs, steps = 2)
+
+KnowledgeComp_PerCountry_2nd <- as.data.frame(mat_2nd*MORt(mat_2nd))
+KnowledgeComp_PerCountry_2nd$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_2nd_Step0 <- as.data.frame(mat_2nd*MORt(mat_2nd, steps = 0))
+KnowledgeComp_PerCountry_2nd_Step0$Step <- "Step0"
+
+KnowledgeComp_PerCountry_2nd_Step1 <- as.data.frame(mat_2nd*MORt(mat_2nd, steps = 1))
+KnowledgeComp_PerCountry_2nd_Step1$Step <- "Step1"
+
+KnowledgeComp_PerCountry_2nd_Step2 <- as.data.frame(mat_2nd*MORt(mat_2nd, steps = 2))
+KnowledgeComp_PerCountry_2nd_Step2$Step <- "Step2"
+
+#Considering RCAs:
+KnowledgeComp_PerCountry_2nd_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs))
+KnowledgeComp_PerCountry_2nd_RCA$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_2nd_Step0_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs, steps = 0))
+KnowledgeComp_PerCountry_2nd_Step0_RCA$Step <- "Step0"
+
+KnowledgeComp_PerCountry_2nd_Step1_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs, steps = 1))
+KnowledgeComp_PerCountry_2nd_Step1_RCA$Step <- "Step1"
+
+KnowledgeComp_PerCountry_2nd_Step2_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs, steps = 2))
+KnowledgeComp_PerCountry_2nd_Step2_RCA$Step <- "Step2"
+
+KnowledgeComp_PerCountry_2nd_All <- rbind(KnowledgeComp_PerCountry_2nd, KnowledgeComp_PerCountry_2nd_Step0,
+                                          KnowledgeComp_PerCountry_2nd_Step1, KnowledgeComp_PerCountry_2nd_Step2)
+
+KnowledgeComp_PerCountry_2nd_All_RCAs <- rbind(KnowledgeComp_PerCountry_2nd_RCA, KnowledgeComp_PerCountry_2nd_Step0_RCA,
+                                               KnowledgeComp_PerCountry_2nd_Step1_RCA, KnowledgeComp_PerCountry_2nd_Step2_RCA)
+
+write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_AI.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs_AI.csv", row.names = TRUE)
+
+
 #3.2.3. Calculate the relatedness -----
 #create the function we need:
 create_sparse_matrix <- function(i.input, j.input){
@@ -1086,55 +1175,49 @@ Relatedness$Jaccard_top4 <- mean(mat_tech_2nd_US_Top4_rel_jacc)
 Relatedness$Association_top4 <- mean(mat_tech_2nd_US_Top4_rel_asso)
 Relatedness$Cosine_top4<- mean(mat_tech_2nd_US_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_2nd_US_Top10 <- IPC_all_patents_2nd_US[IPC_all_patents_2nd_US$techn_field_nr == "6" | 
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "7"| 
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "10"| 
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "12"|
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_2nd_US_Top3 <- IPC_all_patents_2nd_US[IPC_all_patents_2nd_US$techn_field_nr == "4" | 
                                                          IPC_all_patents_2nd_US$techn_field_nr == "5"| 
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "11"|
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "3"| 
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "2"| 
-                                                         IPC_all_patents_2nd_US$techn_field_nr == "9", ]
+                                                         IPC_all_patents_2nd_US$techn_field_nr == "11", ]
 
-mat_tech_2nd_US_Top10 <- create_sparse_matrix(i = IPC_all_patents_2nd_US_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_2nd_US_Top10 %>% pull(techn_field_nr))
+mat_tech_2nd_US_Top3 <- create_sparse_matrix(i = IPC_all_patents_2nd_US_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_2nd_US_Top3 %>% pull(techn_field_nr))
 
-mat_tech_2nd_US_Top10 %<>% 
+mat_tech_2nd_US_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_US_Top10_rel_jacc <- relatedness(mat_tech_2nd_US_Top10, method = "Jaccard")
-mat_tech_2nd_US_Top10_rel_asso <- relatedness(mat_tech_2nd_US_Top10, method = "association")
-mat_tech_2nd_US_Top10_rel_cosi <- relatedness(mat_tech_2nd_US_Top10, method = "cosine")
+mat_tech_2nd_US_Top3_rel_jacc <- relatedness(mat_tech_2nd_US_Top3, method = "Jaccard")
+mat_tech_2nd_US_Top3_rel_asso <- relatedness(mat_tech_2nd_US_Top3, method = "association")
+mat_tech_2nd_US_Top3_rel_cosi <- relatedness(mat_tech_2nd_US_Top3, method = "cosine")
 
-Relatedness$Jaccard_Top10 <- mean(mat_tech_2nd_US_Top10_rel_jacc)
-Relatedness$Association_Top10 <- mean(mat_tech_2nd_US_Top10_rel_asso)
-Relatedness$Cosine_Top10<- mean(mat_tech_2nd_US_Top10_rel_cosi)
+Relatedness$Jaccard_Top3 <- mean(mat_tech_2nd_US_Top3_rel_jacc)
+Relatedness$Association_Top3 <- mean(mat_tech_2nd_US_Top3_rel_asso)
+Relatedness$Cosine_Top3<- mean(mat_tech_2nd_US_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_2nd_US_Top6 <- IPC_all_patents_2nd_US[IPC_all_patents_2nd_US$techn_field_nr == "4"| 
-                                                        IPC_all_patents_2nd_US$techn_field_nr == "5"| 
-                                                        IPC_all_patents_2nd_US$techn_field_nr == "11"|
-                                                        IPC_all_patents_2nd_US$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_2nd_US_Top7 <- IPC_all_patents_2nd_US[IPC_all_patents_2nd_US$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_US$techn_field_nr == "2"| 
-                                                        IPC_all_patents_2nd_US$techn_field_nr == "9", ]
+                                                        IPC_all_patents_2nd_US$techn_field_nr == "3"|
+                                                        IPC_all_patents_2nd_US$techn_field_nr == "4"| 
+                                                        IPC_all_patents_2nd_US$techn_field_nr == "13"| 
+                                                        IPC_all_patents_2nd_US$techn_field_nr == "25"| 
+                                                        IPC_all_patents_2nd_US$techn_field_nr == "34", ]
 
-mat_tech_2nd_US_Top6 <- create_sparse_matrix(i = IPC_all_patents_2nd_US_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_2nd_US_Top6 %>% pull(techn_field_nr))
+mat_tech_2nd_US_Top7 <- create_sparse_matrix(i = IPC_all_patents_2nd_US_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_2nd_US_Top7 %>% pull(techn_field_nr))
 
-mat_tech_2nd_US_Top6 %<>% 
+mat_tech_2nd_US_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_US_Top6_rel_jacc <- relatedness(mat_tech_2nd_US_Top6, method = "Jaccard")
-mat_tech_2nd_US_Top6_rel_asso <- relatedness(mat_tech_2nd_US_Top6, method = "association")
-mat_tech_2nd_US_Top6_rel_cosi <- relatedness(mat_tech_2nd_US_Top6, method = "cosine")
+mat_tech_2nd_US_Top7_rel_jacc <- relatedness(mat_tech_2nd_US_Top7, method = "Jaccard")
+mat_tech_2nd_US_Top7_rel_asso <- relatedness(mat_tech_2nd_US_Top7, method = "association")
+mat_tech_2nd_US_Top7_rel_cosi <- relatedness(mat_tech_2nd_US_Top7, method = "cosine")
 
-Relatedness$Jaccard_Top6 <- mean(mat_tech_2nd_US_Top6_rel_jacc)
-Relatedness$Association_Top6 <- mean(mat_tech_2nd_US_Top6_rel_asso)
-Relatedness$Cosine_Top6<- mean(mat_tech_2nd_US_Top6_rel_cosi)
+Relatedness$Jaccard_Top7 <- mean(mat_tech_2nd_US_Top7_rel_jacc)
+Relatedness$Association_Top7 <- mean(mat_tech_2nd_US_Top7_rel_asso)
+Relatedness$Cosine_Top7<- mean(mat_tech_2nd_US_Top7_rel_cosi)
 
 #China:
 mat_tech_2nd_CN <- create_sparse_matrix(i = IPC_all_patents_2nd_CN %>% pull(appln_id),
@@ -1176,55 +1259,49 @@ Relatedness_CN$Jaccard_top4 <- mean(mat_tech_2nd_CN_Top4_rel_jacc)
 Relatedness_CN$Association_top4 <- mean(mat_tech_2nd_CN_Top4_rel_asso)
 Relatedness_CN$Cosine_top4<- mean(mat_tech_2nd_CN_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_2nd_CN_Top10 <- IPC_all_patents_2nd_CN[IPC_all_patents_2nd_CN$techn_field_nr == "6" | 
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "7"| 
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "10"| 
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "12"|
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_2nd_CN_Top3 <- IPC_all_patents_2nd_CN[IPC_all_patents_2nd_CN$techn_field_nr == "4" | 
                                                          IPC_all_patents_2nd_CN$techn_field_nr == "5"| 
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "11"|
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "3"| 
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "2"| 
-                                                         IPC_all_patents_2nd_CN$techn_field_nr == "9", ]
+                                                         IPC_all_patents_2nd_CN$techn_field_nr == "11", ]
 
-mat_tech_2nd_CN_Top10 <- create_sparse_matrix(i = IPC_all_patents_2nd_CN_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_2nd_CN_Top10 %>% pull(techn_field_nr))
+mat_tech_2nd_CN_Top3 <- create_sparse_matrix(i = IPC_all_patents_2nd_CN_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_2nd_CN_Top3 %>% pull(techn_field_nr))
 
-mat_tech_2nd_CN_Top10 %<>% 
+mat_tech_2nd_CN_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_CN_Top10_rel_jacc <- relatedness(mat_tech_2nd_CN_Top10, method = "Jaccard")
-mat_tech_2nd_CN_Top10_rel_asso <- relatedness(mat_tech_2nd_CN_Top10, method = "association")
-mat_tech_2nd_CN_Top10_rel_cosi <- relatedness(mat_tech_2nd_CN_Top10, method = "cosine")
+mat_tech_2nd_CN_Top3_rel_jacc <- relatedness(mat_tech_2nd_CN_Top3, method = "Jaccard")
+mat_tech_2nd_CN_Top3_rel_asso <- relatedness(mat_tech_2nd_CN_Top3, method = "association")
+mat_tech_2nd_CN_Top3_rel_cosi <- relatedness(mat_tech_2nd_CN_Top3, method = "cosine")
 
-Relatedness_CN$Jaccard_Top10 <- mean(mat_tech_2nd_CN_Top10_rel_jacc)
-Relatedness_CN$Association_Top10 <- mean(mat_tech_2nd_CN_Top10_rel_asso)
-Relatedness_CN$Cosine_Top10<- mean(mat_tech_2nd_CN_Top10_rel_cosi)
+Relatedness_CN$Jaccard_Top3 <- mean(mat_tech_2nd_CN_Top3_rel_jacc)
+Relatedness_CN$Association_Top3 <- mean(mat_tech_2nd_CN_Top3_rel_asso)
+Relatedness_CN$Cosine_Top3<- mean(mat_tech_2nd_CN_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_2nd_CN_Top6 <- IPC_all_patents_2nd_CN[IPC_all_patents_2nd_CN$techn_field_nr == "4"| 
-                                                        IPC_all_patents_2nd_CN$techn_field_nr == "5"| 
-                                                        IPC_all_patents_2nd_CN$techn_field_nr == "11"|
-                                                        IPC_all_patents_2nd_CN$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_2nd_CN_Top7 <- IPC_all_patents_2nd_CN[IPC_all_patents_2nd_CN$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_CN$techn_field_nr == "2"| 
-                                                        IPC_all_patents_2nd_CN$techn_field_nr == "9", ]
+                                                        IPC_all_patents_2nd_CN$techn_field_nr == "3"|
+                                                        IPC_all_patents_2nd_CN$techn_field_nr == "4"| 
+                                                        IPC_all_patents_2nd_CN$techn_field_nr == "13"| 
+                                                        IPC_all_patents_2nd_CN$techn_field_nr == "25"| 
+                                                        IPC_all_patents_2nd_CN$techn_field_nr == "34", ]
 
-mat_tech_2nd_CN_Top6 <- create_sparse_matrix(i = IPC_all_patents_2nd_CN_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_2nd_CN_Top6 %>% pull(techn_field_nr))
+mat_tech_2nd_CN_Top7 <- create_sparse_matrix(i = IPC_all_patents_2nd_CN_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_2nd_CN_Top7 %>% pull(techn_field_nr))
 
-mat_tech_2nd_CN_Top6 %<>% 
+mat_tech_2nd_CN_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_CN_Top6_rel_jacc <- relatedness(mat_tech_2nd_CN_Top6, method = "Jaccard")
-mat_tech_2nd_CN_Top6_rel_asso <- relatedness(mat_tech_2nd_CN_Top6, method = "association")
-mat_tech_2nd_CN_Top6_rel_cosi <- relatedness(mat_tech_2nd_CN_Top6, method = "cosine")
+mat_tech_2nd_CN_Top7_rel_jacc <- relatedness(mat_tech_2nd_CN_Top7, method = "Jaccard")
+mat_tech_2nd_CN_Top7_rel_asso <- relatedness(mat_tech_2nd_CN_Top7, method = "association")
+mat_tech_2nd_CN_Top7_rel_cosi <- relatedness(mat_tech_2nd_CN_Top7, method = "cosine")
 
-Relatedness_CN$Jaccard_Top6 <- mean(mat_tech_2nd_CN_Top6_rel_jacc)
-Relatedness_CN$Association_Top6 <- mean(mat_tech_2nd_CN_Top6_rel_asso)
-Relatedness_CN$Cosine_Top6<- mean(mat_tech_2nd_CN_Top6_rel_cosi)
+Relatedness_CN$Jaccard_Top7 <- mean(mat_tech_2nd_CN_Top7_rel_jacc)
+Relatedness_CN$Association_Top7 <- mean(mat_tech_2nd_CN_Top7_rel_asso)
+Relatedness_CN$Cosine_Top7<- mean(mat_tech_2nd_CN_Top7_rel_cosi)
 
 
 #KR
@@ -1267,55 +1344,49 @@ Relatedness_KR$Jaccard_top4 <- mean(mat_tech_2nd_KR_Top4_rel_jacc)
 Relatedness_KR$Association_top4 <- mean(mat_tech_2nd_KR_Top4_rel_asso)
 Relatedness_KR$Cosine_top4<- mean(mat_tech_2nd_KR_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_2nd_KR_Top10 <- IPC_all_patents_2nd_KR[IPC_all_patents_2nd_KR$techn_field_nr == "6" | 
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "7"| 
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "10"| 
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "12"|
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_2nd_KR_Top3 <- IPC_all_patents_2nd_KR[IPC_all_patents_2nd_KR$techn_field_nr == "4" | 
                                                          IPC_all_patents_2nd_KR$techn_field_nr == "5"| 
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "11"|
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "3"| 
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "2"| 
-                                                         IPC_all_patents_2nd_KR$techn_field_nr == "9", ]
+                                                         IPC_all_patents_2nd_KR$techn_field_nr == "11", ]
 
-mat_tech_2nd_KR_Top10 <- create_sparse_matrix(i = IPC_all_patents_2nd_KR_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_2nd_KR_Top10 %>% pull(techn_field_nr))
+mat_tech_2nd_KR_Top3 <- create_sparse_matrix(i = IPC_all_patents_2nd_KR_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_2nd_KR_Top3 %>% pull(techn_field_nr))
 
-mat_tech_2nd_KR_Top10 %<>% 
+mat_tech_2nd_KR_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_KR_Top10_rel_jacc <- relatedness(mat_tech_2nd_KR_Top10, method = "Jaccard")
-mat_tech_2nd_KR_Top10_rel_asso <- relatedness(mat_tech_2nd_KR_Top10, method = "association")
-mat_tech_2nd_KR_Top10_rel_cosi <- relatedness(mat_tech_2nd_KR_Top10, method = "cosine")
+mat_tech_2nd_KR_Top3_rel_jacc <- relatedness(mat_tech_2nd_KR_Top3, method = "Jaccard")
+mat_tech_2nd_KR_Top3_rel_asso <- relatedness(mat_tech_2nd_KR_Top3, method = "association")
+mat_tech_2nd_KR_Top3_rel_cosi <- relatedness(mat_tech_2nd_KR_Top3, method = "cosine")
 
-Relatedness_KR$Jaccard_Top10 <- mean(mat_tech_2nd_KR_Top10_rel_jacc)
-Relatedness_KR$Association_Top10 <- mean(mat_tech_2nd_KR_Top10_rel_asso)
-Relatedness_KR$Cosine_Top10<- mean(mat_tech_2nd_KR_Top10_rel_cosi)
+Relatedness_KR$Jaccard_Top3 <- mean(mat_tech_2nd_KR_Top3_rel_jacc)
+Relatedness_KR$Association_Top3 <- mean(mat_tech_2nd_KR_Top3_rel_asso)
+Relatedness_KR$Cosine_Top3<- mean(mat_tech_2nd_KR_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_2nd_KR_Top6 <- IPC_all_patents_2nd_KR[IPC_all_patents_2nd_KR$techn_field_nr == "4"| 
-                                                        IPC_all_patents_2nd_KR$techn_field_nr == "5"| 
-                                                        IPC_all_patents_2nd_KR$techn_field_nr == "11"|
-                                                        IPC_all_patents_2nd_KR$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_2nd_KR_Top7 <- IPC_all_patents_2nd_KR[IPC_all_patents_2nd_KR$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_KR$techn_field_nr == "2"| 
-                                                        IPC_all_patents_2nd_KR$techn_field_nr == "9", ]
+                                                        IPC_all_patents_2nd_KR$techn_field_nr == "3"|
+                                                        IPC_all_patents_2nd_KR$techn_field_nr == "4"| 
+                                                        IPC_all_patents_2nd_KR$techn_field_nr == "13"| 
+                                                        IPC_all_patents_2nd_KR$techn_field_nr == "25"| 
+                                                        IPC_all_patents_2nd_KR$techn_field_nr == "34", ]
 
-mat_tech_2nd_KR_Top6 <- create_sparse_matrix(i = IPC_all_patents_2nd_KR_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_2nd_KR_Top6 %>% pull(techn_field_nr))
+mat_tech_2nd_KR_Top7 <- create_sparse_matrix(i = IPC_all_patents_2nd_KR_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_2nd_KR_Top7 %>% pull(techn_field_nr))
 
-mat_tech_2nd_KR_Top6 %<>% 
+mat_tech_2nd_KR_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_KR_Top6_rel_jacc <- relatedness(mat_tech_2nd_KR_Top6, method = "Jaccard")
-mat_tech_2nd_KR_Top6_rel_asso <- relatedness(mat_tech_2nd_KR_Top6, method = "association")
-mat_tech_2nd_KR_Top6_rel_cosi <- relatedness(mat_tech_2nd_KR_Top6, method = "cosine")
+mat_tech_2nd_KR_Top7_rel_jacc <- relatedness(mat_tech_2nd_KR_Top7, method = "Jaccard")
+mat_tech_2nd_KR_Top7_rel_asso <- relatedness(mat_tech_2nd_KR_Top7, method = "association")
+mat_tech_2nd_KR_Top7_rel_cosi <- relatedness(mat_tech_2nd_KR_Top7, method = "cosine")
 
-Relatedness_KR$Jaccard_Top6 <- mean(mat_tech_2nd_KR_Top6_rel_jacc)
-Relatedness_KR$Association_Top6 <- mean(mat_tech_2nd_KR_Top6_rel_asso)
-Relatedness_KR$Cosine_Top6<- mean(mat_tech_2nd_KR_Top6_rel_cosi)
+Relatedness_KR$Jaccard_Top7 <- mean(mat_tech_2nd_KR_Top7_rel_jacc)
+Relatedness_KR$Association_Top7 <- mean(mat_tech_2nd_KR_Top7_rel_asso)
+Relatedness_KR$Cosine_Top7<- mean(mat_tech_2nd_KR_Top7_rel_cosi)
 
 #Japan
 mat_tech_2nd_JP <- create_sparse_matrix(i = IPC_all_patents_2nd_JP %>% pull(appln_id),
@@ -1357,55 +1428,49 @@ Relatedness_JP$Jaccard_top4 <- mean(mat_tech_2nd_JP_Top4_rel_jacc)
 Relatedness_JP$Association_top4 <- mean(mat_tech_2nd_JP_Top4_rel_asso)
 Relatedness_JP$Cosine_top4<- mean(mat_tech_2nd_JP_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_2nd_JP_Top10 <- IPC_all_patents_2nd_JP[IPC_all_patents_2nd_JP$techn_field_nr == "6" | 
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "7"| 
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "10"| 
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "12"|
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_2nd_JP_Top3 <- IPC_all_patents_2nd_JP[IPC_all_patents_2nd_JP$techn_field_nr == "4" | 
                                                          IPC_all_patents_2nd_JP$techn_field_nr == "5"| 
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "11"|
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "3"| 
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "2"| 
-                                                         IPC_all_patents_2nd_JP$techn_field_nr == "9", ]
+                                                         IPC_all_patents_2nd_JP$techn_field_nr == "11", ]
 
-mat_tech_2nd_JP_Top10 <- create_sparse_matrix(i = IPC_all_patents_2nd_JP_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_2nd_JP_Top10 %>% pull(techn_field_nr))
+mat_tech_2nd_JP_Top3 <- create_sparse_matrix(i = IPC_all_patents_2nd_JP_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_2nd_JP_Top3 %>% pull(techn_field_nr))
 
-mat_tech_2nd_JP_Top10 %<>% 
+mat_tech_2nd_JP_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_JP_Top10_rel_jacc <- relatedness(mat_tech_2nd_JP_Top10, method = "Jaccard")
-mat_tech_2nd_JP_Top10_rel_asso <- relatedness(mat_tech_2nd_JP_Top10, method = "association")
-mat_tech_2nd_JP_Top10_rel_cosi <- relatedness(mat_tech_2nd_JP_Top10, method = "cosine")
+mat_tech_2nd_JP_Top3_rel_jacc <- relatedness(mat_tech_2nd_JP_Top3, method = "Jaccard")
+mat_tech_2nd_JP_Top3_rel_asso <- relatedness(mat_tech_2nd_JP_Top3, method = "association")
+mat_tech_2nd_JP_Top3_rel_cosi <- relatedness(mat_tech_2nd_JP_Top3, method = "cosine")
 
-Relatedness_JP$Jaccard_Top10 <- mean(mat_tech_2nd_JP_Top10_rel_jacc)
-Relatedness_JP$Association_Top10 <- mean(mat_tech_2nd_JP_Top10_rel_asso)
-Relatedness_JP$Cosine_Top10<- mean(mat_tech_2nd_JP_Top10_rel_cosi)
+Relatedness_JP$Jaccard_Top3 <- mean(mat_tech_2nd_JP_Top3_rel_jacc)
+Relatedness_JP$Association_Top3 <- mean(mat_tech_2nd_JP_Top3_rel_asso)
+Relatedness_JP$Cosine_Top3<- mean(mat_tech_2nd_JP_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_2nd_JP_Top6 <- IPC_all_patents_2nd_JP[IPC_all_patents_2nd_JP$techn_field_nr == "4"| 
-                                                        IPC_all_patents_2nd_JP$techn_field_nr == "5"| 
-                                                        IPC_all_patents_2nd_JP$techn_field_nr == "11"|
-                                                        IPC_all_patents_2nd_JP$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_2nd_JP_Top7 <- IPC_all_patents_2nd_JP[IPC_all_patents_2nd_JP$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_JP$techn_field_nr == "2"| 
-                                                        IPC_all_patents_2nd_JP$techn_field_nr == "9", ]
+                                                        IPC_all_patents_2nd_JP$techn_field_nr == "3"|
+                                                        IPC_all_patents_2nd_JP$techn_field_nr == "4"| 
+                                                        IPC_all_patents_2nd_JP$techn_field_nr == "13"| 
+                                                        IPC_all_patents_2nd_JP$techn_field_nr == "25"| 
+                                                        IPC_all_patents_2nd_JP$techn_field_nr == "34", ]
 
-mat_tech_2nd_JP_Top6 <- create_sparse_matrix(i = IPC_all_patents_2nd_JP_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_2nd_JP_Top6 %>% pull(techn_field_nr))
+mat_tech_2nd_JP_Top7 <- create_sparse_matrix(i = IPC_all_patents_2nd_JP_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_2nd_JP_Top7 %>% pull(techn_field_nr))
 
-mat_tech_2nd_JP_Top6 %<>% 
+mat_tech_2nd_JP_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_JP_Top6_rel_jacc <- relatedness(mat_tech_2nd_JP_Top6, method = "Jaccard")
-mat_tech_2nd_JP_Top6_rel_asso <- relatedness(mat_tech_2nd_JP_Top6, method = "association")
-mat_tech_2nd_JP_Top6_rel_cosi <- relatedness(mat_tech_2nd_JP_Top6, method = "cosine")
+mat_tech_2nd_JP_Top7_rel_jacc <- relatedness(mat_tech_2nd_JP_Top7, method = "Jaccard")
+mat_tech_2nd_JP_Top7_rel_asso <- relatedness(mat_tech_2nd_JP_Top7, method = "association")
+mat_tech_2nd_JP_Top7_rel_cosi <- relatedness(mat_tech_2nd_JP_Top7, method = "cosine")
 
-Relatedness_JP$Jaccard_Top6 <- mean(mat_tech_2nd_JP_Top6_rel_jacc)
-Relatedness_JP$Association_Top6 <- mean(mat_tech_2nd_JP_Top6_rel_asso)
-Relatedness_JP$Cosine_Top6<- mean(mat_tech_2nd_JP_Top6_rel_cosi)
+Relatedness_JP$Jaccard_Top7 <- mean(mat_tech_2nd_JP_Top7_rel_jacc)
+Relatedness_JP$Association_Top7 <- mean(mat_tech_2nd_JP_Top7_rel_asso)
+Relatedness_JP$Cosine_Top7<- mean(mat_tech_2nd_JP_Top7_rel_cosi)
 
 #AI
 mat_tech_2nd_AI <- create_sparse_matrix(i = IPC_all_patents_2nd_AI %>% pull(appln_id),
@@ -1447,61 +1512,55 @@ Relatedness_AI$Jaccard_top4 <- mean(mat_tech_2nd_AI_Top4_rel_jacc)
 Relatedness_AI$Association_top4 <- mean(mat_tech_2nd_AI_Top4_rel_asso)
 Relatedness_AI$Cosine_top4<- mean(mat_tech_2nd_AI_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_2nd_AI_Top10 <- IPC_all_patents_2nd_AI[IPC_all_patents_2nd_AI$techn_field_nr == "6" | 
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "7"| 
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "10"| 
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "12"|
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_2nd_AI_Top3 <- IPC_all_patents_2nd_AI[IPC_all_patents_2nd_AI$techn_field_nr == "4" | 
                                                          IPC_all_patents_2nd_AI$techn_field_nr == "5"| 
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "11"|
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "3"| 
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "2"| 
-                                                         IPC_all_patents_2nd_AI$techn_field_nr == "9", ]
+                                                         IPC_all_patents_2nd_AI$techn_field_nr == "11", ]
 
-mat_tech_2nd_AI_Top10 <- create_sparse_matrix(i = IPC_all_patents_2nd_AI_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_2nd_AI_Top10 %>% pull(techn_field_nr))
+mat_tech_2nd_AI_Top3 <- create_sparse_matrix(i = IPC_all_patents_2nd_AI_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_2nd_AI_Top3 %>% pull(techn_field_nr))
 
-mat_tech_2nd_AI_Top10 %<>% 
+mat_tech_2nd_AI_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_AI_Top10_rel_jacc <- relatedness(mat_tech_2nd_AI_Top10, method = "Jaccard")
-mat_tech_2nd_AI_Top10_rel_asso <- relatedness(mat_tech_2nd_AI_Top10, method = "association")
-mat_tech_2nd_AI_Top10_rel_cosi <- relatedness(mat_tech_2nd_AI_Top10, method = "cosine")
+mat_tech_2nd_AI_Top3_rel_jacc <- relatedness(mat_tech_2nd_AI_Top3, method = "Jaccard")
+mat_tech_2nd_AI_Top3_rel_asso <- relatedness(mat_tech_2nd_AI_Top3, method = "association")
+mat_tech_2nd_AI_Top3_rel_cosi <- relatedness(mat_tech_2nd_AI_Top3, method = "cosine")
 
-Relatedness_AI$Jaccard_Top10 <- mean(mat_tech_2nd_AI_Top10_rel_jacc)
-Relatedness_AI$Association_Top10 <- mean(mat_tech_2nd_AI_Top10_rel_asso)
-Relatedness_AI$Cosine_Top10<- mean(mat_tech_2nd_AI_Top10_rel_cosi)
+Relatedness_AI$Jaccard_Top3 <- mean(mat_tech_2nd_AI_Top3_rel_jacc)
+Relatedness_AI$Association_Top3 <- mean(mat_tech_2nd_AI_Top3_rel_asso)
+Relatedness_AI$Cosine_Top3<- mean(mat_tech_2nd_AI_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_2nd_AI_Top6 <- IPC_all_patents_2nd_AI[IPC_all_patents_2nd_AI$techn_field_nr == "4"| 
-                                                        IPC_all_patents_2nd_AI$techn_field_nr == "5"| 
-                                                        IPC_all_patents_2nd_AI$techn_field_nr == "11"|
-                                                        IPC_all_patents_2nd_AI$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_2nd_AI_Top7 <- IPC_all_patents_2nd_AI[IPC_all_patents_2nd_AI$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_AI$techn_field_nr == "2"| 
-                                                        IPC_all_patents_2nd_AI$techn_field_nr == "9", ]
+                                                        IPC_all_patents_2nd_AI$techn_field_nr == "3"|
+                                                        IPC_all_patents_2nd_AI$techn_field_nr == "4"| 
+                                                        IPC_all_patents_2nd_AI$techn_field_nr == "13"| 
+                                                        IPC_all_patents_2nd_AI$techn_field_nr == "25"| 
+                                                        IPC_all_patents_2nd_AI$techn_field_nr == "34", ]
 
-mat_tech_2nd_AI_Top6 <- create_sparse_matrix(i = IPC_all_patents_2nd_AI_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_2nd_AI_Top6 %>% pull(techn_field_nr))
+mat_tech_2nd_AI_Top7 <- create_sparse_matrix(i = IPC_all_patents_2nd_AI_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_2nd_AI_Top7 %>% pull(techn_field_nr))
 
-mat_tech_2nd_AI_Top6 %<>% 
+mat_tech_2nd_AI_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_2nd_AI_Top6_rel_jacc <- relatedness(mat_tech_2nd_AI_Top6, method = "Jaccard")
-mat_tech_2nd_AI_Top6_rel_asso <- relatedness(mat_tech_2nd_AI_Top6, method = "association")
-mat_tech_2nd_AI_Top6_rel_cosi <- relatedness(mat_tech_2nd_AI_Top6, method = "cosine")
+mat_tech_2nd_AI_Top7_rel_jacc <- relatedness(mat_tech_2nd_AI_Top7, method = "Jaccard")
+mat_tech_2nd_AI_Top7_rel_asso <- relatedness(mat_tech_2nd_AI_Top7, method = "association")
+mat_tech_2nd_AI_Top7_rel_cosi <- relatedness(mat_tech_2nd_AI_Top7, method = "cosine")
 
-Relatedness_AI$Jaccard_Top6 <- mean(mat_tech_2nd_AI_Top6_rel_jacc)
-Relatedness_AI$Association_Top6 <- mean(mat_tech_2nd_AI_Top6_rel_asso)
-Relatedness_AI$Cosine_Top6<- mean(mat_tech_2nd_AI_Top6_rel_cosi)
+Relatedness_AI$Jaccard_Top7 <- mean(mat_tech_2nd_AI_Top7_rel_jacc)
+Relatedness_AI$Association_Top7 <- mean(mat_tech_2nd_AI_Top7_rel_asso)
+Relatedness_AI$Cosine_Top7<- mean(mat_tech_2nd_AI_Top7_rel_cosi)
 
 #and we merge it all together:
-Relatedness_FirstPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
-Relatedness_FirstPeriod <- Relatedness_FirstPeriod[,c((1:3), (5:13), (4))]
+Relatedness_SecondPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
+Relatedness_SecondPeriod <- Relatedness_SecondPeriod[,c((1:3), (5:13), (4))]
 
-write.csv2(Relatedness_FirstPeriod, file = "Data_calculations_IPC/Relatedness_2nd_period_IPC.csv", row.names = TRUE)
+write.csv2(Relatedness_SecondPeriod, file = "Data_calculations_IPC/Relatedness_2nd_period_IPC.csv", row.names = TRUE)
 
 #3.3. Third period ----
 #Starting with an empty global environment:
@@ -1597,6 +1656,65 @@ write.csv2(KnowledgeComp_3rd, file = "Data_calculations_IPC/KnowledgeComp_3rd.cs
 write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs.csv", row.names = TRUE)
 
+#For AI complexity and Indicators:
+IPC_all_patents_3rd_In <- IPC_all_patents_3rd[,c((-1), (-4), (-2))]
+mat_3rd <- as.data.frame(table(IPC_all_patents_3rd_In$ctry_code2, IPC_all_patents_3rd_In$techn_field_nr))
+mat_3rd <- get.matrix(mat_3rd)
+
+Indicators <- as.data.frame(Herfindahl(mat_3rd))
+names(Indicators) <- "Herfindahl"
+mat_3rd_RCAs <- location.quotient(mat_3rd, binary = T)
+Indicators$Herfindahl_RCA <- Herfindahl(mat_3rd_RCAs)
+Indicators$Entropy <- entropy(mat_3rd)
+Indicators$Entropy_RCA <- entropy(mat_3rd_RCAs)
+Indicators$Period <- "3rd"
+
+write.csv2(Indicators, file = "Data_calculations_IPC/Indicators_3rd_period_IPC_AI.csv", row.names = TRUE)
+KnowledgeComp_3rd <- as.data.frame(MORt(mat_3rd))
+KnowledgeComp_3rd$Step0 <- MORt(mat_3rd, steps = 0)
+KnowledgeComp_3rd$Step1 <- MORt(mat_3rd, steps = 1)
+KnowledgeComp_3rd$Step2 <- MORt(mat_3rd, steps = 2)
+
+KnowledgeComp_3rd$RCA <- MORt(mat_3rd_RCAs)
+KnowledgeComp_3rd$RCA_Step0 <- MORt(mat_3rd_RCAs, steps = 0)
+KnowledgeComp_3rd$RCA_Step1 <- MORt(mat_3rd_RCAs, steps = 1)
+KnowledgeComp_3rd$RCA_Step2 <- MORt(mat_3rd_RCAs, steps = 2)
+
+KnowledgeComp_PerCountry_3rd <- as.data.frame(mat_3rd*MORt(mat_3rd))
+KnowledgeComp_PerCountry_3rd$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_3rd_Step0 <- as.data.frame(mat_3rd*MORt(mat_3rd, steps = 0))
+KnowledgeComp_PerCountry_3rd_Step0$Step <- "Step0"
+
+KnowledgeComp_PerCountry_3rd_Step1 <- as.data.frame(mat_3rd*MORt(mat_3rd, steps = 1))
+KnowledgeComp_PerCountry_3rd_Step1$Step <- "Step1"
+
+KnowledgeComp_PerCountry_3rd_Step2 <- as.data.frame(mat_3rd*MORt(mat_3rd, steps = 2))
+KnowledgeComp_PerCountry_3rd_Step2$Step <- "Step2"
+
+#Considering RCAs:
+KnowledgeComp_PerCountry_3rd_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs))
+KnowledgeComp_PerCountry_3rd_RCA$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_3rd_Step0_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs, steps = 0))
+KnowledgeComp_PerCountry_3rd_Step0_RCA$Step <- "Step0"
+
+KnowledgeComp_PerCountry_3rd_Step1_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs, steps = 1))
+KnowledgeComp_PerCountry_3rd_Step1_RCA$Step <- "Step1"
+
+KnowledgeComp_PerCountry_3rd_Step2_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs, steps = 2))
+KnowledgeComp_PerCountry_3rd_Step2_RCA$Step <- "Step2"
+
+KnowledgeComp_PerCountry_3rd_All <- rbind(KnowledgeComp_PerCountry_3rd, KnowledgeComp_PerCountry_3rd_Step0,
+                                          KnowledgeComp_PerCountry_3rd_Step1, KnowledgeComp_PerCountry_3rd_Step2)
+
+KnowledgeComp_PerCountry_3rd_All_RCAs <- rbind(KnowledgeComp_PerCountry_3rd_RCA, KnowledgeComp_PerCountry_3rd_Step0_RCA,
+                                               KnowledgeComp_PerCountry_3rd_Step1_RCA, KnowledgeComp_PerCountry_3rd_Step2_RCA)
+
+write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_AI.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs_AI.csv", row.names = TRUE)
+
+
 #3.2.3. Calculate the relatedness -----
 #create the function we need:
 create_sparse_matrix <- function(i.input, j.input){
@@ -1652,55 +1770,49 @@ Relatedness$Jaccard_top4 <- mean(mat_tech_3rd_US_Top4_rel_jacc)
 Relatedness$Association_top4 <- mean(mat_tech_3rd_US_Top4_rel_asso)
 Relatedness$Cosine_top4<- mean(mat_tech_3rd_US_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_3rd_US_Top10 <- IPC_all_patents_3rd_US[IPC_all_patents_3rd_US$techn_field_nr == "6" | 
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "7"| 
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "10"| 
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "12"|
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_3rd_US_Top3 <- IPC_all_patents_3rd_US[IPC_all_patents_3rd_US$techn_field_nr == "4" | 
                                                          IPC_all_patents_3rd_US$techn_field_nr == "5"| 
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "11"|
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "3"| 
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "2"| 
-                                                         IPC_all_patents_3rd_US$techn_field_nr == "9", ]
+                                                         IPC_all_patents_3rd_US$techn_field_nr == "11", ]
 
-mat_tech_3rd_US_Top10 <- create_sparse_matrix(i = IPC_all_patents_3rd_US_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_3rd_US_Top10 %>% pull(techn_field_nr))
+mat_tech_3rd_US_Top3 <- create_sparse_matrix(i = IPC_all_patents_3rd_US_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_3rd_US_Top3 %>% pull(techn_field_nr))
 
-mat_tech_3rd_US_Top10 %<>% 
+mat_tech_3rd_US_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_US_Top10_rel_jacc <- relatedness(mat_tech_3rd_US_Top10, method = "Jaccard")
-mat_tech_3rd_US_Top10_rel_asso <- relatedness(mat_tech_3rd_US_Top10, method = "association")
-mat_tech_3rd_US_Top10_rel_cosi <- relatedness(mat_tech_3rd_US_Top10, method = "cosine")
+mat_tech_3rd_US_Top3_rel_jacc <- relatedness(mat_tech_3rd_US_Top3, method = "Jaccard")
+mat_tech_3rd_US_Top3_rel_asso <- relatedness(mat_tech_3rd_US_Top3, method = "association")
+mat_tech_3rd_US_Top3_rel_cosi <- relatedness(mat_tech_3rd_US_Top3, method = "cosine")
 
-Relatedness$Jaccard_Top10 <- mean(mat_tech_3rd_US_Top10_rel_jacc)
-Relatedness$Association_Top10 <- mean(mat_tech_3rd_US_Top10_rel_asso)
-Relatedness$Cosine_Top10<- mean(mat_tech_3rd_US_Top10_rel_cosi)
+Relatedness$Jaccard_Top3 <- mean(mat_tech_3rd_US_Top3_rel_jacc)
+Relatedness$Association_Top3 <- mean(mat_tech_3rd_US_Top3_rel_asso)
+Relatedness$Cosine_Top3<- mean(mat_tech_3rd_US_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_3rd_US_Top6 <- IPC_all_patents_3rd_US[IPC_all_patents_3rd_US$techn_field_nr == "4"| 
-                                                        IPC_all_patents_3rd_US$techn_field_nr == "5"| 
-                                                        IPC_all_patents_3rd_US$techn_field_nr == "11"|
-                                                        IPC_all_patents_3rd_US$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_3rd_US_Top7 <- IPC_all_patents_3rd_US[IPC_all_patents_3rd_US$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_US$techn_field_nr == "2"| 
-                                                        IPC_all_patents_3rd_US$techn_field_nr == "9", ]
+                                                        IPC_all_patents_3rd_US$techn_field_nr == "3"|
+                                                        IPC_all_patents_3rd_US$techn_field_nr == "4"| 
+                                                        IPC_all_patents_3rd_US$techn_field_nr == "13"| 
+                                                        IPC_all_patents_3rd_US$techn_field_nr == "25"| 
+                                                        IPC_all_patents_3rd_US$techn_field_nr == "34", ]
 
-mat_tech_3rd_US_Top6 <- create_sparse_matrix(i = IPC_all_patents_3rd_US_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_3rd_US_Top6 %>% pull(techn_field_nr))
+mat_tech_3rd_US_Top7 <- create_sparse_matrix(i = IPC_all_patents_3rd_US_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_3rd_US_Top7 %>% pull(techn_field_nr))
 
-mat_tech_3rd_US_Top6 %<>% 
+mat_tech_3rd_US_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_US_Top6_rel_jacc <- relatedness(mat_tech_3rd_US_Top6, method = "Jaccard")
-mat_tech_3rd_US_Top6_rel_asso <- relatedness(mat_tech_3rd_US_Top6, method = "association")
-mat_tech_3rd_US_Top6_rel_cosi <- relatedness(mat_tech_3rd_US_Top6, method = "cosine")
+mat_tech_3rd_US_Top7_rel_jacc <- relatedness(mat_tech_3rd_US_Top7, method = "Jaccard")
+mat_tech_3rd_US_Top7_rel_asso <- relatedness(mat_tech_3rd_US_Top7, method = "association")
+mat_tech_3rd_US_Top7_rel_cosi <- relatedness(mat_tech_3rd_US_Top7, method = "cosine")
 
-Relatedness$Jaccard_Top6 <- mean(mat_tech_3rd_US_Top6_rel_jacc)
-Relatedness$Association_Top6 <- mean(mat_tech_3rd_US_Top6_rel_asso)
-Relatedness$Cosine_Top6<- mean(mat_tech_3rd_US_Top6_rel_cosi)
+Relatedness$Jaccard_Top7 <- mean(mat_tech_3rd_US_Top7_rel_jacc)
+Relatedness$Association_Top7 <- mean(mat_tech_3rd_US_Top7_rel_asso)
+Relatedness$Cosine_Top7<- mean(mat_tech_3rd_US_Top7_rel_cosi)
 
 #China:
 mat_tech_3rd_CN <- create_sparse_matrix(i = IPC_all_patents_3rd_CN %>% pull(appln_id),
@@ -1723,7 +1835,7 @@ Relatedness_CN$Period <- "3rd"
 
 #then select only the top 4 areas. But first, the global environment is already too full for the calculations.
 #Let's clean it:
-rm(IPC_all_patents_3rd, IPC_all_patents_3rd_US, IPC_all_patents_3rd_In_US)
+rm(IPC_all_patents_3rd, IPC_all_patents_3rd_US, IPC_all_patents_3rd_In)
 IPC_all_patents_3rd_CN_Top4 <- IPC_all_patents_3rd_CN[IPC_all_patents_3rd_CN$techn_field_nr == "6" | 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "7"| 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "10"| 
@@ -1744,60 +1856,55 @@ Relatedness_CN$Jaccard_top4 <- mean(mat_tech_3rd_CN_Top4_rel_jacc)
 Relatedness_CN$Association_top4 <- mean(mat_tech_3rd_CN_Top4_rel_asso)
 Relatedness_CN$Cosine_top4<- mean(mat_tech_3rd_CN_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_3rd_CN_Top10 <- IPC_all_patents_3rd_CN[IPC_all_patents_3rd_CN$techn_field_nr == "6" | 
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "7"| 
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "10"| 
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "12"|
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_3rd_CN_Top3 <- IPC_all_patents_3rd_CN[IPC_all_patents_3rd_CN$techn_field_nr == "4" | 
                                                          IPC_all_patents_3rd_CN$techn_field_nr == "5"| 
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "11"|
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "3"| 
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "2"| 
-                                                         IPC_all_patents_3rd_CN$techn_field_nr == "9", ]
+                                                         IPC_all_patents_3rd_CN$techn_field_nr == "11", ]
 
-mat_tech_3rd_CN_Top10 <- create_sparse_matrix(i = IPC_all_patents_3rd_CN_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_3rd_CN_Top10 %>% pull(techn_field_nr))
+mat_tech_3rd_CN_Top3 <- create_sparse_matrix(i = IPC_all_patents_3rd_CN_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_3rd_CN_Top3 %>% pull(techn_field_nr))
 
-mat_tech_3rd_CN_Top10 %<>% 
+mat_tech_3rd_CN_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_CN_Top10_rel_jacc <- relatedness(mat_tech_3rd_CN_Top10, method = "Jaccard")
-mat_tech_3rd_CN_Top10_rel_asso <- relatedness(mat_tech_3rd_CN_Top10, method = "association")
-mat_tech_3rd_CN_Top10_rel_cosi <- relatedness(mat_tech_3rd_CN_Top10, method = "cosine")
+mat_tech_3rd_CN_Top3_rel_jacc <- relatedness(mat_tech_3rd_CN_Top3, method = "Jaccard")
+mat_tech_3rd_CN_Top3_rel_asso <- relatedness(mat_tech_3rd_CN_Top3, method = "association")
+mat_tech_3rd_CN_Top3_rel_cosi <- relatedness(mat_tech_3rd_CN_Top3, method = "cosine")
 
-Relatedness_CN$Jaccard_Top10 <- mean(mat_tech_3rd_CN_Top10_rel_jacc)
-Relatedness_CN$Association_Top10 <- mean(mat_tech_3rd_CN_Top10_rel_asso)
-Relatedness_CN$Cosine_Top10<- mean(mat_tech_3rd_CN_Top10_rel_cosi)
+Relatedness_CN$Jaccard_Top3 <- mean(mat_tech_3rd_CN_Top3_rel_jacc)
+Relatedness_CN$Association_Top3 <- mean(mat_tech_3rd_CN_Top3_rel_asso)
+Relatedness_CN$Cosine_Top3<- mean(mat_tech_3rd_CN_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-rm(IPC_all_patents_3rd_CN_Top4, IPC_all_patents_3rd_CN_Top10, IPC_all_patents_3rd_US_Top10, 
-   IPC_all_patents_3rd_US_Top6, IPC_all_patents_3rd_US_Top4)
+#and finally the top 7 non-AI areas:
+rm(IPC_all_patents_3rd_CN_Top4, IPC_all_patents_3rd_CN_Top3, IPC_all_patents_3rd_US_Top3, 
+   IPC_all_patents_3rd_US_Top7, IPC_all_patents_3rd_US_Top4)
 
-IPC_all_patents_3rd_CN_Top6 <- IPC_all_patents_3rd_CN[IPC_all_patents_3rd_CN$techn_field_nr == "4"| 
-                                                        IPC_all_patents_3rd_CN$techn_field_nr == "5"| 
-                                                        IPC_all_patents_3rd_CN$techn_field_nr == "11"|
-                                                        IPC_all_patents_3rd_CN$techn_field_nr == "3"| 
+IPC_all_patents_3rd_CN_Top7 <- IPC_all_patents_3rd_CN[IPC_all_patents_3rd_CN$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "2"| 
-                                                        IPC_all_patents_3rd_CN$techn_field_nr == "9", ]
+                                                        IPC_all_patents_3rd_CN$techn_field_nr == "3"|
+                                                        IPC_all_patents_3rd_CN$techn_field_nr == "4"| 
+                                                        IPC_all_patents_3rd_CN$techn_field_nr == "13"| 
+                                                        IPC_all_patents_3rd_CN$techn_field_nr == "25"| 
+                                                        IPC_all_patents_3rd_CN$techn_field_nr == "34", ]
 
-mat_tech_3rd_CN_Top6 <- create_sparse_matrix(i = IPC_all_patents_3rd_CN_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_3rd_CN_Top6 %>% pull(techn_field_nr))
+mat_tech_3rd_CN_Top7 <- create_sparse_matrix(i = IPC_all_patents_3rd_CN_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_3rd_CN_Top7 %>% pull(techn_field_nr))
 
-mat_tech_3rd_CN_Top6 %<>% 
+mat_tech_3rd_CN_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_CN_Top6_rel_jacc <- relatedness(mat_tech_3rd_CN_Top6, method = "Jaccard")
-mat_tech_3rd_CN_Top6_rel_asso <- relatedness(mat_tech_3rd_CN_Top6, method = "association")
-mat_tech_3rd_CN_Top6_rel_cosi <- relatedness(mat_tech_3rd_CN_Top6, method = "cosine")
+mat_tech_3rd_CN_Top7_rel_jacc <- relatedness(mat_tech_3rd_CN_Top7, method = "Jaccard")
+mat_tech_3rd_CN_Top7_rel_asso <- relatedness(mat_tech_3rd_CN_Top7, method = "association")
+mat_tech_3rd_CN_Top7_rel_cosi <- relatedness(mat_tech_3rd_CN_Top7, method = "cosine")
 
-Relatedness_CN$Jaccard_Top6 <- mean(mat_tech_3rd_CN_Top6_rel_jacc)
-Relatedness_CN$Association_Top6 <- mean(mat_tech_3rd_CN_Top6_rel_asso)
-Relatedness_CN$Cosine_Top6<- mean(mat_tech_3rd_CN_Top6_rel_cosi)
+Relatedness_CN$Jaccard_Top7 <- mean(mat_tech_3rd_CN_Top7_rel_jacc)
+Relatedness_CN$Association_Top7 <- mean(mat_tech_3rd_CN_Top7_rel_asso)
+Relatedness_CN$Cosine_Top7<- mean(mat_tech_3rd_CN_Top7_rel_cosi)
 
 #KR
+rm(IPC_all_patents_3rd_CN)
 mat_tech_3rd_KR <- create_sparse_matrix(i = IPC_all_patents_3rd_KR %>% pull(appln_id),
                                         j = IPC_all_patents_3rd_KR %>% pull(techn_field_nr))
 
@@ -1837,55 +1944,49 @@ Relatedness_KR$Jaccard_top4 <- mean(mat_tech_3rd_KR_Top4_rel_jacc)
 Relatedness_KR$Association_top4 <- mean(mat_tech_3rd_KR_Top4_rel_asso)
 Relatedness_KR$Cosine_top4<- mean(mat_tech_3rd_KR_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_3rd_KR_Top10 <- IPC_all_patents_3rd_KR[IPC_all_patents_3rd_KR$techn_field_nr == "6" | 
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "7"| 
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "10"| 
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "12"|
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_3rd_KR_Top3 <- IPC_all_patents_3rd_KR[IPC_all_patents_3rd_KR$techn_field_nr == "4" | 
                                                          IPC_all_patents_3rd_KR$techn_field_nr == "5"| 
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "11"|
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "3"| 
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "2"| 
-                                                         IPC_all_patents_3rd_KR$techn_field_nr == "9", ]
+                                                         IPC_all_patents_3rd_KR$techn_field_nr == "11", ]
 
-mat_tech_3rd_KR_Top10 <- create_sparse_matrix(i = IPC_all_patents_3rd_KR_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_3rd_KR_Top10 %>% pull(techn_field_nr))
+mat_tech_3rd_KR_Top3 <- create_sparse_matrix(i = IPC_all_patents_3rd_KR_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_3rd_KR_Top3 %>% pull(techn_field_nr))
 
-mat_tech_3rd_KR_Top10 %<>% 
+mat_tech_3rd_KR_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_KR_Top10_rel_jacc <- relatedness(mat_tech_3rd_KR_Top10, method = "Jaccard")
-mat_tech_3rd_KR_Top10_rel_asso <- relatedness(mat_tech_3rd_KR_Top10, method = "association")
-mat_tech_3rd_KR_Top10_rel_cosi <- relatedness(mat_tech_3rd_KR_Top10, method = "cosine")
+mat_tech_3rd_KR_Top3_rel_jacc <- relatedness(mat_tech_3rd_KR_Top3, method = "Jaccard")
+mat_tech_3rd_KR_Top3_rel_asso <- relatedness(mat_tech_3rd_KR_Top3, method = "association")
+mat_tech_3rd_KR_Top3_rel_cosi <- relatedness(mat_tech_3rd_KR_Top3, method = "cosine")
 
-Relatedness_KR$Jaccard_Top10 <- mean(mat_tech_3rd_KR_Top10_rel_jacc)
-Relatedness_KR$Association_Top10 <- mean(mat_tech_3rd_KR_Top10_rel_asso)
-Relatedness_KR$Cosine_Top10<- mean(mat_tech_3rd_KR_Top10_rel_cosi)
+Relatedness_KR$Jaccard_Top3 <- mean(mat_tech_3rd_KR_Top3_rel_jacc)
+Relatedness_KR$Association_Top3 <- mean(mat_tech_3rd_KR_Top3_rel_asso)
+Relatedness_KR$Cosine_Top3<- mean(mat_tech_3rd_KR_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_3rd_KR_Top6 <- IPC_all_patents_3rd_KR[IPC_all_patents_3rd_KR$techn_field_nr == "4"| 
-                                                        IPC_all_patents_3rd_KR$techn_field_nr == "5"| 
-                                                        IPC_all_patents_3rd_KR$techn_field_nr == "11"|
-                                                        IPC_all_patents_3rd_KR$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_3rd_KR_Top7 <- IPC_all_patents_3rd_KR[IPC_all_patents_3rd_KR$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_KR$techn_field_nr == "2"| 
-                                                        IPC_all_patents_3rd_KR$techn_field_nr == "9", ]
+                                                        IPC_all_patents_3rd_KR$techn_field_nr == "3"|
+                                                        IPC_all_patents_3rd_KR$techn_field_nr == "4"| 
+                                                        IPC_all_patents_3rd_KR$techn_field_nr == "13"| 
+                                                        IPC_all_patents_3rd_KR$techn_field_nr == "25"| 
+                                                        IPC_all_patents_3rd_KR$techn_field_nr == "34", ]
 
-mat_tech_3rd_KR_Top6 <- create_sparse_matrix(i = IPC_all_patents_3rd_KR_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_3rd_KR_Top6 %>% pull(techn_field_nr))
+mat_tech_3rd_KR_Top7 <- create_sparse_matrix(i = IPC_all_patents_3rd_KR_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_3rd_KR_Top7 %>% pull(techn_field_nr))
 
-mat_tech_3rd_KR_Top6 %<>% 
+mat_tech_3rd_KR_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_KR_Top6_rel_jacc <- relatedness(mat_tech_3rd_KR_Top6, method = "Jaccard")
-mat_tech_3rd_KR_Top6_rel_asso <- relatedness(mat_tech_3rd_KR_Top6, method = "association")
-mat_tech_3rd_KR_Top6_rel_cosi <- relatedness(mat_tech_3rd_KR_Top6, method = "cosine")
+mat_tech_3rd_KR_Top7_rel_jacc <- relatedness(mat_tech_3rd_KR_Top7, method = "Jaccard")
+mat_tech_3rd_KR_Top7_rel_asso <- relatedness(mat_tech_3rd_KR_Top7, method = "association")
+mat_tech_3rd_KR_Top7_rel_cosi <- relatedness(mat_tech_3rd_KR_Top7, method = "cosine")
 
-Relatedness_KR$Jaccard_Top6 <- mean(mat_tech_3rd_KR_Top6_rel_jacc)
-Relatedness_KR$Association_Top6 <- mean(mat_tech_3rd_KR_Top6_rel_asso)
-Relatedness_KR$Cosine_Top6<- mean(mat_tech_3rd_KR_Top6_rel_cosi)
+Relatedness_KR$Jaccard_Top7 <- mean(mat_tech_3rd_KR_Top7_rel_jacc)
+Relatedness_KR$Association_Top7 <- mean(mat_tech_3rd_KR_Top7_rel_asso)
+Relatedness_KR$Cosine_Top7<- mean(mat_tech_3rd_KR_Top7_rel_cosi)
 
 #Japan
 mat_tech_3rd_JP <- create_sparse_matrix(i = IPC_all_patents_3rd_JP %>% pull(appln_id),
@@ -1927,55 +2028,49 @@ Relatedness_JP$Jaccard_top4 <- mean(mat_tech_3rd_JP_Top4_rel_jacc)
 Relatedness_JP$Association_top4 <- mean(mat_tech_3rd_JP_Top4_rel_asso)
 Relatedness_JP$Cosine_top4<- mean(mat_tech_3rd_JP_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_3rd_JP_Top10 <- IPC_all_patents_3rd_JP[IPC_all_patents_3rd_JP$techn_field_nr == "6" | 
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "7"| 
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "10"| 
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "12"|
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_3rd_JP_Top3 <- IPC_all_patents_3rd_JP[IPC_all_patents_3rd_JP$techn_field_nr == "4" | 
                                                          IPC_all_patents_3rd_JP$techn_field_nr == "5"| 
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "11"|
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "3"| 
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "2"| 
-                                                         IPC_all_patents_3rd_JP$techn_field_nr == "9", ]
+                                                         IPC_all_patents_3rd_JP$techn_field_nr == "11", ]
 
-mat_tech_3rd_JP_Top10 <- create_sparse_matrix(i = IPC_all_patents_3rd_JP_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_3rd_JP_Top10 %>% pull(techn_field_nr))
+mat_tech_3rd_JP_Top3 <- create_sparse_matrix(i = IPC_all_patents_3rd_JP_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_3rd_JP_Top3 %>% pull(techn_field_nr))
 
-mat_tech_3rd_JP_Top10 %<>% 
+mat_tech_3rd_JP_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_JP_Top10_rel_jacc <- relatedness(mat_tech_3rd_JP_Top10, method = "Jaccard")
-mat_tech_3rd_JP_Top10_rel_asso <- relatedness(mat_tech_3rd_JP_Top10, method = "association")
-mat_tech_3rd_JP_Top10_rel_cosi <- relatedness(mat_tech_3rd_JP_Top10, method = "cosine")
+mat_tech_3rd_JP_Top3_rel_jacc <- relatedness(mat_tech_3rd_JP_Top3, method = "Jaccard")
+mat_tech_3rd_JP_Top3_rel_asso <- relatedness(mat_tech_3rd_JP_Top3, method = "association")
+mat_tech_3rd_JP_Top3_rel_cosi <- relatedness(mat_tech_3rd_JP_Top3, method = "cosine")
 
-Relatedness_JP$Jaccard_Top10 <- mean(mat_tech_3rd_JP_Top10_rel_jacc)
-Relatedness_JP$Association_Top10 <- mean(mat_tech_3rd_JP_Top10_rel_asso)
-Relatedness_JP$Cosine_Top10<- mean(mat_tech_3rd_JP_Top10_rel_cosi)
+Relatedness_JP$Jaccard_Top3 <- mean(mat_tech_3rd_JP_Top3_rel_jacc)
+Relatedness_JP$Association_Top3 <- mean(mat_tech_3rd_JP_Top3_rel_asso)
+Relatedness_JP$Cosine_Top3<- mean(mat_tech_3rd_JP_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_3rd_JP_Top6 <- IPC_all_patents_3rd_JP[IPC_all_patents_3rd_JP$techn_field_nr == "4"| 
-                                                        IPC_all_patents_3rd_JP$techn_field_nr == "5"| 
-                                                        IPC_all_patents_3rd_JP$techn_field_nr == "11"|
-                                                        IPC_all_patents_3rd_JP$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_3rd_JP_Top7 <- IPC_all_patents_3rd_JP[IPC_all_patents_3rd_JP$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_JP$techn_field_nr == "2"| 
-                                                        IPC_all_patents_3rd_JP$techn_field_nr == "9", ]
+                                                        IPC_all_patents_3rd_JP$techn_field_nr == "3"|
+                                                        IPC_all_patents_3rd_JP$techn_field_nr == "4"| 
+                                                        IPC_all_patents_3rd_JP$techn_field_nr == "13"| 
+                                                        IPC_all_patents_3rd_JP$techn_field_nr == "25"| 
+                                                        IPC_all_patents_3rd_JP$techn_field_nr == "34", ]
 
-mat_tech_3rd_JP_Top6 <- create_sparse_matrix(i = IPC_all_patents_3rd_JP_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_3rd_JP_Top6 %>% pull(techn_field_nr))
+mat_tech_3rd_JP_Top7 <- create_sparse_matrix(i = IPC_all_patents_3rd_JP_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_3rd_JP_Top7 %>% pull(techn_field_nr))
 
-mat_tech_3rd_JP_Top6 %<>% 
+mat_tech_3rd_JP_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_JP_Top6_rel_jacc <- relatedness(mat_tech_3rd_JP_Top6, method = "Jaccard")
-mat_tech_3rd_JP_Top6_rel_asso <- relatedness(mat_tech_3rd_JP_Top6, method = "association")
-mat_tech_3rd_JP_Top6_rel_cosi <- relatedness(mat_tech_3rd_JP_Top6, method = "cosine")
+mat_tech_3rd_JP_Top7_rel_jacc <- relatedness(mat_tech_3rd_JP_Top7, method = "Jaccard")
+mat_tech_3rd_JP_Top7_rel_asso <- relatedness(mat_tech_3rd_JP_Top7, method = "association")
+mat_tech_3rd_JP_Top7_rel_cosi <- relatedness(mat_tech_3rd_JP_Top7, method = "cosine")
 
-Relatedness_JP$Jaccard_Top6 <- mean(mat_tech_3rd_JP_Top6_rel_jacc)
-Relatedness_JP$Association_Top6 <- mean(mat_tech_3rd_JP_Top6_rel_asso)
-Relatedness_JP$Cosine_Top6<- mean(mat_tech_3rd_JP_Top6_rel_cosi)
+Relatedness_JP$Jaccard_Top7 <- mean(mat_tech_3rd_JP_Top7_rel_jacc)
+Relatedness_JP$Association_Top7 <- mean(mat_tech_3rd_JP_Top7_rel_asso)
+Relatedness_JP$Cosine_Top7<- mean(mat_tech_3rd_JP_Top7_rel_cosi)
 
 #AI
 mat_tech_3rd_AI <- create_sparse_matrix(i = IPC_all_patents_3rd_AI %>% pull(appln_id),
@@ -2017,58 +2112,52 @@ Relatedness_AI$Jaccard_top4 <- mean(mat_tech_3rd_AI_Top4_rel_jacc)
 Relatedness_AI$Association_top4 <- mean(mat_tech_3rd_AI_Top4_rel_asso)
 Relatedness_AI$Cosine_top4<- mean(mat_tech_3rd_AI_Top4_rel_cosi)
 
-#then select only the top 10 areas:
-IPC_all_patents_3rd_AI_Top10 <- IPC_all_patents_3rd_AI[IPC_all_patents_3rd_AI$techn_field_nr == "6" | 
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "7"| 
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "10"| 
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "12"|
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "4"| 
+#then select only the top 3 areas:
+IPC_all_patents_3rd_AI_Top3 <- IPC_all_patents_3rd_AI[IPC_all_patents_3rd_AI$techn_field_nr == "4" | 
                                                          IPC_all_patents_3rd_AI$techn_field_nr == "5"| 
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "11"|
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "3"| 
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "2"| 
-                                                         IPC_all_patents_3rd_AI$techn_field_nr == "9", ]
+                                                         IPC_all_patents_3rd_AI$techn_field_nr == "11", ]
 
-mat_tech_3rd_AI_Top10 <- create_sparse_matrix(i = IPC_all_patents_3rd_AI_Top10 %>% pull(appln_id),
-                                              j = IPC_all_patents_3rd_AI_Top10 %>% pull(techn_field_nr))
+mat_tech_3rd_AI_Top3 <- create_sparse_matrix(i = IPC_all_patents_3rd_AI_Top3 %>% pull(appln_id),
+                                              j = IPC_all_patents_3rd_AI_Top3 %>% pull(techn_field_nr))
 
-mat_tech_3rd_AI_Top10 %<>% 
+mat_tech_3rd_AI_Top3 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_AI_Top10_rel_jacc <- relatedness(mat_tech_3rd_AI_Top10, method = "Jaccard")
-mat_tech_3rd_AI_Top10_rel_asso <- relatedness(mat_tech_3rd_AI_Top10, method = "association")
-mat_tech_3rd_AI_Top10_rel_cosi <- relatedness(mat_tech_3rd_AI_Top10, method = "cosine")
+mat_tech_3rd_AI_Top3_rel_jacc <- relatedness(mat_tech_3rd_AI_Top3, method = "Jaccard")
+mat_tech_3rd_AI_Top3_rel_asso <- relatedness(mat_tech_3rd_AI_Top3, method = "association")
+mat_tech_3rd_AI_Top3_rel_cosi <- relatedness(mat_tech_3rd_AI_Top3, method = "cosine")
 
-Relatedness_AI$Jaccard_Top10 <- mean(mat_tech_3rd_AI_Top10_rel_jacc)
-Relatedness_AI$Association_Top10 <- mean(mat_tech_3rd_AI_Top10_rel_asso)
-Relatedness_AI$Cosine_Top10<- mean(mat_tech_3rd_AI_Top10_rel_cosi)
+Relatedness_AI$Jaccard_Top3 <- mean(mat_tech_3rd_AI_Top3_rel_jacc)
+Relatedness_AI$Association_Top3 <- mean(mat_tech_3rd_AI_Top3_rel_asso)
+Relatedness_AI$Cosine_Top3<- mean(mat_tech_3rd_AI_Top3_rel_cosi)
 
-#and finally the top 6 non-AI areas:
-IPC_all_patents_3rd_AI_Top6 <- IPC_all_patents_3rd_AI[IPC_all_patents_3rd_AI$techn_field_nr == "4"| 
-                                                        IPC_all_patents_3rd_AI$techn_field_nr == "5"| 
-                                                        IPC_all_patents_3rd_AI$techn_field_nr == "11"|
-                                                        IPC_all_patents_3rd_AI$techn_field_nr == "3"| 
+#and finally the top 7 non-AI areas:
+IPC_all_patents_3rd_AI_Top7 <- IPC_all_patents_3rd_AI[IPC_all_patents_3rd_AI$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_AI$techn_field_nr == "2"| 
-                                                        IPC_all_patents_3rd_AI$techn_field_nr == "9", ]
+                                                        IPC_all_patents_3rd_AI$techn_field_nr == "3"|
+                                                        IPC_all_patents_3rd_AI$techn_field_nr == "4"| 
+                                                        IPC_all_patents_3rd_AI$techn_field_nr == "13"| 
+                                                        IPC_all_patents_3rd_AI$techn_field_nr == "25"| 
+                                                        IPC_all_patents_3rd_AI$techn_field_nr == "34", ]
 
-mat_tech_3rd_AI_Top6 <- create_sparse_matrix(i = IPC_all_patents_3rd_AI_Top6 %>% pull(appln_id),
-                                             j = IPC_all_patents_3rd_AI_Top6 %>% pull(techn_field_nr))
+mat_tech_3rd_AI_Top7 <- create_sparse_matrix(i = IPC_all_patents_3rd_AI_Top7 %>% pull(appln_id),
+                                             j = IPC_all_patents_3rd_AI_Top7 %>% pull(techn_field_nr))
 
-mat_tech_3rd_AI_Top6 %<>% 
+mat_tech_3rd_AI_Top7 %<>% 
   crossprod() %>% 
   as.matrix() 
 
-mat_tech_3rd_AI_Top6_rel_jacc <- relatedness(mat_tech_3rd_AI_Top6, method = "Jaccard")
-mat_tech_3rd_AI_Top6_rel_asso <- relatedness(mat_tech_3rd_AI_Top6, method = "association")
-mat_tech_3rd_AI_Top6_rel_cosi <- relatedness(mat_tech_3rd_AI_Top6, method = "cosine")
+mat_tech_3rd_AI_Top7_rel_jacc <- relatedness(mat_tech_3rd_AI_Top7, method = "Jaccard")
+mat_tech_3rd_AI_Top7_rel_asso <- relatedness(mat_tech_3rd_AI_Top7, method = "association")
+mat_tech_3rd_AI_Top7_rel_cosi <- relatedness(mat_tech_3rd_AI_Top7, method = "cosine")
 
-Relatedness_AI$Jaccard_Top6 <- mean(mat_tech_3rd_AI_Top6_rel_jacc)
-Relatedness_AI$Association_Top6 <- mean(mat_tech_3rd_AI_Top6_rel_asso)
-Relatedness_AI$Cosine_Top6<- mean(mat_tech_3rd_AI_Top6_rel_cosi)
+Relatedness_AI$Jaccard_Top7 <- mean(mat_tech_3rd_AI_Top7_rel_jacc)
+Relatedness_AI$Association_Top7 <- mean(mat_tech_3rd_AI_Top7_rel_asso)
+Relatedness_AI$Cosine_Top7<- mean(mat_tech_3rd_AI_Top7_rel_cosi)
 
 #and we merge it all together:
-Relatedness_FirstPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
-Relatedness_FirstPeriod <- Relatedness_FirstPeriod[,c((1:3), (5:13), (4))]
+Relatedness_ThirdPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Relatedness_JP, Relatedness_AI)
+Relatedness_ThirdPeriod <- Relatedness_ThirdPeriod[,c((1:3), (5:13), (4))]
 
-write.csv2(Relatedness_FirstPeriod, file = "Data_calculations_IPC/Relatedness_3rd_period_IPC.csv", row.names = TRUE)
+write.csv2(Relatedness_ThirdPeriod, file = "Data_calculations_IPC/Relatedness_3rd_period_IPC.csv", row.names = TRUE)
