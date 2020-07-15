@@ -1,6 +1,6 @@
 library(tidyverse) # Collection of all the good stuff like dplyr, ggplot2 ect.
 library(magrittr) # For extra-piping operators (eg. %<>%)
-
+library(tidygraph) # For tidy-style graph manipulation
 library(ggraph) # For ggplot2 style graph plotting
 
 library(EconGeo) # Economic Geography functions
@@ -116,6 +116,64 @@ KnowledgeComp_PerCountry_1st_All_RCAs <- rbind(KnowledgeComp_PerCountry_1st_RCA,
 write.csv2(KnowledgeComp_1st, file = "Data_calculations_Nace/KnowledgeComp_1st.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_1st_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_1st_All_RCAs.csv", row.names = TRUE)
+
+#For AI complexity and Indicators:
+Nace_all_patents_1st_In <- Nace_all_patents_1st[,c((-1), (-4), (-2))]
+mat_1st <- as.data.frame(table(Nace_all_patents_1st_In$ctry_code2, Nace_all_patents_1st_In$nace2_code))
+mat_1st <- get.matrix(mat_1st)
+
+Indicators <- as.data.frame(Herfindahl(mat_1st))
+names(Indicators) <- "Herfindahl"
+mat_1st_RCAs <- location.quotient(mat_1st, binary = T)
+Indicators$Herfindahl_RCA <- Herfindahl(mat_1st_RCAs)
+Indicators$Entropy <- entropy(mat_1st)
+Indicators$Entropy_RCA <- entropy(mat_1st_RCAs)
+Indicators$Period <- "1st"
+
+write.csv2(Indicators, file = "Data_calculations_Nace/Indicators_1st_period_Nace_AI.csv", row.names = TRUE)
+KnowledgeComp_1st <- as.data.frame(MORt(mat_1st))
+KnowledgeComp_1st$Step0 <- MORt(mat_1st, steps = 0)
+KnowledgeComp_1st$Step1 <- MORt(mat_1st, steps = 1)
+KnowledgeComp_1st$Step2 <- MORt(mat_1st, steps = 2)
+
+KnowledgeComp_1st$RCA <- MORt(mat_1st_RCAs)
+KnowledgeComp_1st$RCA_Step0 <- MORt(mat_1st_RCAs, steps = 0)
+KnowledgeComp_1st$RCA_Step1 <- MORt(mat_1st_RCAs, steps = 1)
+KnowledgeComp_1st$RCA_Step2 <- MORt(mat_1st_RCAs, steps = 2)
+
+KnowledgeComp_PerCountry_1st <- as.data.frame(mat_1st*MORt(mat_1st))
+KnowledgeComp_PerCountry_1st$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_1st_Step0 <- as.data.frame(mat_1st*MORt(mat_1st, steps = 0))
+KnowledgeComp_PerCountry_1st_Step0$Step <- "Step0"
+
+KnowledgeComp_PerCountry_1st_Step1 <- as.data.frame(mat_1st*MORt(mat_1st, steps = 1))
+KnowledgeComp_PerCountry_1st_Step1$Step <- "Step1"
+
+KnowledgeComp_PerCountry_1st_Step2 <- as.data.frame(mat_1st*MORt(mat_1st, steps = 2))
+KnowledgeComp_PerCountry_1st_Step2$Step <- "Step2"
+
+#Considering RCAs:
+KnowledgeComp_PerCountry_1st_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs))
+KnowledgeComp_PerCountry_1st_RCA$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_1st_Step0_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs, steps = 0))
+KnowledgeComp_PerCountry_1st_Step0_RCA$Step <- "Step0"
+
+KnowledgeComp_PerCountry_1st_Step1_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs, steps = 1))
+KnowledgeComp_PerCountry_1st_Step1_RCA$Step <- "Step1"
+
+KnowledgeComp_PerCountry_1st_Step2_RCA <- as.data.frame(mat_1st_RCAs*MORt(mat_1st_RCAs, steps = 2))
+KnowledgeComp_PerCountry_1st_Step2_RCA$Step <- "Step2"
+
+KnowledgeComp_PerCountry_1st_All <- rbind(KnowledgeComp_PerCountry_1st, KnowledgeComp_PerCountry_1st_Step0,
+                                          KnowledgeComp_PerCountry_1st_Step1, KnowledgeComp_PerCountry_1st_Step2)
+
+KnowledgeComp_PerCountry_1st_All_RCAs <- rbind(KnowledgeComp_PerCountry_1st_RCA, KnowledgeComp_PerCountry_1st_Step0_RCA,
+                                               KnowledgeComp_PerCountry_1st_Step1_RCA, KnowledgeComp_PerCountry_1st_Step2_RCA)
+
+write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_1st_All_AI.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_1st_All_RCAs_AI.csv", row.names = TRUE)
 
 #1.1.3. Calculate the relatedness -----
 #create the function we need:
@@ -790,6 +848,64 @@ write.csv2(KnowledgeComp_2nd, file = "Data_calculations_Nace/KnowledgeComp_2nd.c
 write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_2nd_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_2nd_All_RCAs.csv", row.names = TRUE)
 
+#For AI complexity and Indicators:
+Nace_all_patents_2nd_In <- Nace_all_patents_2nd[,c((-1), (-4), (-2))]
+mat_2nd <- as.data.frame(table(Nace_all_patents_2nd_In$ctry_code2, Nace_all_patents_2nd_In$nace2_code))
+mat_2nd <- get.matrix(mat_2nd)
+
+Indicators <- as.data.frame(Herfindahl(mat_2nd))
+names(Indicators) <- "Herfindahl"
+mat_2nd_RCAs <- location.quotient(mat_2nd, binary = T)
+Indicators$Herfindahl_RCA <- Herfindahl(mat_2nd_RCAs)
+Indicators$Entropy <- entropy(mat_2nd)
+Indicators$Entropy_RCA <- entropy(mat_2nd_RCAs)
+Indicators$Period <- "2nd"
+
+write.csv2(Indicators, file = "Data_calculations_Nace/Indicators_2nd_period_Nace_AI.csv", row.names = TRUE)
+KnowledgeComp_2nd <- as.data.frame(MORt(mat_2nd))
+KnowledgeComp_2nd$Step0 <- MORt(mat_2nd, steps = 0)
+KnowledgeComp_2nd$Step1 <- MORt(mat_2nd, steps = 1)
+KnowledgeComp_2nd$Step2 <- MORt(mat_2nd, steps = 2)
+
+KnowledgeComp_2nd$RCA <- MORt(mat_2nd_RCAs)
+KnowledgeComp_2nd$RCA_Step0 <- MORt(mat_2nd_RCAs, steps = 0)
+KnowledgeComp_2nd$RCA_Step1 <- MORt(mat_2nd_RCAs, steps = 1)
+KnowledgeComp_2nd$RCA_Step2 <- MORt(mat_2nd_RCAs, steps = 2)
+
+KnowledgeComp_PerCountry_2nd <- as.data.frame(mat_2nd*MORt(mat_2nd))
+KnowledgeComp_PerCountry_2nd$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_2nd_Step0 <- as.data.frame(mat_2nd*MORt(mat_2nd, steps = 0))
+KnowledgeComp_PerCountry_2nd_Step0$Step <- "Step0"
+
+KnowledgeComp_PerCountry_2nd_Step1 <- as.data.frame(mat_2nd*MORt(mat_2nd, steps = 1))
+KnowledgeComp_PerCountry_2nd_Step1$Step <- "Step1"
+
+KnowledgeComp_PerCountry_2nd_Step2 <- as.data.frame(mat_2nd*MORt(mat_2nd, steps = 2))
+KnowledgeComp_PerCountry_2nd_Step2$Step <- "Step2"
+
+#Considering RCAs:
+KnowledgeComp_PerCountry_2nd_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs))
+KnowledgeComp_PerCountry_2nd_RCA$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_2nd_Step0_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs, steps = 0))
+KnowledgeComp_PerCountry_2nd_Step0_RCA$Step <- "Step0"
+
+KnowledgeComp_PerCountry_2nd_Step1_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs, steps = 1))
+KnowledgeComp_PerCountry_2nd_Step1_RCA$Step <- "Step1"
+
+KnowledgeComp_PerCountry_2nd_Step2_RCA <- as.data.frame(mat_2nd_RCAs*MORt(mat_2nd_RCAs, steps = 2))
+KnowledgeComp_PerCountry_2nd_Step2_RCA$Step <- "Step2"
+
+KnowledgeComp_PerCountry_2nd_All <- rbind(KnowledgeComp_PerCountry_2nd, KnowledgeComp_PerCountry_2nd_Step0,
+                                          KnowledgeComp_PerCountry_2nd_Step1, KnowledgeComp_PerCountry_2nd_Step2)
+
+KnowledgeComp_PerCountry_2nd_All_RCAs <- rbind(KnowledgeComp_PerCountry_2nd_RCA, KnowledgeComp_PerCountry_2nd_Step0_RCA,
+                                               KnowledgeComp_PerCountry_2nd_Step1_RCA, KnowledgeComp_PerCountry_2nd_Step2_RCA)
+
+write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_2nd_All_AI.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_2nd_All_RCAs_AI.csv", row.names = TRUE)
+
 #1.2.3. Calculate the relatedness -----
 #create the function we need:
 create_sparse_matrix <- function(i.input, j.input){
@@ -1449,6 +1565,64 @@ KnowledgeComp_PerCountry_3rd_All_RCAs <- rbind(KnowledgeComp_PerCountry_3rd_RCA,
 write.csv2(KnowledgeComp_3rd, file = "Data_calculations_Nace/KnowledgeComp_3rd.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_3rd_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_3rd_All_RCAs.csv", row.names = TRUE)
+
+#For AI complexity and Indicators:
+Nace_all_patents_3rd_In <- Nace_all_patents_3rd[,c((-1), (-4), (-2))]
+mat_3rd <- as.data.frame(table(Nace_all_patents_3rd_In$ctry_code2, Nace_all_patents_3rd_In$nace2_code))
+mat_3rd <- get.matrix(mat_3rd)
+
+Indicators <- as.data.frame(Herfindahl(mat_3rd))
+names(Indicators) <- "Herfindahl"
+mat_3rd_RCAs <- location.quotient(mat_3rd, binary = T)
+Indicators$Herfindahl_RCA <- Herfindahl(mat_3rd_RCAs)
+Indicators$Entropy <- entropy(mat_3rd)
+Indicators$Entropy_RCA <- entropy(mat_3rd_RCAs)
+Indicators$Period <- "3rd"
+
+write.csv2(Indicators, file = "Data_calculations_Nace/Indicators_3rd_period_Nace_AI.csv", row.names = TRUE)
+KnowledgeComp_3rd <- as.data.frame(MORt(mat_3rd))
+KnowledgeComp_3rd$Step0 <- MORt(mat_3rd, steps = 0)
+KnowledgeComp_3rd$Step1 <- MORt(mat_3rd, steps = 1)
+KnowledgeComp_3rd$Step2 <- MORt(mat_3rd, steps = 2)
+
+KnowledgeComp_3rd$RCA <- MORt(mat_3rd_RCAs)
+KnowledgeComp_3rd$RCA_Step0 <- MORt(mat_3rd_RCAs, steps = 0)
+KnowledgeComp_3rd$RCA_Step1 <- MORt(mat_3rd_RCAs, steps = 1)
+KnowledgeComp_3rd$RCA_Step2 <- MORt(mat_3rd_RCAs, steps = 2)
+
+KnowledgeComp_PerCountry_3rd <- as.data.frame(mat_3rd*MORt(mat_3rd))
+KnowledgeComp_PerCountry_3rd$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_3rd_Step0 <- as.data.frame(mat_3rd*MORt(mat_3rd, steps = 0))
+KnowledgeComp_PerCountry_3rd_Step0$Step <- "Step0"
+
+KnowledgeComp_PerCountry_3rd_Step1 <- as.data.frame(mat_3rd*MORt(mat_3rd, steps = 1))
+KnowledgeComp_PerCountry_3rd_Step1$Step <- "Step1"
+
+KnowledgeComp_PerCountry_3rd_Step2 <- as.data.frame(mat_3rd*MORt(mat_3rd, steps = 2))
+KnowledgeComp_PerCountry_3rd_Step2$Step <- "Step2"
+
+#Considering RCAs:
+KnowledgeComp_PerCountry_3rd_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs))
+KnowledgeComp_PerCountry_3rd_RCA$Step <- "NoStep"
+
+KnowledgeComp_PerCountry_3rd_Step0_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs, steps = 0))
+KnowledgeComp_PerCountry_3rd_Step0_RCA$Step <- "Step0"
+
+KnowledgeComp_PerCountry_3rd_Step1_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs, steps = 1))
+KnowledgeComp_PerCountry_3rd_Step1_RCA$Step <- "Step1"
+
+KnowledgeComp_PerCountry_3rd_Step2_RCA <- as.data.frame(mat_3rd_RCAs*MORt(mat_3rd_RCAs, steps = 2))
+KnowledgeComp_PerCountry_3rd_Step2_RCA$Step <- "Step2"
+
+KnowledgeComp_PerCountry_3rd_All <- rbind(KnowledgeComp_PerCountry_3rd, KnowledgeComp_PerCountry_3rd_Step0,
+                                          KnowledgeComp_PerCountry_3rd_Step1, KnowledgeComp_PerCountry_3rd_Step2)
+
+KnowledgeComp_PerCountry_3rd_All_RCAs <- rbind(KnowledgeComp_PerCountry_3rd_RCA, KnowledgeComp_PerCountry_3rd_Step0_RCA,
+                                               KnowledgeComp_PerCountry_3rd_Step1_RCA, KnowledgeComp_PerCountry_3rd_Step2_RCA)
+
+write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_3rd_All_AI.csv", row.names = TRUE)
+write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations_Nace/KnowledgeComp_PerCountry_3rd_All_RCAs_AI.csv", row.names = TRUE)
 
 #1.2.3. Calculate the relatedness -----
 #create the function we need:

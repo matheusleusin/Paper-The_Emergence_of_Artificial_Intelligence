@@ -4,7 +4,7 @@ library(magrittr) # For extra-piping operators (eg. %<>%)
 # Network specific
 #library(tidygraph) # For tidy-style graph manipulation
 library(ggraph) # For ggplot2 style graph plotting
-
+library(tidygraph) # For tidy-style graph manipulation
 library(EconGeo) # Economic Geography functions
 
 library(data.table) #for reading the big files using fread and for replacing countries names (by AI_pat for example)
@@ -2161,3 +2161,443 @@ Relatedness_ThirdPeriod <- rbind(Relatedness, Relatedness_CN, Relatedness_KR, Re
 Relatedness_ThirdPeriod <- Relatedness_ThirdPeriod[,c((1:3), (5:13), (4))]
 
 write.csv2(Relatedness_ThirdPeriod, file = "Data_calculations_IPC/Relatedness_3rd_period_IPC.csv", row.names = TRUE)
+
+#4. Visualization -----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+#4.1.First period ----
+reg_tech1_countries <- read.csv("Data_IPC/reg_tech_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+#4.1.1. First Period Countries ----
+mat_reg_tech1_countries <- reg_tech1_countries %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech1_countries) <- mat_reg_tech1_countries %>% pull(ctry_code)
+
+mat_reg_tech1_countries %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1_countries <- mat_reg_tech1_countries %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###4.1.2. First Period AI----
+reg_tech1_AI <- read.csv("Data_IPC/reg_techAI_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+mat_reg_tech1_AI <- reg_tech1_AI %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech1_AI) <- mat_reg_tech1_AI %>% pull(ctry_code)
+
+mat_reg_tech1_AI %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1_AI <- mat_reg_tech1_AI %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+IPC_names <- read.csv("Data_IPC/ipc_technology.csv", sep = ";", header = TRUE)%>%
+  select(field_nr, sector, field_name) %>%
+  distinct(field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = field_nr) %>%
+  arrange(techn_field_nr)
+IPC_names <- IPC_names[,(-1)]
+#select countries
+US_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "US",]
+CN_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "CN",]
+KR_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "KR",]
+JP_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "JP",]
+AI_first_period <- reg_RCA1_AI[,2:3][reg_RCA1_AI$ctry_code == "AI_pat",]
+
+First_period <- merge(merge(merge(merge(merge(
+  IPC_names,US_first_period), CN_first_period, by = "techn_field_nr"), KR_first_period, by = "techn_field_nr"), 
+  JP_first_period, by = "techn_field_nr"), AI_first_period, by = "techn_field_nr")
+names(First_period) = c("techn_field_nr", "sector", "field_name", "RCA_US", "RCA_CN","RCA_KR","RCA_JP", "RCA_AI")
+KnwComp_Country_1st_RCA <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs.csv", sep = ";", header = T, dec=",")
+KnwComp_Country_1st_RCA <- as.data.frame(t(KnwComp_Country_1st_RCA))
+KnwComp_Country_1st_RCA <- KnwComp_Country_1st_RCA %>%
+    row_to_names(row_number = 1)
+KnwComp_Country_1st_RCA<- KnwComp_Country_1st_RCA[(-36),]
+KnwComp_Country_1st_RCA$techn_field_nr <- First_period$techn_field_nr
+First_period$US_Com <- KnwComp_Country_1st_RCA$US3
+First_period$CN_Com <- KnwComp_Country_1st_RCA$CN3
+First_period$KR_Com <- KnwComp_Country_1st_RCA$KR3
+First_period$JP_Com <- KnwComp_Country_1st_RCA$JP3
+i <- c(9:12)
+First_period[ , i] <- apply(First_period[ , i], 2,            # Specify own function within apply
+                    function(x) as.integer(as.character(x)))
+
+#remove files we don't need:
+rm(AI_first_period, CN_first_period, JP_first_period, KR_first_period, KnwComp_Country_1st_RCA,
+   mat_reg_tech1_AI, mat_reg_tech1_countries, reg_RCA1_AI, reg_RCA1_countries, reg_tech1_AI, reg_tech1_countries,
+   US_first_period, i)
+#Now we plot:
+FigUS_1st <- ggplot(First_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  #scale_color_brewer(palette="Paired") + theme_classic() + 
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  #scale_color_brewer(palette="Accent") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-0.5, 2)+
+  xlim(-0.1, 0.3)
+ 
+FigCN_1st <-ggplot(First_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 2)+
+  xlim(-0.1, 0.3)
+
+FigKR_1st <-ggplot(First_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 2)+
+  xlim(-0.1, 0.3)
+
+FigJP_1st <-ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 2)+
+  xlim(-0.1, 0.3)
+
+tiff("Figures_IPC/RCA_Comparison_IPC_1st.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_1st, FigCN_1st, FigKR_1st, FigJP_1st, cols=2)
+dev.off()
+
+#4.2.Second period ----
+reg_tech2_countries <- read.csv("Data_IPC/reg_tech_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
+#4.2.1. Second Period Countries ----
+mat_reg_tech2_countries <- reg_tech2_countries %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech2_countries) <- mat_reg_tech2_countries %>% pull(ctry_code)
+
+mat_reg_tech2_countries %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA2_countries <- mat_reg_tech2_countries %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###4.2.2. Second Period AI----
+reg_tech2_AI <- read.csv("Data_IPC/reg_techAI_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+mat_reg_tech2_AI <- reg_tech2_AI %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech2_AI) <- mat_reg_tech2_AI %>% pull(ctry_code)
+
+mat_reg_tech2_AI %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA2_AI <- mat_reg_tech2_AI %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+#select countries
+US_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "US",]
+CN_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "CN",]
+KR_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "KR",]
+JP_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "JP",]
+AI_Second_period <- reg_RCA2_AI[,2:3][reg_RCA2_AI$ctry_code == "AI_pat",]
+
+Second_period <- merge(merge(merge(merge(merge(
+  IPC_names,US_Second_period), CN_Second_period, by = "techn_field_nr"), KR_Second_period, by = "techn_field_nr"), 
+  JP_Second_period, by = "techn_field_nr"), AI_Second_period, by = "techn_field_nr")
+names(Second_period) = c("techn_field_nr", "sector", "field_name", "RCA_US", "RCA_CN","RCA_KR","RCA_JP", "RCA_AI")
+KnwComp_Country_2nd_RCA <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs.csv", sep = ";", header = T, dec=",")
+KnwComp_Country_2nd_RCA <- as.data.frame(t(KnwComp_Country_2nd_RCA))
+KnwComp_Country_2nd_RCA <- KnwComp_Country_2nd_RCA %>%
+  row_to_names(row_number = 1)
+KnwComp_Country_2nd_RCA<- KnwComp_Country_2nd_RCA[(-36),]
+KnwComp_Country_2nd_RCA$techn_field_nr <- Second_period$techn_field_nr
+Second_period$US_Com <- KnwComp_Country_2nd_RCA$US3
+Second_period$CN_Com <- KnwComp_Country_2nd_RCA$CN3
+Second_period$KR_Com <- KnwComp_Country_2nd_RCA$KR3
+Second_period$JP_Com <- KnwComp_Country_2nd_RCA$JP3
+i <- c(9:12)
+Second_period[ , i] <- apply(Second_period[ , i], 2,            # Specify own function within apply
+                            function(x) as.integer(as.character(x)))
+
+#remove files we don't need:
+rm(AI_Second_period, CN_Second_period, JP_Second_period, KR_Second_period, KnwComp_Country_2nd_RCA,
+   mat_reg_tech2_AI, mat_reg_tech2_countries, reg_RCA2_AI, reg_RCA2_countries, reg_tech2_AI, reg_tech2_countries,
+   US_Second_period, i)
+
+#Now we plot:
+FigUS_2nd <- ggplot(Second_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-0.5, 1.5)+
+  xlim(-0.1, 0.36)
+
+FigCN_2nd <-ggplot(Second_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 1.5)+
+  xlim(-0.1, 0.36)
+
+FigKR_2nd <-ggplot(Second_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 1.5)+
+  xlim(-0.1, 0.36)
+
+FigJP_2nd <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 1.5)+
+  xlim(-0.1, 0.36)
+
+tiff("Figures_IPC/RCA_Comparison_IPC_2nd.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_2nd, FigCN_2nd, FigKR_2nd, FigJP_2nd, cols=2)
+dev.off()
+
+#4.3.Third period ----
+reg_tech3_countries <- read.csv("Data_IPC/reg_tech_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+#4.3.1. Third Period Countries ----
+mat_reg_tech3_countries <- reg_tech3_countries %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech3_countries) <- mat_reg_tech3_countries %>% pull(ctry_code)
+
+mat_reg_tech3_countries %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA3_countries <- mat_reg_tech3_countries %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###4.3.2. Third Period AI----
+reg_tech3_AI <- read.csv("Data_IPC/reg_techAI_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+mat_reg_tech3_AI <- reg_tech3_AI %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech3_AI) <- mat_reg_tech3_AI %>% pull(ctry_code)
+
+mat_reg_tech3_AI %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA3_AI <- mat_reg_tech3_AI %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+#select countries
+US_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "US",]
+CN_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "CN",]
+KR_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "KR",]
+JP_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "JP",]
+AI_Third_period <- reg_RCA3_AI[,2:3][reg_RCA3_AI$ctry_code == "AI_pat",]
+
+Third_period <- merge(merge(merge(merge(merge(
+  IPC_names,US_Third_period), CN_Third_period, by = "techn_field_nr"), KR_Third_period, by = "techn_field_nr"), 
+  JP_Third_period, by = "techn_field_nr"), AI_Third_period, by = "techn_field_nr")
+names(Third_period) = c("techn_field_nr", "sector", "field_name", "RCA_US", "RCA_CN","RCA_KR","RCA_JP", "RCA_AI")
+KnwComp_Country_3rd_RCA <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs.csv", sep = ";", header = T, dec=",")
+KnwComp_Country_3rd_RCA <- as.data.frame(t(KnwComp_Country_3rd_RCA))
+KnwComp_Country_3rd_RCA <- KnwComp_Country_3rd_RCA %>%
+  row_to_names(row_number = 1)
+KnwComp_Country_3rd_RCA<- KnwComp_Country_3rd_RCA[(-36),]
+KnwComp_Country_3rd_RCA$techn_field_nr <- Third_period$techn_field_nr
+Third_period$US_Com <- KnwComp_Country_3rd_RCA$US3
+Third_period$CN_Com <- KnwComp_Country_3rd_RCA$CN3
+Third_period$KR_Com <- KnwComp_Country_3rd_RCA$KR3
+Third_period$JP_Com <- KnwComp_Country_3rd_RCA$JP3
+i <- c(9:12)
+Third_period[ , i] <- apply(Third_period[ , i], 2,            # Specify own function within apply
+                             function(x) as.integer(as.character(x)))
+
+#remove files we don't need:
+rm(AI_Third_period, CN_Third_period, JP_Third_period, KR_Third_period, KnwComp_Country_3rd_RCA,
+   mat_reg_tech3_AI, mat_reg_tech3_countries, reg_RCA3_AI, reg_RCA3_countries, reg_tech3_AI, reg_tech3_countries,
+   US_Third_period, i)
+
+#Now we plot:
+FigUS_3rd <- ggplot(Third_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''), size = 2, vjust = factor(sector)), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-0.5, 1)+
+  xlim(-0.1, 0.36)
+
+FigCN_3rd <-ggplot(Third_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 1)+
+  xlim(-0.1, 0.36)
+
+FigKR_3rd <-ggplot(Third_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 1)+
+  xlim(-0.1, 0.36)
+
+FigJP_3rd <-ggplot(Third_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-0.5, 1)+
+  xlim(-0.1, 0.36)
+
+tiff("Figures_IPC/RCA_Comparison_IPC_3rd.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_3rd, FigCN_3rd, FigKR_3rd, FigJP_3rd, cols=2)
+dev.off()
