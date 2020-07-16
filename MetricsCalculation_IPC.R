@@ -2162,7 +2162,7 @@ Relatedness_ThirdPeriod <- Relatedness_ThirdPeriod[,c((1:3), (5:13), (4))]
 
 write.csv2(Relatedness_ThirdPeriod, file = "Data_calculations_IPC/Relatedness_3rd_period_IPC.csv", row.names = TRUE)
 
-#4. Visualization -----
+#4. Visualization RCAs -----
 rm(list=ls())
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
@@ -2293,7 +2293,38 @@ FigUS_1st <- ggplot(First_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = 
   ylab(NULL) +
   ylim(-0.5, 2)+
   xlim(-0.1, 0.3)
- 
+
+FigUS_1stb <- ggplot(First_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  #scale_color_brewer(palette="Paired") + theme_classic() + 
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  #scale_color_brewer(palette="Accent") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigUS_1stc <- ggplot(First_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 FigCN_1st <-ggplot(First_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
   geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
@@ -2307,6 +2338,35 @@ FigCN_1st <-ggplot(First_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = f
   ylab(NULL)+
   ylim(-0.5, 2)+
   xlim(-0.1, 0.3)
+
+FigCN_1stb <-ggplot(First_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigCN_1stc <-ggplot(First_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
 
 FigKR_1st <-ggplot(First_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
@@ -2322,6 +2382,35 @@ FigKR_1st <-ggplot(First_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = f
   ylim(-0.5, 2)+
   xlim(-0.1, 0.3)
 
+FigKR_1stb <-ggplot(First_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigKR_1stc <-ggplot(First_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 FigJP_1st <-ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
   geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
@@ -2336,8 +2425,45 @@ FigJP_1st <-ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = f
   ylim(-0.5, 2)+
   xlim(-0.1, 0.3)
 
+FigJP_1stb <-ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigJP_1stc <-ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 tiff("Figures_IPC/RCA_Comparison_IPC_1st.jpg", width = 12, height = 7, units = 'in', res = 200)
 multiplot(FigUS_1st, FigCN_1st, FigKR_1st, FigJP_1st, cols=2)
+dev.off()
+
+tiff("Figures_IPC/RCA_Comparison_IPC_1st_optb.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_1stb, FigCN_1stb, FigKR_1stb, FigJP_1stb, cols=2)
+dev.off()
+
+tiff("Figures_IPC/RCA_Comparison_IPC_1st_optc.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_1stc, FigCN_1stc, FigKR_1stc, FigJP_1stc, cols=2)
 dev.off()
 
 #4.2.Second period ----
@@ -2425,6 +2551,34 @@ FigUS_2nd <- ggplot(Second_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label =
   ylim(-0.5, 1.5)+
   xlim(-0.1, 0.36)
 
+FigUS_2ndb <- ggplot(Second_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigUS_2ndc <- ggplot(Second_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 FigCN_2nd <-ggplot(Second_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
   geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
@@ -2438,6 +2592,34 @@ FigCN_2nd <-ggplot(Second_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = 
   ylab(NULL)+
   ylim(-0.5, 1.5)+
   xlim(-0.1, 0.36)
+
+FigCN_2ndb <-ggplot(Second_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigCN_2ndc <-ggplot(Second_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
 
 FigKR_2nd <-ggplot(Second_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
@@ -2453,7 +2635,35 @@ FigKR_2nd <-ggplot(Second_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = 
   ylim(-0.5, 1.5)+
   xlim(-0.1, 0.36)
 
-FigJP_2nd <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
+FigKR_2ndb <-ggplot(Second_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigKR_2ndc <-ggplot(Second_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+ FigJP_2nd <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
   geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
@@ -2467,8 +2677,44 @@ FigJP_2nd <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = 
   ylim(-0.5, 1.5)+
   xlim(-0.1, 0.36)
 
+FigJP_2ndb <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigJP_2ndc <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 tiff("Figures_IPC/RCA_Comparison_IPC_2nd.jpg", width = 12, height = 7, units = 'in', res = 200)
 multiplot(FigUS_2nd, FigCN_2nd, FigKR_2nd, FigJP_2nd, cols=2)
+dev.off()
+
+tiff("Figures_IPC/RCA_Comparison_IPC_2nd_optb.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_2ndb, FigCN_2ndb, FigKR_2ndb, FigJP_2ndb, cols=2)
+dev.off()
+
+tiff("Figures_IPC/RCA_Comparison_IPC_2nd_optc.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_2ndc, FigCN_2ndc, FigKR_2ndc, FigJP_2ndc, cols=2)
 dev.off()
 
 #4.3.Third period ----
@@ -2556,6 +2802,35 @@ FigUS_3rd <- ggplot(Third_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = 
   ylim(-0.5, 1)+
   xlim(-0.1, 0.36)
 
+FigUS_3rdb <- ggplot(Third_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigUS_3rdc <- ggplot(Third_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = US_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("United States") +
+  xlab(NULL) +
+  ylab(NULL) +
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 FigCN_3rd <-ggplot(Third_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
   geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
@@ -2569,6 +2844,35 @@ FigCN_3rd <-ggplot(Third_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = f
   ylab(NULL)+
   ylim(-0.5, 1)+
   xlim(-0.1, 0.36)
+
+FigCN_3rdb <-ggplot(Third_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigCN_3rdc <-ggplot(Third_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("China") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
 
 FigKR_3rd <-ggplot(Third_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
@@ -2584,6 +2888,35 @@ FigKR_3rd <-ggplot(Third_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = f
   ylim(-0.5, 1)+
   xlim(-0.1, 0.36)
 
+FigKR_3rdb <-ggplot(Third_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigKR_3rdc <-ggplot(Third_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("South Korea") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 FigJP_3rd <-ggplot(Third_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
   geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
   geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
@@ -2598,6 +2931,235 @@ FigJP_3rd <-ggplot(Third_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = f
   ylim(-0.5, 1)+
   xlim(-0.1, 0.36)
 
+FigJP_3rdb <-ggplot(Third_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = field_name)) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text(aes(label=ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''), size = 2), show.legend = F) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+FigJP_3rdc <-ggplot(Third_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
 tiff("Figures_IPC/RCA_Comparison_IPC_3rd.jpg", width = 12, height = 7, units = 'in', res = 200)
 multiplot(FigUS_3rd, FigCN_3rd, FigKR_3rd, FigJP_3rd, cols=2)
 dev.off()
+
+tiff("Figures_IPC/RCA_Comparison_IPC_3rd_optb.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_3rdb, FigCN_3rdb, FigKR_3rdb, FigJP_3rdb, cols=2)
+dev.off()
+
+tiff("Figures_IPC/RCA_Comparison_IPC_3rd_optc.jpg", width = 12, height = 7, units = 'in', res = 200)
+multiplot(FigUS_3rdc, FigCN_3rdc, FigKR_3rdc, FigJP_3rdc, cols=2)
+dev.off()
+
+tiff("Figures_IPC/RCA_Comparison_IPC_3rd_optd.jpg", width = 6, height = 12, units = 'in', res = 200)
+multiplot(FigUS_3rdb, FigCN_3rdb, FigKR_3rdb, FigJP_3rdb, cols=1)
+dev.off()
+
+#5. Visualization Indicators -----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+#5.1.Herfindahl and Entropy ----
+Indicators1st <- read.csv("Data_calculations_IPC/Indicators_1st_period_IPC.csv", sep = ";", header = TRUE, dec=",")
+Indicators2nd <- read.csv("Data_calculations_IPC/Indicators_2nd_period_IPC.csv", sep = ";", header = TRUE, dec=",")
+Indicators3rd <- read.csv("Data_calculations_IPC/Indicators_3rd_period_IPC.csv", sep = ";", header = TRUE, dec=",")
+
+Indicators <- rbind(Indicators1st, Indicators2nd, Indicators3rd)
+Indicators$Period <- gsub("1st", "Period 1 (1974-1988)", str_trim(Indicators$Period))
+Indicators$Period <- gsub("2nd", "Period 2 (1989-2003)", str_trim(Indicators$Period))
+Indicators$Period <- gsub("3rd", "Period 3 (2004-2018)", str_trim(Indicators$Period))
+
+Indicators_AI_1st <- read.csv("Data_calculations_IPC/Indicators_1st_period_IPC_AI.csv", sep = ";", header = TRUE, dec=",")
+Indicators_AI_2nd <- read.csv("Data_calculations_IPC/Indicators_2nd_period_IPC_AI.csv", sep = ";", header = TRUE, dec=",")
+Indicators_AI_3rd <- read.csv("Data_calculations_IPC/Indicators_3rd_period_IPC_AI.csv", sep = ";", header = TRUE, dec=",")
+Indicators_AI <- rbind(Indicators_AI_1st, Indicators_AI_2nd, Indicators_AI_3rd)
+Indicators_AI$Period <- gsub("1st", "Period 1 (1974-1988)", str_trim(Indicators_AI$Period))
+Indicators_AI$Period <- gsub("2nd", "Period 2 (1989-2003)", str_trim(Indicators_AI$Period))
+Indicators_AI$Period <- gsub("3rd", "Period 3 (2004-2018)", str_trim(Indicators_AI$Period))
+
+Indicators_AI2 <- Indicators_AI[Indicators_AI$X == "AI_pat", ]
+
+library(patchwork) #for cutting out the X labs while keeping the legend
+Herfindahl_AI <- ggplot(Indicators_AI2, aes(x=Period, y=Herfindahl, fill=Period)) +
+  geom_bar(stat="identity")+ theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab(NULL) +
+  ggtitle("AI Herfindahl Index")
+
+Indicators_countries <- Indicators[Indicators$X == "US"|
+                                           Indicators$X == "CN"|
+                                           Indicators$X == "KR"|
+                                           Indicators$X == "JP",]
+
+Herfindahl_Countries <- ggplot(Indicators_countries, aes(x=X, y=Herfindahl, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) +
+  ggtitle("Countries Herfindahl Index")
+
+library(scales) #for scaling without cutting data out
+Herfindahl_Countriesb <- ggplot(Indicators_countries, aes(x=X, y=Herfindahl, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(),show.legend = F)+theme_minimal()+ xlab(NULL) + ylab(NULL) +
+  scale_y_continuous(limits=c(.035,0.055),oob = rescale_none) +
+  ggtitle("Countries Herfindahl Index")
+
+Entropy_RCA_AI <- ggplot(Indicators_AI2, aes(x=Period, y=Entropy_RCA, fill=Period)) +
+  geom_bar(stat="identity")+theme_minimal() +
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab(NULL) +
+  ggtitle("AI Shanon Index")
+
+Entropy_RCA_Countries <- ggplot(Indicators_countries, aes(x=X, y=Entropy_RCA, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL)+
+  ggtitle("Countries Shanon Index")
+Entropy_RCA_Countriesb <- ggplot(Indicators_countries, aes(x=X, y=Entropy_RCA, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(),show.legend = F)+theme_minimal()+ 
+  scale_fill_manual(values=c("#999999", "#E69F00", "#56B4E9")) + xlab(NULL) + ylab(NULL) + 
+  scale_y_continuous(limits=c(3.4,4.2),oob = rescale_none)+
+  ggtitle("Countries Shanon Index")
+
+
+tiff("Figures_IPC/Indicators_Herfindahl.jpg", width = 6, height = 4, units = 'in', res = 200)
+multiplot(Herfindahl_Countries, Herfindahl_AI, cols=2)
+dev.off()
+
+tiff("Figures_IPC/Indicators_Herfindahl_optb.jpg", width = 6, height = 4, units = 'in', res = 200)
+multiplot(Herfindahl_Countriesb, Herfindahl_AI, cols=2)
+dev.off()
+
+tiff("Figures_IPC/Indicators_Entropy.jpg", width = 6, height = 4, units = 'in', res = 200)
+multiplot(Entropy_RCA_Countries, Entropy_RCA_AI, cols=2)
+dev.off()
+
+tiff("Figures_IPC/Indicators_Entropy_optb.jpg", width = 6, height = 4, units = 'in', res = 200)
+multiplot(Entropy_RCA_Countriesb, Entropy_RCA_AI, cols=2)
+dev.off()
+
+#5.2.Relatedness ----
+Relatedness_1st <- read.csv("Data_calculations_IPC/Relatedness_1st_period_IPC.csv", sep = ";", header = TRUE, dec=",")
+Relatedness_2nd <- read.csv("Data_calculations_IPC/Relatedness_2nd_period_IPC.csv", sep = ";", header = TRUE, dec=",")
+Relatedness_3rd <- read.csv("Data_calculations_IPC/Relatedness_3rd_period_IPC.csv", sep = ";", header = TRUE, dec=",")
+Relatedness <- rbind(Relatedness_1st, Relatedness_2nd, Relatedness_3rd)
+
+Relatedness$Period <- gsub("1st", "Period 1 (1974-1988)", str_trim(Relatedness$Period))
+Relatedness$Period <- gsub("2nd", "Period 2 (1989-2003)", str_trim(Relatedness$Period))
+Relatedness$Period <- gsub("3rd", "Period 3 (2004-2018)", str_trim(Relatedness$Period))
+
+Relatedness1 <- Relatedness[,c(1,14,3)]
+names(Relatedness1) <- c("Country", "Period", "Value")
+Relatedness1$Indicator <- "Association"
+
+Relatedness2 <- Relatedness[,c(1,14,6)]
+names(Relatedness2) <- c("Country", "Period", "Value")
+Relatedness2$Indicator <- "Top4"
+
+Relatedness3 <- Relatedness[,c(1,14,9)]
+names(Relatedness3) <- c("Country", "Period", "Value")
+Relatedness3$Indicator <- "Top3"
+
+Relatedness4 <- Relatedness[,c(1,14,12)]
+names(Relatedness4) <- c("Country", "Period", "Value")
+Relatedness4$Indicator <- "Top7"
+
+Relatedness <- rbind(Relatedness1, Relatedness2, Relatedness3, Relatedness4)
+rm(Relatedness1, Relatedness2, Relatedness3, Relatedness4)
+
+Relatedness_AI <- Relatedness[Relatedness$Country == "AI", ]
+Relatedness <- Relatedness[Relatedness$Country != "AI", ]
+
+ggplot(Relatedness, aes(x=Country, y=Value, color=Indicator)) +
+  geom_point()+theme_minimal()+ xlab(NULL) + ylab(NULL) +
+  facet_wrap(~Period) + scale_y_log10()
+
+ggplot(Relatedness, aes(x=Country, y=Value, color=Period)) +
+  geom_point()+theme_minimal()+ xlab(NULL) + ylab(NULL) +
+  facet_wrap(~Indicator)
+
+ggplot(Relatedness, aes(x=Country, y=Value, fill=Indicator)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab(NULL) +
+  facet_wrap(~Period)
+
+ggplot(Relatedness, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab(NULL) +
+  facet_wrap(~Indicator)
+
+ggplot(Relatedness, aes(x=Period, y=Value, fill=Indicator)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab(NULL) +
+  facet_wrap(~Country)
+
+ggplot(Relatedness, aes(x=Indicator, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab(NULL) +
+  facet_wrap(~Country)
+  #ggtitle("Countries Herfindahl Index") +
+
+#add limits?
+
+#create figures for relatedness (probably dots) and knowledge complexity rcas
+#possibly create a scatter plot of a knowledge complexity figure only for AI (its fields over time) similar to the 4.
+
+
+#facet_wrap(~year, nrow=1)
+#theme_ipsum() +
+#facet_wrap(~specie) +
+#theme(legend.position="none") +
+#xlab("")
+#scale_y_log10()
+
+#library(ggthemes)
+#Entropy_RCA_Countries_b <- ggplot(Indicators_countries, aes(x=X, y=Entropy_RCA, fill=Period)) +
+#  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL)+
+#  theme_economist()+scale_colour_economist()
+
