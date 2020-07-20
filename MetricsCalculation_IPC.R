@@ -13,6 +13,11 @@ library(stringr) #for separating the IPC codes in subclasses
 
 library(janitor) #used here for converting the first column of data to row names.
 
+#for visualization:
+library(ggrepel)
+library(scales) #for scaling without cutting data out
+library(patchwork) #for cutting out the X labs while keeping the legend
+
 #1.Discussions presented in: Balland, P. A. (2017). Economic Geography in R: Introduction to the EconGeo package.----
 
 #1.1. Number patents in each techn_field per country and RCA:----
@@ -2316,7 +2321,7 @@ FigUS_1stc <- ggplot(First_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label =
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = First_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("United States") +
@@ -2359,7 +2364,7 @@ FigCN_1stc <-ggplot(First_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = 
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = First_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("China") +
@@ -2402,7 +2407,7 @@ FigKR_1stc <-ggplot(First_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = 
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = First_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("South Korea") +
@@ -2445,7 +2450,7 @@ FigJP_1stc <-ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = 
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = First_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = First_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),'')),nudge_y = -0.6) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("Japan") +
@@ -2570,7 +2575,7 @@ FigUS_2ndc <- ggplot(Second_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label 
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Second_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("United States") +
@@ -2609,7 +2614,7 @@ FigCN_2ndb <-ggplot(Second_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label =
 
 FigCN_2ndc <-ggplot(Second_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = '')) + 
   geom_point(aes(colour = sector, size = CN_Com),show.legend = F, stroke = 2) +  
-  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Second_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
@@ -2651,7 +2656,7 @@ FigKR_2ndb <-ggplot(Second_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label =
 
 FigKR_2ndc <-ggplot(Second_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = '')) + 
   geom_point(aes(colour = sector, size = KR_Com),show.legend = F, stroke = 2) +  
-  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Second_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
@@ -2693,7 +2698,7 @@ FigJP_2ndb <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label =
 
 FigJP_2ndc <-ggplot(Second_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = '')) + 
   geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
-  ggrepel::geom_text_repel(data = Second_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Second_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
@@ -2822,7 +2827,8 @@ FigUS_3rdc <- ggplot(Third_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label =
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Third_period, aes(label = ifelse(RCA_US>1 & RCA_AI>1,as.character(field_name),'')),
+                   nudge_y = -.2, nudge_x = -.2) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("United States") +
@@ -2865,7 +2871,7 @@ FigCN_3rdc <-ggplot(Third_period, aes(x=log10(RCA_CN), y=log10(RCA_AI), label = 
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Third_period, aes(label = ifelse(RCA_CN>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("China") +
@@ -2908,7 +2914,7 @@ FigKR_3rdc <-ggplot(Third_period, aes(x=log10(RCA_KR), y=log10(RCA_AI), label = 
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Third_period, aes(label = ifelse(RCA_KR>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("South Korea") +
@@ -2951,7 +2957,7 @@ FigJP_3rdc <-ggplot(Third_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = 
   geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
-  ggrepel::geom_text_repel(data = Third_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
+  geom_label_repel(data = Third_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),''))) +
   geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
   scale_size_continuous(range = c(1, 10)) +
   ggtitle("Japan") +
@@ -2974,6 +2980,57 @@ dev.off()
 
 tiff("Figures_IPC/RCA_Comparison_IPC_3rd_optd.jpg", width = 6, height = 12, units = 'in', res = 200)
 multiplot(FigUS_3rdb, FigCN_3rdb, FigKR_3rdb, FigJP_3rdb, cols=1)
+dev.off()
+
+
+#4.4. AI perspective----
+KnwComp_Country_1st_RCA <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs_AI.csv", sep = ";", header = T, dec=",")
+KnwComp_Country_1st_RCA <- as.data.frame(t(KnwComp_Country_1st_RCA))
+KnwComp_Country_1st_RCA <- KnwComp_Country_1st_RCA %>%
+  row_to_names(row_number = 1)
+KnwComp_Country_1st_RCA<- KnwComp_Country_1st_RCA[(-36),]
+First_period$AI_Com <- KnwComp_Country_1st_RCA$AI_pat3
+i <- c(12:13)
+First_period[ , i] <- apply(First_period[ , i], 2,            # Specify own function within apply
+                            function(x) as.integer(as.character(x)))
+KnwComp_Country_2nd_RCA <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs_AI.csv", sep = ";", header = T, dec=",")
+KnwComp_Country_2nd_RCA <- as.data.frame(t(KnwComp_Country_2nd_RCA))
+KnwComp_Country_2nd_RCA <- KnwComp_Country_2nd_RCA %>%
+  row_to_names(row_number = 1)
+KnwComp_Country_2nd_RCA<- KnwComp_Country_2nd_RCA[(-36),]
+Second_period$AI_Com <- KnwComp_Country_2nd_RCA$AI_pat3
+i <- c(12:13)
+Second_period[ , i] <- apply(Second_period[ , i], 2,            # Specify own function within apply
+                            function(x) as.integer(as.character(x)))
+
+KnwComp_Country_3rd_RCA <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs_AI.csv", sep = ";", header = T, dec=",")
+KnwComp_Country_3rd_RCA <- as.data.frame(t(KnwComp_Country_3rd_RCA))
+KnwComp_Country_3rd_RCA <- KnwComp_Country_3rd_RCA %>%
+  row_to_names(row_number = 1)
+KnwComp_Country_3rd_RCA<- KnwComp_Country_3rd_RCA[(-36),]
+Third_period$AI_Com <- KnwComp_Country_3rd_RCA$AI_pat3
+i <- c(12:13)
+Third_period[ , i] <- apply(Third_period[ , i], 2,            # Specify own function within apply
+                            function(x) as.integer(as.character(x)))
+First_period$Period <- "Period 1 (1974-1988)"
+Second_period$Period <- "Period 2 (1989-2003)"
+Third_period$Period <- "Period 3 (2004-2018)"
+
+AI_persp <- rbind(First_period, Second_period, Third_period)
+
+tiff("Figures_IPC/AI_perspective.jpg", width = 10, height = 8, units = 'in', res = 200)
+ggplot(AI_persp, aes(x=log10(AI_Com), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = AI_Com), stroke = 2) +  
+  geom_text() +
+  facet_wrap(~Period, nrow=3) +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  scale_color_brewer(palette="Dark2") + theme_classic() +
+  geom_label_repel(data = AI_persp, aes(label = ifelse(AI_Com>1,as.character(field_name),''))) +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("AI specializations and complexity over time") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-.5, 1.8)
 dev.off()
 
 #5. Visualization Indicators -----
@@ -3100,19 +3157,19 @@ Relatedness$Period <- gsub("3rd", "Period 3 (2004-2018)", str_trim(Relatedness$P
 
 Relatedness1 <- Relatedness[,c(1,14,3)]
 names(Relatedness1) <- c("Country", "Period", "Value")
-Relatedness1$Indicator <- "Association"
+Relatedness1$Indicator <- "Overall Relatedness"
 
 Relatedness2 <- Relatedness[,c(1,14,6)]
 names(Relatedness2) <- c("Country", "Period", "Value")
-Relatedness2$Indicator <- "Top4"
+Relatedness2$Indicator <- "AI-core codes"
 
 Relatedness3 <- Relatedness[,c(1,14,9)]
 names(Relatedness3) <- c("Country", "Period", "Value")
-Relatedness3$Indicator <- "Top3"
+Relatedness3$Indicator <- "AI-related codes"
 
 Relatedness4 <- Relatedness[,c(1,14,12)]
 names(Relatedness4) <- c("Country", "Period", "Value")
-Relatedness4$Indicator <- "Top7"
+Relatedness4$Indicator <- "Surrounding codes"
 
 Relatedness <- rbind(Relatedness1, Relatedness2, Relatedness3, Relatedness4)
 rm(Relatedness1, Relatedness2, Relatedness3, Relatedness4)
@@ -3128,10 +3185,12 @@ ggplot(Relatedness, aes(x=Country, y=Value, color=Period)) +
   geom_point()+theme_minimal()+ xlab(NULL) + ylab(NULL) +
   facet_wrap(~Indicator)
 
+#very nice one:
 ggplot(Relatedness, aes(x=Country, y=Value, fill=Indicator)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab(NULL) +
   facet_wrap(~Period)
 
+#nice one:
 ggplot(Relatedness, aes(x=Country, y=Value, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab(NULL) +
   facet_wrap(~Indicator)
@@ -3145,17 +3204,170 @@ ggplot(Relatedness, aes(x=Indicator, y=Value, fill=Period)) +
   facet_wrap(~Country)
   #ggtitle("Countries Herfindahl Index") +
 
-#add limits?
+Rel_byP_a<- ggplot(Relatedness, aes(x=Country, y=Value, fill=Indicator)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Relatedness") +
+  facet_wrap(~Period, ncol = 3)+
+  #scale_fill_brewer(palette="Dark2")+theme_minimal() +
+  scale_fill_brewer(palette="Paired") + theme_classic() + 
+  #scale_fill_brewer(palette="Accent") + theme_minimal() +
+  #scale_fill_brewer(palette="Reds") +
+  #scale_fill_brewer(palette="Greens") +
+  ggtitle("Countries Relatedness in the considered IPC fields") + 
+  scale_y_continuous(limits=c(.45,2.35),oob = rescale_none)
 
-#create figures for relatedness (probably dots) and knowledge complexity rcas
+Rel_byAI_a<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Indicator)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ labs(x = "") + 
+  scale_x_discrete(labels = NULL) + ylab("Relatedness") +
+  facet_wrap(~Period, ncol = 3)+
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Relatedness in the considered IPC fields") + 
+  scale_y_continuous(limits=c(0.1,2.1),oob = rescale_none)
+
+Rel_byP_b <- ggplot(Relatedness, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Relatedness") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() +
+  ggtitle("Countries Relatedness in the considered IPC fields") + 
+  scale_y_continuous(limits=c(.45,2.35),oob = rescale_none)
+
+Rel_byAI_b<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Relatedness") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Relatedness in the considered IPC fields")+
+  scale_y_continuous(limits=c(.1,2.35),oob = rescale_none)
+
+tiff("Figures_IPC/Relatedness_opta.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Rel_byAI_a, Rel_byP_a, cols=1)
+dev.off()
+
+tiff("Figures_IPC/Relatedness_optb.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Rel_byAI_b, Rel_byP_b, cols=1)
+dev.off()
+#Change the order of items in the legend: + scale_x_discrete(limits=c("D2", "D0.5", "D1")) (being D2 the name of an
+#indicator for example)
+
+#5.3.Knowledge Complexity ----
+KnowlComp_1st <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_2nd <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs.csv", sep = ";", header = TRUE, dec=",")
+
+KnowlComp_1st$Period <- "Period 1 (1974-1988)"
+KnowlComp_2nd$Period <- "Period 2 (1989-2003)"
+KnowlComp_3rd$Period <- "Period 3 (2004-2018)"
+KnowledgeCompl <- rbind(KnowlComp_1st, KnowlComp_2nd, KnowlComp_3rd)
+
+KnowledgeCompl <- KnowledgeCompl[KnowledgeCompl$X == "US3" | 
+                                   KnowledgeCompl$X == "CN3"| 
+                                   KnowledgeCompl$X == "KR3"| 
+                                   KnowledgeCompl$X == "JP3", ]
+
+KnowledgeCompl$"AI-core codes" = rowSums(KnowledgeCompl[,c("X6", "X7", "X10", "X12")])
+KnowledgeCompl$"Overall Complexity" = rowSums(KnowledgeCompl[,c(2:36)])
+KnowledgeCompl$"AI-related codes" = rowSums(KnowledgeCompl[,c("X11", "X4", "X5")])
+KnowledgeCompl$"Surrounding codes" = rowSums(KnowledgeCompl[,c("X4", "X3", "X2", "X1", "X13", "X25", "X34")])
+
+KnowledgeCompl2<- KnowledgeCompl[,c(1, 38, 39)]
+names(KnowledgeCompl2) <- c("Country", "Period", "Value")
+KnowledgeCompl2$Indicator <- "AI-core codes"
+
+KnowledgeCompl3<- KnowledgeCompl[,c(1, 38, 40)]
+names(KnowledgeCompl3) <- c("Country", "Period", "Value")
+KnowledgeCompl3$Indicator <- "Overall Complexity"
+
+KnowledgeCompl4<- KnowledgeCompl[,c(1, 38, 41)]
+names(KnowledgeCompl4) <- c("Country", "Period", "Value")
+KnowledgeCompl4$Indicator <- "AI-related codes"
+
+KnowledgeCompl5<- KnowledgeCompl[,c(1, 38, 42)]
+names(KnowledgeCompl5) <- c("Country", "Period", "Value")
+KnowledgeCompl5$Indicator <- "Surrounding codes"
+
+KnowledgeCompl_all <- rbind(KnowledgeCompl2, KnowledgeCompl3, KnowledgeCompl4, KnowledgeCompl5)
+KnowledgeCompl_all$Country <- gsub("CN3", "CN", str_trim(KnowledgeCompl_all$Country))
+KnowledgeCompl_all$Country <- gsub("JP3", "JP", str_trim(KnowledgeCompl_all$Country))
+KnowledgeCompl_all$Country <- gsub("US3", "US", str_trim(KnowledgeCompl_all$Country))
+KnowledgeCompl_all$Country <- gsub("KR3", "KR", str_trim(KnowledgeCompl_all$Country))
+
+KnowlComp_1st_AI <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs_AI.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_2nd_AI <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs_AI.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd_AI <- read.csv("Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs_AI.csv", sep = ";", header = TRUE, dec=",")
+
+KnowlComp_1st_AI$Period <- "Period 1 (1974-1988)"
+KnowlComp_2nd_AI$Period <- "Period 2 (1989-2003)"
+KnowlComp_3rd_AI$Period <- "Period 3 (2004-2018)"
+KnowledgeCompl_AI <- rbind(KnowlComp_1st_AI, KnowlComp_2nd_AI, KnowlComp_3rd_AI)
+
+KnowledgeCompl_AI <- KnowledgeCompl_AI[KnowledgeCompl_AI$X == "AI_pat3", ]
+KnowledgeCompl_AI$"AI-core codes" = rowSums(KnowledgeCompl_AI[,c("X6", "X7", "X10", "X12")])
+KnowledgeCompl_AI$"Overall Complexity" = rowSums(KnowledgeCompl_AI[,c(2:36)])
+KnowledgeCompl_AI$"AI-related codes" = rowSums(KnowledgeCompl_AI[,c("X11", "X4", "X5")])
+KnowledgeCompl_AI$"Surrounding codes" = rowSums(KnowledgeCompl_AI[,c("X4", "X3", "X2", "X1", "X13", "X25", "X34")])
+
+KnowledgeCompl_AI2<- KnowledgeCompl_AI[,c(1, 38, 39)]
+names(KnowledgeCompl_AI2) <- c("Country", "Period", "Value")
+KnowledgeCompl_AI2$Indicator <- "AI-core codes"
+
+KnowledgeCompl_AI3<- KnowledgeCompl_AI[,c(1, 38, 40)]
+names(KnowledgeCompl_AI3) <- c("Country", "Period", "Value")
+KnowledgeCompl_AI3$Indicator <- "Overall Complexity"
+
+KnowledgeCompl_AI4<- KnowledgeCompl_AI[,c(1, 38, 41)]
+names(KnowledgeCompl_AI4) <- c("Country", "Period", "Value")
+KnowledgeCompl_AI4$Indicator <- "AI-related codes"
+
+KnowledgeCompl_AI5<- KnowledgeCompl_AI[,c(1, 38, 42)]
+names(KnowledgeCompl_AI5) <- c("Country", "Period", "Value")
+KnowledgeCompl_AI5$Indicator <- "Surrounding codes"
+
+KnowledgeCompl_AI_all <- rbind(KnowledgeCompl_AI2, KnowledgeCompl_AI3, KnowledgeCompl_AI4, KnowledgeCompl_AI5)
+KnowledgeCompl_AI_all$Country <- gsub("AI_pat3", "AI", str_trim(KnowledgeCompl_AI_all$Country))
+
+Comp_byP_a <- 
+ggplot(KnowledgeCompl_all, aes(x=Country, y=(Value), fill=Indicator)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Period, ncol = 3)+
+  scale_fill_brewer(palette="Paired") + theme_classic() + 
+  ggtitle("Countries Knowledge Complexity in the considered IPC fields")
+
+Comp_byAI_a<- 
+ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Indicator)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ labs(x = "") + 
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Period, ncol = 3)+
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Knowledge Complexity in the considered IPC fields") 
+
+Comp_byP_b <- 
+ggplot(KnowledgeCompl_all, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() +
+  ggtitle("Countries Knowledge Complexity in the considered IPC fields") 
+
+Comp_byAI_b<- 
+ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Knowledge Complexity in the considered IPC fields")
+
+tiff("Figures_IPC/KnowledgeComplexity_opta.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Comp_byAI_a, Comp_byP_a, cols=1)
+dev.off()
+
+tiff("Figures_IPC/KnowledgeComplexity_optb.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Comp_byAI_b, Comp_byP_b, cols=1)
+dev.off()
+
 #possibly create a scatter plot of a knowledge complexity figure only for AI (its fields over time) similar to the 4.
 
 
 #facet_wrap(~year, nrow=1)
 #theme_ipsum() +
-#facet_wrap(~specie) +
 #theme(legend.position="none") +
-#xlab("")
 #scale_y_log10()
 
 #library(ggthemes)
