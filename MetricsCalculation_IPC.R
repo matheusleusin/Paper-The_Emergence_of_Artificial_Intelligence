@@ -3238,6 +3238,28 @@ Rel_byAI_b<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Period)) +
   ggtitle("AI Relatedness in the considered IPC fields")+
   scale_y_continuous(limits=c(.1,2.35),oob = rescale_none)
 
+Relatedness2 <- Relatedness
+Relatedness2$Indicator <- factor(Relatedness2$Indicator, levels = c("Overall Relatedness", "AI-core codes",
+                                                                    "AI-related codes", "Surrounding codes"))
+
+Relatedness_AI2 <- Relatedness_AI
+Relatedness_AI2$Indicator <- factor(Relatedness_AI2$Indicator, levels = c("Overall Relatedness", "AI-core codes",
+                                                                          "AI-related codes", "Surrounding codes"))
+Rel_byP_c <- ggplot(Relatedness2, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Relatedness") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() +
+  ggtitle("Countries Relatedness in the considered IPC fields") + 
+  scale_y_continuous(limits=c(.45,2.35),oob = rescale_none)
+
+Rel_byAI_c<- ggplot(Relatedness_AI2, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Relatedness") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() +
+  ggtitle("AI Relatedness in the considered IPC fields")+
+  scale_y_continuous(limits=c(.1,2.35),oob = rescale_none)
+
 tiff("Figures_IPC/Relatedness_opta.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byAI_a, Rel_byP_a, cols=1)
 dev.off()
@@ -3354,16 +3376,46 @@ ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Period)) +
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
 
+KnowledgeCompl_all2 <- KnowledgeCompl_all
+KnowledgeCompl_all2$Indicator <- factor(KnowledgeCompl_all2$Indicator, levels = c("Overall Complexity", "AI-core codes",
+                                                                                  "AI-related codes", "Surrounding codes"))
+
+KnowledgeCompl_AI_all2 <- KnowledgeCompl_AI_all
+KnowledgeCompl_AI_all2$Indicator <- factor(KnowledgeCompl_AI_all2$Indicator, levels = c("Overall Complexity", "AI-core codes",
+                                                                                        "AI-related codes", "Surrounding codes"))
+
+Comp_byP_c <-
+  ggplot(KnowledgeCompl_all2, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic()  + theme(legend.position="bottom") +
+  ggtitle("Countries Knowledge Complexity in the considered IPC fields") 
+
+Comp_byAI_c<- 
+  ggplot(KnowledgeCompl_AI_all2, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Knowledge Complexity in the considered IPC fields")
+
+
 tiff("Figures_IPC/KnowledgeComplexity_opta.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Comp_byAI_a, Comp_byP_a, cols=1)
 dev.off()
 
 tiff("Figures_IPC/KnowledgeComplexity_optb.jpg", width = 8, height = 6, units = 'in', res = 200)
-multiplot(Comp_byAI_b, Comp_byP_b, cols=1)
+multiplot(Comp_byAI_b, Comp_byP_b, cols=1) 
 dev.off()
 
-#possibly create a scatter plot of a knowledge complexity figure only for AI (its fields over time) similar to the 4.
 
+tiff("Figures_IPC/Relatedness_and_Complex_countries.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Rel_byP_c, Comp_byP_c, cols=1) 
+dev.off()
+
+tiff("Figures_IPC/Relatedness_and_Complex_AI.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Rel_byAI_c, Comp_byAI_c, cols=1) 
+dev.off()
 
 #facet_wrap(~year, nrow=1)
 #theme_ipsum() +
