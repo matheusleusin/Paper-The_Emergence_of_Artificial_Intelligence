@@ -3195,3 +3195,58 @@ tiff("Figures_Nace/Relatedness_and_Complex_AI.jpg", width = 8, height = 6, units
 multiplot(Rel_byAI_c, Comp_byAI_c, cols=1) 
 dev.off()
 
+#4.Network Metrics----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+Summary_NetworkMetrics <- read.csv("Data_calculations_Nace/Summary_NetworkMetrics.csv", sep = ";", header = TRUE, dec=",")
+names(Summary_NetworkMetrics)[names(Summary_NetworkMetrics) == 'Group.2'] <- 'Period'
+Summary_NetworkMetricsAvr <- Summary_NetworkMetrics[c(1:12),]
+Summary_NetworkMetricsSum <- Summary_NetworkMetrics[c(13:24),]
+
+Indicators <- c("dgr",
+                "n_neighbors",
+                "weighted_degree",
+                "triangles",
+                "centrality_authority",
+                "centrality_betweenness",
+                "centrality_closeness",
+                "centrality_eigen",
+                "centrality_hub",
+                "centrality_subgraph",
+                "centrality_degree",
+                "centrality_closeness_harmonic",
+                "centrality_closeness_residual",
+                "centrality_betweenness_network")
+
+centrality_betweenness1<-
+ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_betweenness, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - Centrality_betweenness (Nace)")+ 
+  scale_y_continuous(limits=c(9,19),oob = rescale_none)
+
+centrality_closeness1<-
+  ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_closeness, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - Centrality_closeness (Nace)") + 
+  scale_y_continuous(limits=c(.005,.02),oob = rescale_none)
+  
+centrality_eigen1<-
+  ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_eigen, fill=Period)) +
+    geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+    scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+    ggtitle("Average - Centrality_eigen (Nace)")+ 
+    scale_y_continuous(limits=c(.3,.52),oob = rescale_none)  
+  
+centrality_hub1<-
+  ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_hub, fill=Period)) +
+    geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+    scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+    ggtitle("Average - Centrality_hub (Nace)") + 
+    scale_y_continuous(limits=c(.3,.53),oob = rescale_none)
+
+tiff("Figures_Nace/NetworkMetrics_Nace_Best_ones.jpg", width = 8, height = 10, units = 'in', res = 200)
+multiplot(centrality_closeness1, centrality_betweenness1, centrality_eigen1, cols=1)
+dev.off()
+

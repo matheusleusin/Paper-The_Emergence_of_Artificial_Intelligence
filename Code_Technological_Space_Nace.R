@@ -443,16 +443,62 @@ Nace1c <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("Nace Technology Space: China (1974-1988)")
 
+CN_1st <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+CN_1st$Country <- country_select[i]
+
 i = 2
 Nace2 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: USA (1974-1988)")
+
+US_1st <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+US_1st$Country <- country_select[i]
 
 i = 3
 Nace3 <- g_tech_AI %N>%
@@ -460,10 +506,33 @@ Nace3 <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: Japan (1974-1988)")
+
+JP_1st <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+JP_1st$Country <- country_select[i]
 
 i = 4
 Nace4 <- g_tech_AI %N>%
@@ -471,11 +540,36 @@ Nace4 <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: South Korea (1974-1988)")
 
+KR_1st <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+KR_1st$Country <- country_select[i]
+
+NetworkMetrics1st <- rbind(CN_1st,US_1st,JP_1st,KR_1st)
+NetworkMetrics1st$Period <- "1st"
 
 #For saving the pictures:
 jpeg("Figures_Nace/Nace_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
@@ -525,16 +619,62 @@ Nace1b <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("Nace Technology Space: China (1989-2003)")
 
+CN_2nd <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+CN_2nd$Country <- country_select[i]
+
 i = 2
 Nace2 <- g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: USA (1989-2003)")
+
+US_2nd <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+US_2nd$Country <- country_select[i]
 
 i = 3
 Nace3 <- g_tech_AI %N>%
@@ -542,10 +682,33 @@ Nace3 <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: Japan (1989-2003)")
+
+JP_2nd <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+JP_2nd$Country <- country_select[i]
 
 i = 4
 Nace4 <- g_tech_AI %N>%
@@ -553,10 +716,36 @@ Nace4 <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: South Korea (1989-2003)")
+
+KR_2nd <- g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+KR_2nd$Country <- country_select[i]
+
+NetworkMetrics2nd <- rbind(CN_2nd,US_2nd,JP_2nd,KR_2nd)
+NetworkMetrics2nd$Period <- "2nd"
 
 #For saving the pictures:
 jpeg("Figures_Nace/Nace_all_CN_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
@@ -602,16 +791,62 @@ Nace1b <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("Nace Technology Space: China (2004-2018)")
 
+CN_3rd <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+CN_3rd$Country <- country_select[i]
+
 i = 2
 Nace2 <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: USA (2004-2018)")
+
+US_3rd <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+US_3rd$Country <- country_select[i]
 
 i = 3
 Nace3 <- g_tech_AI %N>%
@@ -619,10 +854,33 @@ Nace3 <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: Japan (2004-2018)")
+
+JP_3rd <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+JP_3rd$Country <- country_select[i]
 
 i = 4
 Nace4 <- g_tech_AI %N>%
@@ -630,10 +888,43 @@ Nace4 <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Nace Technology Space: South Korea (2004-2018)")
+
+KR_3rd <- g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "nace2_code")) %>%
+  filter(RCA == 1) %>%
+  mutate(n_neighbors = local_size(mindist = 1),
+         weighted_degree = centrality_degree() / local_ave_degree(),
+         triangles = local_triangles(),
+         #centrality_alpha= centrality_alpha(),
+         centrality_authority = centrality_authority(),
+         centrality_betweenness = centrality_betweenness(),
+         #centrality_power=centrality_power(),
+         centrality_closeness = centrality_closeness(),
+         centrality_eigen = centrality_eigen(),
+         centrality_hub= centrality_hub(),
+         centrality_subgraph=centrality_subgraph(),
+         centrality_degree=centrality_degree(),
+         centrality_closeness_harmonic=centrality_closeness_harmonic(),
+         centrality_closeness_residual=centrality_closeness_residual(),
+         centrality_betweenness_network=centrality_betweenness_network(),
+         #centrality_information=centrality_information()
+  ) %>%
+  as_tibble() 
+KR_3rd$Country <- country_select[i]
+
+NetworkMetrics3rd <- rbind(CN_3rd,US_3rd,JP_3rd,KR_3rd)
+NetworkMetrics3rd$Period <- "3rd"
+NetworkMetrics <- rbind(NetworkMetrics1st,NetworkMetrics2nd,NetworkMetrics3rd)
+write.csv2(NetworkMetrics, file = "Data_Nace/NetworkMetrics.csv", row.names = F)
+
+Summary_NetworkMetrics_avr <- aggregate(NetworkMetrics[,c(4:17)], list(NetworkMetrics$Country, NetworkMetrics$Period), mean)
+Summary_NetworkMetrics_sum <- aggregate(NetworkMetrics[,c(4:17)], list(NetworkMetrics$Country, NetworkMetrics$Period), sum)
+Summary_NetworkMetrics <- rbind(Summary_NetworkMetrics_avr, Summary_NetworkMetrics_sum)
+write.csv2(Summary_NetworkMetrics, file = "Data_calculations_Nace/Summary_NetworkMetrics.csv", row.names = F)
 
 #For saving the pictures:
 jpeg("Figures_Nace/Nace_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
@@ -761,7 +1052,7 @@ Nace_AI <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Technology Space: AI patents (1974-1988)")
@@ -851,7 +1142,7 @@ Nace_AI <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Technology Space: AI patents (1989-2003)")
@@ -955,7 +1246,7 @@ Nace_AI <- g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = name), size = 5, repel = TRUE) +
+  geom_node_text(aes(filter=RCA > .9, label = name), size = 5, repel = TRUE) +
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("Technology Space: AI patents (2004-2018)")

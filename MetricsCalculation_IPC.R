@@ -3427,3 +3427,194 @@ dev.off()
 #  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL)+
 #  theme_economist()+scale_colour_economist()
 
+#6.Network Metrics----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+Summary_NetworkMetrics <- read.csv("Data_calculations_IPC/Summary_NetworkMetrics.csv", sep = ";", header = TRUE, dec=",")
+names(Summary_NetworkMetrics)[names(Summary_NetworkMetrics) == 'Group.2'] <- 'Period'
+Summary_NetworkMetricsAvr <- Summary_NetworkMetrics[c(1:12),]
+Summary_NetworkMetricsSum <- Summary_NetworkMetrics[c(13:24),]
+
+Indicators <- c("dgr",
+                "n_neighbors",
+                "weighted_degree",
+                "triangles",
+                "centrality_authority",
+                "centrality_betweenness",
+                "centrality_closeness",
+                "centrality_eigen",
+                "centrality_hub",
+                "centrality_subgraph",
+                "centrality_degree",
+                "centrality_closeness_harmonic",
+                "centrality_closeness_residual",
+                "centrality_betweenness_network")
+
+dgr1 <- ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=dgr, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - Dgr")
+
+dgr2 <- ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=dgr, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - Dgr")
+
+n_neighbors1<- ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=n_neighbors, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - n_neighbors")
+
+n_neighbors2<- ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=n_neighbors, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - n_neighbors")
+
+ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=weighted_degree, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - weighted_degree")
+
+ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=weighted_degree, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - weighted_degree")
+
+triangles1<- ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=triangles, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  # scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  #  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - triangles")
+
+triangles2<- ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=triangles, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - triangles")
+
+centrality_authority1<- ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_authority, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_authority")
+
+centrality_authority2<- ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_authority, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_authority")
+
+centrality_betweenness1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_betweenness, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_betweenness")+ 
+  scale_y_continuous(limits=c(2,7.2),oob = rescale_none)
+
+centrality_betweenness2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_betweenness, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_betweenness")
+
+centrality_closeness1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_closeness, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_closeness") + 
+  scale_y_continuous(limits=c(.02,.055),oob = rescale_none)
+
+centrality_closeness2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_closeness, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_closeness")
+
+centrality_eigen1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_eigen, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_eigen")+ 
+  scale_y_continuous(limits=c(.45,.67),oob = rescale_none)
+
+centrality_eigen2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_eigen, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_eigen")
+
+centrality_hub1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_hub, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_hub") + 
+  scale_y_continuous(limits=c(.45,.7),oob = rescale_none)
+
+centrality_hub2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_hub, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_hub")
+
+centrality_subgraph1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_subgraph, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_subgraph")
+
+centrality_subgraph2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_subgraph, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_subgraph")
+
+centrality_degree1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_degree, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_degree")
+
+centrality_degree2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_degree, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_degree")
+
+centrality_closeness_harmonic1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_closeness_harmonic, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_closeness_harmonic")
+
+centrality_closeness_harmonic2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_closeness_harmonic, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_closeness_harmonic")
+
+centrality_closeness_residual1<-ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_closeness_residual, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_closeness_residual")
+
+centrality_closeness_residual2<-ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_closeness_residual, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_closeness_residual")
+
+centrality_betweenness_network1<- ggplot(Summary_NetworkMetricsAvr, aes(x=Group.1, y=centrality_betweenness_network, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Average - centrality_betweenness_network")
+
+centrality_betweenness_network2<- ggplot(Summary_NetworkMetricsSum, aes(x=Group.1, y=centrality_betweenness_network, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("Sum - centrality_betweenness_network")
+
+Indicators
+
+tiff("Figures_IPC/NetworkMetrics_1_to_5.jpg", width = 8, height = 10, units = 'in', res = 200)
+multiplot(dgr1, n_neighbors1, triangles1, centrality_authority1, centrality_closeness1,
+          dgr2, n_neighbors2, triangles2, centrality_authority2, centrality_closeness2, cols=2)
+dev.off()
+
+tiff("Figures_IPC/NetworkMetrics_6_to_9.jpg", width = 8, height = 10, units = 'in', res = 200)
+multiplot(centrality_betweenness1, centrality_subgraph1, centrality_degree1, centrality_eigen1,
+          centrality_betweenness2, centrality_subgraph2, centrality_degree2, centrality_eigen2, cols=2)
+dev.off()
+
+tiff("Figures_IPC/NetworkMetrics_10_to_13.jpg", width = 8, height = 10, units = 'in', res = 200)
+multiplot(centrality_closeness_harmonic1, centrality_closeness_residual1, centrality_betweenness_network1, centrality_hub1,
+          centrality_closeness_harmonic2, centrality_closeness_residual2, centrality_betweenness_network2, centrality_hub2, cols=2)
+dev.off()
+
+tiff("Figures_IPC/NetworkMetrics_Best_ones.jpg", width = 8, height = 10, units = 'in', res = 200)
+multiplot(centrality_closeness1, centrality_betweenness1, centrality_eigen1, cols=1)
+dev.off()
+
+#Best ones: centrality_closeness, centrality_eigen, centrality_hub, centrality_betweenness_network
