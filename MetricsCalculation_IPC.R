@@ -595,7 +595,7 @@ Relatedness$Cosine_Top3<- mean(mat_tech_1st_US_Top3_rel_cosi)
 IPC_all_patents_1st_US_Top7 <- IPC_all_patents_1st_US[IPC_all_patents_1st_US$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_US$techn_field_nr == "2"| 
                                                         IPC_all_patents_1st_US$techn_field_nr == "3"|
-                                                        IPC_all_patents_1st_US$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_1st_US$techn_field_nr == "4"| 
                                                         IPC_all_patents_1st_US$techn_field_nr == "13"| 
                                                         IPC_all_patents_1st_US$techn_field_nr == "25"| 
                                                         IPC_all_patents_1st_US$techn_field_nr == "34", ]
@@ -680,7 +680,7 @@ Relatedness_CN$Cosine_Top3<- mean(mat_tech_1st_CN_Top3_rel_cosi)
 IPC_all_patents_1st_CN_Top7 <- IPC_all_patents_1st_CN[IPC_all_patents_1st_CN$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_CN$techn_field_nr == "2"| 
                                                         IPC_all_patents_1st_CN$techn_field_nr == "3"|
-                                                        IPC_all_patents_1st_CN$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_1st_CN$techn_field_nr == "4"| 
                                                         IPC_all_patents_1st_CN$techn_field_nr == "13"| 
                                                         IPC_all_patents_1st_CN$techn_field_nr == "25"| 
                                                         IPC_all_patents_1st_CN$techn_field_nr == "34", ]
@@ -766,7 +766,7 @@ Relatedness_KR$Cosine_Top3<- mean(mat_tech_1st_KR_Top3_rel_cosi)
 IPC_all_patents_1st_KR_Top7 <- IPC_all_patents_1st_KR[IPC_all_patents_1st_KR$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_KR$techn_field_nr == "2"| 
                                                         IPC_all_patents_1st_KR$techn_field_nr == "3"|
-                                                        IPC_all_patents_1st_KR$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_1st_KR$techn_field_nr == "4"| 
                                                         IPC_all_patents_1st_KR$techn_field_nr == "13"| 
                                                         IPC_all_patents_1st_KR$techn_field_nr == "25"| 
                                                         IPC_all_patents_1st_KR$techn_field_nr == "34", ]
@@ -850,7 +850,7 @@ Relatedness_JP$Cosine_Top3<- mean(mat_tech_1st_JP_Top3_rel_cosi)
 IPC_all_patents_1st_JP_Top7 <- IPC_all_patents_1st_JP[IPC_all_patents_1st_JP$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_JP$techn_field_nr == "2"| 
                                                         IPC_all_patents_1st_JP$techn_field_nr == "3"|
-                                                        IPC_all_patents_1st_JP$techn_field_nr == "4"| 
+                                                       #IPC_all_patents_1st_JP$techn_field_nr == "4"| 
                                                         IPC_all_patents_1st_JP$techn_field_nr == "13"| 
                                                         IPC_all_patents_1st_JP$techn_field_nr == "25"| 
                                                         IPC_all_patents_1st_JP$techn_field_nr == "34", ]
@@ -934,7 +934,7 @@ Relatedness_AI$Cosine_Top3<- mean(mat_tech_1st_AI_Top3_rel_cosi)
 IPC_all_patents_1st_AI_Top7 <- IPC_all_patents_1st_AI[IPC_all_patents_1st_AI$techn_field_nr == "1"| 
                                                         IPC_all_patents_1st_AI$techn_field_nr == "2"| 
                                                         IPC_all_patents_1st_AI$techn_field_nr == "3"|
-                                                        IPC_all_patents_1st_AI$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_1st_AI$techn_field_nr == "4"| 
                                                         IPC_all_patents_1st_AI$techn_field_nr == "13"| 
                                                         IPC_all_patents_1st_AI$techn_field_nr == "25"| 
                                                         IPC_all_patents_1st_AI$techn_field_nr == "34", ]
@@ -1204,7 +1204,7 @@ Relatedness$Cosine_Top3<- mean(mat_tech_2nd_US_Top3_rel_cosi)
 IPC_all_patents_2nd_US_Top7 <- IPC_all_patents_2nd_US[IPC_all_patents_2nd_US$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_US$techn_field_nr == "2"| 
                                                         IPC_all_patents_2nd_US$techn_field_nr == "3"|
-                                                        IPC_all_patents_2nd_US$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_2nd_US$techn_field_nr == "4"| 
                                                         IPC_all_patents_2nd_US$techn_field_nr == "13"| 
                                                         IPC_all_patents_2nd_US$techn_field_nr == "25"| 
                                                         IPC_all_patents_2nd_US$techn_field_nr == "34", ]
@@ -1288,7 +1288,7 @@ Relatedness_CN$Cosine_Top3<- mean(mat_tech_2nd_CN_Top3_rel_cosi)
 IPC_all_patents_2nd_CN_Top7 <- IPC_all_patents_2nd_CN[IPC_all_patents_2nd_CN$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_CN$techn_field_nr == "2"| 
                                                         IPC_all_patents_2nd_CN$techn_field_nr == "3"|
-                                                        IPC_all_patents_2nd_CN$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_2nd_CN$techn_field_nr == "4"| 
                                                         IPC_all_patents_2nd_CN$techn_field_nr == "13"| 
                                                         IPC_all_patents_2nd_CN$techn_field_nr == "25"| 
                                                         IPC_all_patents_2nd_CN$techn_field_nr == "34", ]
@@ -1373,7 +1373,7 @@ Relatedness_KR$Cosine_Top3<- mean(mat_tech_2nd_KR_Top3_rel_cosi)
 IPC_all_patents_2nd_KR_Top7 <- IPC_all_patents_2nd_KR[IPC_all_patents_2nd_KR$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_KR$techn_field_nr == "2"| 
                                                         IPC_all_patents_2nd_KR$techn_field_nr == "3"|
-                                                        IPC_all_patents_2nd_KR$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_2nd_KR$techn_field_nr == "4"| 
                                                         IPC_all_patents_2nd_KR$techn_field_nr == "13"| 
                                                         IPC_all_patents_2nd_KR$techn_field_nr == "25"| 
                                                         IPC_all_patents_2nd_KR$techn_field_nr == "34", ]
@@ -1457,7 +1457,7 @@ Relatedness_JP$Cosine_Top3<- mean(mat_tech_2nd_JP_Top3_rel_cosi)
 IPC_all_patents_2nd_JP_Top7 <- IPC_all_patents_2nd_JP[IPC_all_patents_2nd_JP$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_JP$techn_field_nr == "2"| 
                                                         IPC_all_patents_2nd_JP$techn_field_nr == "3"|
-                                                        IPC_all_patents_2nd_JP$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_2nd_JP$techn_field_nr == "4"| 
                                                         IPC_all_patents_2nd_JP$techn_field_nr == "13"| 
                                                         IPC_all_patents_2nd_JP$techn_field_nr == "25"| 
                                                         IPC_all_patents_2nd_JP$techn_field_nr == "34", ]
@@ -1541,7 +1541,7 @@ Relatedness_AI$Cosine_Top3<- mean(mat_tech_2nd_AI_Top3_rel_cosi)
 IPC_all_patents_2nd_AI_Top7 <- IPC_all_patents_2nd_AI[IPC_all_patents_2nd_AI$techn_field_nr == "1"| 
                                                         IPC_all_patents_2nd_AI$techn_field_nr == "2"| 
                                                         IPC_all_patents_2nd_AI$techn_field_nr == "3"|
-                                                        IPC_all_patents_2nd_AI$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_2nd_AI$techn_field_nr == "4"| 
                                                         IPC_all_patents_2nd_AI$techn_field_nr == "13"| 
                                                         IPC_all_patents_2nd_AI$techn_field_nr == "25"| 
                                                         IPC_all_patents_2nd_AI$techn_field_nr == "34", ]
@@ -1799,7 +1799,7 @@ Relatedness$Cosine_Top3<- mean(mat_tech_3rd_US_Top3_rel_cosi)
 IPC_all_patents_3rd_US_Top7 <- IPC_all_patents_3rd_US[IPC_all_patents_3rd_US$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_US$techn_field_nr == "2"| 
                                                         IPC_all_patents_3rd_US$techn_field_nr == "3"|
-                                                        IPC_all_patents_3rd_US$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_3rd_US$techn_field_nr == "4"| 
                                                         IPC_all_patents_3rd_US$techn_field_nr == "13"| 
                                                         IPC_all_patents_3rd_US$techn_field_nr == "25"| 
                                                         IPC_all_patents_3rd_US$techn_field_nr == "34", ]
@@ -1888,7 +1888,7 @@ rm(IPC_all_patents_3rd_CN_Top4, IPC_all_patents_3rd_CN_Top3, IPC_all_patents_3rd
 IPC_all_patents_3rd_CN_Top7 <- IPC_all_patents_3rd_CN[IPC_all_patents_3rd_CN$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "2"| 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "3"|
-                                                        IPC_all_patents_3rd_CN$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_3rd_CN$techn_field_nr == "4"| 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "13"| 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "25"| 
                                                         IPC_all_patents_3rd_CN$techn_field_nr == "34", ]
@@ -1973,7 +1973,7 @@ Relatedness_KR$Cosine_Top3<- mean(mat_tech_3rd_KR_Top3_rel_cosi)
 IPC_all_patents_3rd_KR_Top7 <- IPC_all_patents_3rd_KR[IPC_all_patents_3rd_KR$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_KR$techn_field_nr == "2"| 
                                                         IPC_all_patents_3rd_KR$techn_field_nr == "3"|
-                                                        IPC_all_patents_3rd_KR$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_3rd_KR$techn_field_nr == "4"| 
                                                         IPC_all_patents_3rd_KR$techn_field_nr == "13"| 
                                                         IPC_all_patents_3rd_KR$techn_field_nr == "25"| 
                                                         IPC_all_patents_3rd_KR$techn_field_nr == "34", ]
@@ -2057,7 +2057,7 @@ Relatedness_JP$Cosine_Top3<- mean(mat_tech_3rd_JP_Top3_rel_cosi)
 IPC_all_patents_3rd_JP_Top7 <- IPC_all_patents_3rd_JP[IPC_all_patents_3rd_JP$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_JP$techn_field_nr == "2"| 
                                                         IPC_all_patents_3rd_JP$techn_field_nr == "3"|
-                                                        IPC_all_patents_3rd_JP$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_3rd_JP$techn_field_nr == "4"| 
                                                         IPC_all_patents_3rd_JP$techn_field_nr == "13"| 
                                                         IPC_all_patents_3rd_JP$techn_field_nr == "25"| 
                                                         IPC_all_patents_3rd_JP$techn_field_nr == "34", ]
@@ -2141,7 +2141,7 @@ Relatedness_AI$Cosine_Top3<- mean(mat_tech_3rd_AI_Top3_rel_cosi)
 IPC_all_patents_3rd_AI_Top7 <- IPC_all_patents_3rd_AI[IPC_all_patents_3rd_AI$techn_field_nr == "1"| 
                                                         IPC_all_patents_3rd_AI$techn_field_nr == "2"| 
                                                         IPC_all_patents_3rd_AI$techn_field_nr == "3"|
-                                                        IPC_all_patents_3rd_AI$techn_field_nr == "4"| 
+                                                        #IPC_all_patents_3rd_AI$techn_field_nr == "4"| 
                                                         IPC_all_patents_3rd_AI$techn_field_nr == "13"| 
                                                         IPC_all_patents_3rd_AI$techn_field_nr == "25"| 
                                                         IPC_all_patents_3rd_AI$techn_field_nr == "34", ]

@@ -260,7 +260,7 @@ Relatedness$Association_Top7 <- mean(mat_tech_1st_US_Top7_rel_asso)
 Relatedness$Cosine_Top7<- mean(mat_tech_1st_US_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_1st_US_Top8 <- Nace_all_patents_1st_US[Nace_all_patents_1st_US$nace2_code == "28.23"| 
+Nace_all_patents_1st_US_Top8 <- Nace_all_patents_1st_US[#Nace_all_patents_1st_US$nace2_code == "28.23"| 
                                                           Nace_all_patents_1st_US$nace2_code == "26.7"| 
                                                           Nace_all_patents_1st_US$nace2_code == "32.9"|
                                                           Nace_all_patents_1st_US$nace2_code == "26.1"| 
@@ -369,7 +369,7 @@ Relatedness_CN$Association_Top7 <- mean(mat_tech_1st_CN_Top7_rel_asso)
 Relatedness_CN$Cosine_Top7<- mean(mat_tech_1st_CN_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_1st_CN_Top8 <- Nace_all_patents_1st_CN[Nace_all_patents_1st_CN$nace2_code == "28.23"| 
+Nace_all_patents_1st_CN_Top8 <- Nace_all_patents_1st_CN[#Nace_all_patents_1st_CN$nace2_code == "28.23"| 
                                                           Nace_all_patents_1st_CN$nace2_code == "26.7"| 
                                                           Nace_all_patents_1st_CN$nace2_code == "32.9"|
                                                           Nace_all_patents_1st_CN$nace2_code == "26.1"| 
@@ -479,7 +479,7 @@ Relatedness_KR$Association_Top7 <- mean(mat_tech_1st_KR_Top7_rel_asso)
 Relatedness_KR$Cosine_Top7<- mean(mat_tech_1st_KR_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_1st_KR_Top8 <- Nace_all_patents_1st_KR[Nace_all_patents_1st_KR$nace2_code == "28.23"| 
+Nace_all_patents_1st_KR_Top8 <- Nace_all_patents_1st_KR[#Nace_all_patents_1st_KR$nace2_code == "28.23"| 
                                                           Nace_all_patents_1st_KR$nace2_code == "26.7"| 
                                                           Nace_all_patents_1st_KR$nace2_code == "32.9"|
                                                           Nace_all_patents_1st_KR$nace2_code == "26.1"| 
@@ -588,7 +588,7 @@ Relatedness_JP$Association_Top7 <- mean(mat_tech_1st_JP_Top7_rel_asso)
 Relatedness_JP$Cosine_Top7<- mean(mat_tech_1st_JP_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_1st_JP_Top8 <- Nace_all_patents_1st_JP[Nace_all_patents_1st_JP$nace2_code == "28.23"| 
+Nace_all_patents_1st_JP_Top8 <- Nace_all_patents_1st_JP[#Nace_all_patents_1st_JP$nace2_code == "28.23"| 
                                                           Nace_all_patents_1st_JP$nace2_code == "26.7"| 
                                                           Nace_all_patents_1st_JP$nace2_code == "32.9"|
                                                           Nace_all_patents_1st_JP$nace2_code == "26.1"| 
@@ -697,7 +697,7 @@ Relatedness_AI$Association_Top7 <- mean(mat_tech_1st_AI_Top7_rel_asso)
 Relatedness_AI$Cosine_Top7<- mean(mat_tech_1st_AI_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_1st_AI_Top8 <- Nace_all_patents_1st_AI[Nace_all_patents_1st_AI$nace2_code == "28.23"| 
+Nace_all_patents_1st_AI_Top8 <- Nace_all_patents_1st_AI[#Nace_all_patents_1st_AI$nace2_code == "28.23"| 
                                                           Nace_all_patents_1st_AI$nace2_code == "26.7"| 
                                                           Nace_all_patents_1st_AI$nace2_code == "32.9"|
                                                           Nace_all_patents_1st_AI$nace2_code == "26.1"| 
@@ -991,7 +991,7 @@ Relatedness$Association_Top7 <- mean(mat_tech_2nd_US_Top7_rel_asso)
 Relatedness$Cosine_Top7<- mean(mat_tech_2nd_US_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_2nd_US_Top8 <- Nace_all_patents_2nd_US[Nace_all_patents_2nd_US$nace2_code == "28.23"| 
+Nace_all_patents_2nd_US_Top8 <- Nace_all_patents_2nd_US[#Nace_all_patents_2nd_US$nace2_code == "28.23"| 
                                                           Nace_all_patents_2nd_US$nace2_code == "26.7"| 
                                                           Nace_all_patents_2nd_US$nace2_code == "32.9"|
                                                           Nace_all_patents_2nd_US$nace2_code == "26.1"| 
@@ -1100,7 +1100,7 @@ Relatedness_CN$Association_Top7 <- mean(mat_tech_2nd_CN_Top7_rel_asso)
 Relatedness_CN$Cosine_Top7<- mean(mat_tech_2nd_CN_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_2nd_CN_Top8 <- Nace_all_patents_2nd_CN[Nace_all_patents_2nd_CN$nace2_code == "28.23"| 
+Nace_all_patents_2nd_CN_Top8 <- Nace_all_patents_2nd_CN[#Nace_all_patents_2nd_CN$nace2_code == "28.23"| 
                                                           Nace_all_patents_2nd_CN$nace2_code == "26.7"| 
                                                           Nace_all_patents_2nd_CN$nace2_code == "32.9"|
                                                           Nace_all_patents_2nd_CN$nace2_code == "26.1"| 
@@ -1210,7 +1210,7 @@ Relatedness_KR$Association_Top7 <- mean(mat_tech_2nd_KR_Top7_rel_asso)
 Relatedness_KR$Cosine_Top7<- mean(mat_tech_2nd_KR_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_2nd_KR_Top8 <- Nace_all_patents_2nd_KR[Nace_all_patents_2nd_KR$nace2_code == "28.23"| 
+Nace_all_patents_2nd_KR_Top8 <- Nace_all_patents_2nd_KR[#Nace_all_patents_2nd_KR$nace2_code == "28.23"| 
                                                           Nace_all_patents_2nd_KR$nace2_code == "26.7"| 
                                                           Nace_all_patents_2nd_KR$nace2_code == "32.9"|
                                                           Nace_all_patents_2nd_KR$nace2_code == "26.1"| 
@@ -1319,7 +1319,7 @@ Relatedness_JP$Association_Top7 <- mean(mat_tech_2nd_JP_Top7_rel_asso)
 Relatedness_JP$Cosine_Top7<- mean(mat_tech_2nd_JP_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_2nd_JP_Top8 <- Nace_all_patents_2nd_JP[Nace_all_patents_2nd_JP$nace2_code == "28.23"| 
+Nace_all_patents_2nd_JP_Top8 <- Nace_all_patents_2nd_JP[#Nace_all_patents_2nd_JP$nace2_code == "28.23"| 
                                                           Nace_all_patents_2nd_JP$nace2_code == "26.7"| 
                                                           Nace_all_patents_2nd_JP$nace2_code == "32.9"|
                                                           Nace_all_patents_2nd_JP$nace2_code == "26.1"| 
@@ -1428,7 +1428,7 @@ Relatedness_AI$Association_Top7 <- mean(mat_tech_2nd_AI_Top7_rel_asso)
 Relatedness_AI$Cosine_Top7<- mean(mat_tech_2nd_AI_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_2nd_AI_Top8 <- Nace_all_patents_2nd_AI[Nace_all_patents_2nd_AI$nace2_code == "28.23"| 
+Nace_all_patents_2nd_AI_Top8 <- Nace_all_patents_2nd_AI[#Nace_all_patents_2nd_AI$nace2_code == "28.23"| 
                                                           Nace_all_patents_2nd_AI$nace2_code == "26.7"| 
                                                           Nace_all_patents_2nd_AI$nace2_code == "32.9"|
                                                           Nace_all_patents_2nd_AI$nace2_code == "26.1"| 
@@ -1709,7 +1709,7 @@ Relatedness$Association_Top7 <- mean(mat_tech_3rd_US_Top7_rel_asso)
 Relatedness$Cosine_Top7<- mean(mat_tech_3rd_US_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_3rd_US_Top8 <- Nace_all_patents_3rd_US[Nace_all_patents_3rd_US$nace2_code == "28.23"| 
+Nace_all_patents_3rd_US_Top8 <- Nace_all_patents_3rd_US[#Nace_all_patents_3rd_US$nace2_code == "28.23"| 
                                                           Nace_all_patents_3rd_US$nace2_code == "26.7"| 
                                                           Nace_all_patents_3rd_US$nace2_code == "32.9"|
                                                           Nace_all_patents_3rd_US$nace2_code == "26.1"| 
@@ -1822,7 +1822,7 @@ Relatedness_CN$Association_Top7 <- mean(mat_tech_3rd_CN_Top7_rel_asso)
 Relatedness_CN$Cosine_Top7<- mean(mat_tech_3rd_CN_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_3rd_CN_Top8 <- Nace_all_patents_3rd_CN[Nace_all_patents_3rd_CN$nace2_code == "28.23"| 
+Nace_all_patents_3rd_CN_Top8 <- Nace_all_patents_3rd_CN[#Nace_all_patents_3rd_CN$nace2_code == "28.23"| 
                                                           Nace_all_patents_3rd_CN$nace2_code == "26.7"| 
                                                           Nace_all_patents_3rd_CN$nace2_code == "32.9"|
                                                           Nace_all_patents_3rd_CN$nace2_code == "26.1"| 
@@ -1932,7 +1932,7 @@ Relatedness_KR$Association_Top7 <- mean(mat_tech_3rd_KR_Top7_rel_asso)
 Relatedness_KR$Cosine_Top7<- mean(mat_tech_3rd_KR_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_3rd_KR_Top8 <- Nace_all_patents_3rd_KR[Nace_all_patents_3rd_KR$nace2_code == "28.23"| 
+Nace_all_patents_3rd_KR_Top8 <- Nace_all_patents_3rd_KR[#Nace_all_patents_3rd_KR$nace2_code == "28.23"| 
                                                           Nace_all_patents_3rd_KR$nace2_code == "26.7"| 
                                                           Nace_all_patents_3rd_KR$nace2_code == "32.9"|
                                                           Nace_all_patents_3rd_KR$nace2_code == "26.1"| 
@@ -2041,7 +2041,7 @@ Relatedness_JP$Association_Top7 <- mean(mat_tech_3rd_JP_Top7_rel_asso)
 Relatedness_JP$Cosine_Top7<- mean(mat_tech_3rd_JP_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_3rd_JP_Top8 <- Nace_all_patents_3rd_JP[Nace_all_patents_3rd_JP$nace2_code == "28.23"| 
+Nace_all_patents_3rd_JP_Top8 <- Nace_all_patents_3rd_JP[#Nace_all_patents_3rd_JP$nace2_code == "28.23"| 
                                                           Nace_all_patents_3rd_JP$nace2_code == "26.7"| 
                                                           Nace_all_patents_3rd_JP$nace2_code == "32.9"|
                                                           Nace_all_patents_3rd_JP$nace2_code == "26.1"| 
@@ -2150,7 +2150,7 @@ Relatedness_AI$Association_Top7 <- mean(mat_tech_3rd_AI_Top7_rel_asso)
 Relatedness_AI$Cosine_Top7<- mean(mat_tech_3rd_AI_Top7_rel_cosi)
 
 #then select only the top 8 areas:
-Nace_all_patents_3rd_AI_Top8 <- Nace_all_patents_3rd_AI[Nace_all_patents_3rd_AI$nace2_code == "28.23"| 
+Nace_all_patents_3rd_AI_Top8 <- Nace_all_patents_3rd_AI[#Nace_all_patents_3rd_AI$nace2_code == "28.23"| 
                                                           Nace_all_patents_3rd_AI$nace2_code == "26.7"| 
                                                           Nace_all_patents_3rd_AI$nace2_code == "32.9"|
                                                           Nace_all_patents_3rd_AI$nace2_code == "26.1"| 
