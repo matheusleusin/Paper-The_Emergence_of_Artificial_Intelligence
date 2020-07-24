@@ -321,7 +321,7 @@ g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
 
 coords_tech_AI <- g_tech_AI %>% igraph::layout.fruchterman.reingold() %>% as_tibble()
 colnames(coords_tech_AI) <- c("x", "y")
-
+write.csv2(coords_tech_AI, file = "Data_IPC/coords_tech_AI.csv", row.names = T)
 #let's take a look at the most and less complex IPC fields:
 g_tech_AI %N>% 
   arrange(desc(dgr)) %>%

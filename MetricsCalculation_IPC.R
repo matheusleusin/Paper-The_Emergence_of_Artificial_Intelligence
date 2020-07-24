@@ -3430,6 +3430,145 @@ dev.off()
 #6.Network Metrics----
 rm(list=ls())
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+coords_tech_AI <- read.csv("Data_IPC/coords_tech_AI.csv", sep = ";", header = TRUE, dec=",")
+names(coords_tech_AI) <- c("techn_field_nr", "x", "y")
+coords_tech_AI$techn_field_nr <- as.character(coords_tech_AI$techn_field_nr)
+
+#Now we read the data per period and calculate the RCAs:
+reg_tech1 <- read.csv("Data_IPC/reg_tech_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+reg_tech2 <- read.csv("Data_IPC/reg_tech_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
+reg_tech3 <- read.csv("Data_IPC/reg_tech_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+###First Period:
+mat_reg_tech1 <- reg_tech1 %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech1) <- mat_reg_tech1 %>% pull(ctry_code)
+
+mat_reg_tech1 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###second period:
+mat_reg_tech2 <- reg_tech2 %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech2) <- mat_reg_tech2 %>% pull(ctry_code)
+
+mat_reg_tech2 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA2 <- mat_reg_tech2 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###Third Period:
+mat_reg_tech3 <- reg_tech3 %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+rownames(mat_reg_tech3) <- mat_reg_tech3 %>% pull(ctry_code)
+
+mat_reg_tech3 %<>% select(-ctry_code) %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+reg_RCA1_CN <- reg_RCA1[,(2:3)][reg_RCA1$ctry_code == "CN",]
+coords_tech_AI$CN_1st <- reg_RCA1_CN$RCA[match(reg_RCA1_CN$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA2_CN <- reg_RCA2[,(2:3)][reg_RCA2$ctry_code == "CN",]
+coords_tech_AI$CN_2nd <- reg_RCA2_CN$RCA[match(reg_RCA2_CN$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA3_CN <- reg_RCA3[,(2:3)][reg_RCA3$ctry_code == "CN",]
+coords_tech_AI$CN_3rd <- reg_RCA3_CN$RCA[match(reg_RCA3_CN$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA1_JP <- reg_RCA1[,(2:3)][reg_RCA1$ctry_code == "JP",]
+coords_tech_AI$JP_1st <- reg_RCA1_JP$RCA[match(reg_RCA1_JP$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA2_JP <- reg_RCA2[,(2:3)][reg_RCA2$ctry_code == "JP",]
+coords_tech_AI$JP_2nd <- reg_RCA2_JP$RCA[match(reg_RCA2_JP$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA3_JP <- reg_RCA3[,(2:3)][reg_RCA3$ctry_code == "JP",]
+coords_tech_AI$JP_3rd <- reg_RCA3_JP$RCA[match(reg_RCA3_JP$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA1_US <- reg_RCA1[,(2:3)][reg_RCA1$ctry_code == "US",]
+coords_tech_AI$US_1st <- reg_RCA1_US$RCA[match(reg_RCA1_US$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA2_US <- reg_RCA2[,(2:3)][reg_RCA2$ctry_code == "US",]
+coords_tech_AI$US_2nd <- reg_RCA2_US$RCA[match(reg_RCA2_US$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA3_US <- reg_RCA3[,(2:3)][reg_RCA3$ctry_code == "US",]
+coords_tech_AI$US_3rd <- reg_RCA3_US$RCA[match(reg_RCA3_US$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA1_KR <- reg_RCA1[,(2:3)][reg_RCA1$ctry_code == "KR",]
+coords_tech_AI$KR_1st <- reg_RCA1_KR$RCA[match(reg_RCA1_KR$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA2_KR <- reg_RCA2[,(2:3)][reg_RCA2$ctry_code == "KR",]
+coords_tech_AI$KR_2nd <- reg_RCA2_KR$RCA[match(reg_RCA2_KR$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+reg_RCA3_KR <- reg_RCA3[,(2:3)][reg_RCA3$ctry_code == "KR",]
+coords_tech_AI$KR_3rd <- reg_RCA3_KR$RCA[match(reg_RCA3_KR$techn_field_nr, coords_tech_AI$techn_field_nr)]
+
+x_6 <- coords_tech_AI[,(2:3)][coords_tech_AI$techn_field_nr == "6",]
+x_cluster <- coords_tech_AI[,(2:3)][coords_tech_AI$techn_field_nr == "6"|
+                                      coords_tech_AI$techn_field_nr == "7"|
+                                      coords_tech_AI$techn_field_nr == "10"|
+                                      coords_tech_AI$techn_field_nr == "11"|
+                                      coords_tech_AI$techn_field_nr == "4"|
+                                      coords_tech_AI$techn_field_nr == "5"|
+                                      coords_tech_AI$techn_field_nr == "12",]
+coords_tech_AI$distance_6 <- sqrt((coords_tech_AI$x-x_6[[1]])^2+(coords_tech_AI$y-x_6[[2]])^2)
+coords_tech_AI$distance_cluster <- sqrt((coords_tech_AI$x-mean(x_cluster[[1]]))^2+(coords_tech_AI$y-mean(x_cluster[[2]]))^2)
+coords_tech_AI$CN_d6_1st <- coords_tech_AI$distance_6*coords_tech_AI$CN_1st
+coords_tech_AI$CN_d6_2nd <- coords_tech_AI$distance_6*coords_tech_AI$CN_2nd
+coords_tech_AI$CN_d6_3rd <- coords_tech_AI$distance_6*coords_tech_AI$CN_3rd
+coords_tech_AI$JP_d6_1st <- coords_tech_AI$distance_6*coords_tech_AI$JP_1st
+coords_tech_AI$JP_d6_2nd <- coords_tech_AI$distance_6*coords_tech_AI$JP_2nd
+coords_tech_AI$JP_d6_3rd <- coords_tech_AI$distance_6*coords_tech_AI$JP_3rd
+coords_tech_AI$US_d6_1st <- coords_tech_AI$distance_6*coords_tech_AI$US_1st
+coords_tech_AI$US_d6_2nd <- coords_tech_AI$distance_6*coords_tech_AI$US_2nd
+coords_tech_AI$US_d6_3rd <- coords_tech_AI$distance_6*coords_tech_AI$US_3rd
+coords_tech_AI$KR_d6_1st <- coords_tech_AI$distance_6*coords_tech_AI$KR_1st
+coords_tech_AI$KR_d6_2nd <- coords_tech_AI$distance_6*coords_tech_AI$KR_2nd
+coords_tech_AI$KR_d6_3rd <- coords_tech_AI$distance_6*coords_tech_AI$KR_3rd
+
+coords_tech_AI$CN_dcl_1st <- coords_tech_AI$distance_cluster*coords_tech_AI$CN_1st
+coords_tech_AI$CN_dcl_2nd <- coords_tech_AI$distance_cluster*coords_tech_AI$CN_2nd
+coords_tech_AI$CN_dcl_3rd <- coords_tech_AI$distance_cluster*coords_tech_AI$CN_3rd
+coords_tech_AI$JP_dcl_1st <- coords_tech_AI$distance_cluster*coords_tech_AI$JP_1st
+coords_tech_AI$JP_dcl_2nd <- coords_tech_AI$distance_cluster*coords_tech_AI$JP_2nd
+coords_tech_AI$JP_dcl_3rd <- coords_tech_AI$distance_cluster*coords_tech_AI$JP_3rd
+coords_tech_AI$US_dcl_1st <- coords_tech_AI$distance_cluster*coords_tech_AI$US_1st
+coords_tech_AI$US_dcl_2nd <- coords_tech_AI$distance_cluster*coords_tech_AI$US_2nd
+coords_tech_AI$US_dcl_3rd <- coords_tech_AI$distance_cluster*coords_tech_AI$US_3rd
+coords_tech_AI$KR_dcl_1st <- coords_tech_AI$distance_cluster*coords_tech_AI$KR_1st
+coords_tech_AI$KR_dcl_2nd <- coords_tech_AI$distance_cluster*coords_tech_AI$KR_2nd
+coords_tech_AI$KR_dcl_3rd <- coords_tech_AI$distance_cluster*coords_tech_AI$KR_3rd
+
+write.csv2(coords_tech_AI, file = "Data_calculations_IPC/coords_tech_AI_metrics.csv", row.names = F)
+SummaryData <- as.data.frame(colMeans(coords_tech_AI[,c(18:41)], na.rm=TRUE))
+SummaryData
+
 Summary_NetworkMetrics <- read.csv("Data_calculations_IPC/Summary_NetworkMetrics.csv", sep = ";", header = TRUE, dec=",")
 names(Summary_NetworkMetrics)[names(Summary_NetworkMetrics) == 'Group.2'] <- 'Period'
 Summary_NetworkMetricsAvr <- Summary_NetworkMetrics[c(1:12),]
