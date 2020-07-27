@@ -3288,7 +3288,7 @@ KnowledgeCompl <- KnowledgeCompl[KnowledgeCompl$X == "US3" |
 KnowledgeCompl$"AI-core codes" = rowSums(KnowledgeCompl[,c("X6", "X7", "X10", "X12")])
 KnowledgeCompl$"Overall Complexity" = rowSums(KnowledgeCompl[,c(2:36)])
 KnowledgeCompl$"AI-related codes" = rowSums(KnowledgeCompl[,c("X11", "X4", "X5")])
-KnowledgeCompl$"Surrounding codes" = rowSums(KnowledgeCompl[,c("X4", "X3", "X2", "X1", "X13", "X25", "X34")])
+KnowledgeCompl$"Surrounding codes" = rowSums(KnowledgeCompl[,c("X3", "X2", "X1", "X13", "X25", "X34")])
 
 KnowledgeCompl2<- KnowledgeCompl[,c(1, 38, 39)]
 names(KnowledgeCompl2) <- c("Country", "Period", "Value")
@@ -3325,7 +3325,7 @@ KnowledgeCompl_AI <- KnowledgeCompl_AI[KnowledgeCompl_AI$X == "AI_pat3", ]
 KnowledgeCompl_AI$"AI-core codes" = rowSums(KnowledgeCompl_AI[,c("X6", "X7", "X10", "X12")])
 KnowledgeCompl_AI$"Overall Complexity" = rowSums(KnowledgeCompl_AI[,c(2:36)])
 KnowledgeCompl_AI$"AI-related codes" = rowSums(KnowledgeCompl_AI[,c("X11", "X4", "X5")])
-KnowledgeCompl_AI$"Surrounding codes" = rowSums(KnowledgeCompl_AI[,c("X4", "X3", "X2", "X1", "X13", "X25", "X34")])
+KnowledgeCompl_AI$"Surrounding codes" = rowSums(KnowledgeCompl_AI[,c("X3", "X2", "X1", "X13", "X25", "X34")])
 
 KnowledgeCompl_AI2<- KnowledgeCompl_AI[,c(1, 38, 39)]
 names(KnowledgeCompl_AI2) <- c("Country", "Period", "Value")
@@ -3428,6 +3428,7 @@ dev.off()
 #  theme_economist()+scale_colour_economist()
 
 #6.Network Metrics----
+#This first part is not ready yet (nor necessary). The important part starts again at line 3573
 rm(list=ls())
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 coords_tech_AI <- read.csv("Data_IPC/coords_tech_AI.csv", sep = ";", header = TRUE, dec=",")

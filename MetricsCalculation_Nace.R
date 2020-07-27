@@ -3066,7 +3066,7 @@ KnowledgeCompl$"AI-core codes" = rowSums(KnowledgeCompl[,c("X26.2", "X26.5", "X2
 KnowledgeCompl$"Overall Complexity" = rowSums(KnowledgeCompl[,c(2:85)])
 KnowledgeCompl$"AI-related codes" = rowSums(KnowledgeCompl[,c("X26.3", "X26.1", "X26.7", "X27.33", 
                                                               "X27.4", "X27.5", "X28.23", "X32.9")])
-KnowledgeCompl$"Surrounding codes" = rowSums(KnowledgeCompl[,c("X25.3", "X28.23", "X29.3", "X26.4", "X27.12", 
+KnowledgeCompl$"Surrounding codes" = rowSums(KnowledgeCompl[,c("X25.3", "X29.3", "X26.4", "X27.12", 
                                                                "X27.9", "X28.25")])
 
 KnowledgeCompl2<- KnowledgeCompl[,c(1, 87, 88)]
@@ -3106,7 +3106,7 @@ KnowledgeCompl_AI$"AI-core codes" = rowSums(KnowledgeCompl_AI[,c("X26.2", "X26.5
 KnowledgeCompl_AI$"Overall Complexity" = rowSums(KnowledgeCompl_AI[,c(2:85)])
 KnowledgeCompl_AI$"AI-related codes" = rowSums(KnowledgeCompl_AI[,c("X26.3", "X26.1", "X26.7", "X27.33", 
                                                                     "X27.4", "X27.5", "X28.23", "X32.9")])
-KnowledgeCompl_AI$"Surrounding codes" = rowSums(KnowledgeCompl_AI[,c("X25.3", "X28.23", "X29.3", "X26.4", "X27.12", 
+KnowledgeCompl_AI$"Surrounding codes" = rowSums(KnowledgeCompl_AI[,c("X25.3", "X29.3", "X26.4", "X27.12", 
                                                                      "X27.9", "X28.25")])
 
 KnowledgeCompl_AI2<- KnowledgeCompl_AI[,c(1, 87, 88)]
