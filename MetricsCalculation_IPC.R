@@ -3213,7 +3213,7 @@ Rel_byP_a<- ggplot(Relatedness, aes(x=Country, y=Value, fill=Indicator)) +
   #scale_fill_brewer(palette="Reds") +
   #scale_fill_brewer(palette="Greens") +
   ggtitle("Countries Relatedness in the considered IPC fields") + 
-  scale_y_continuous(limits=c(.45,2.35),oob = rescale_none)
+  scale_y_continuous(limits=c(.45,1.5),oob = rescale_none)
 
 Rel_byAI_a<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Indicator)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ labs(x = "") + 
@@ -3228,7 +3228,7 @@ Rel_byP_b <- ggplot(Relatedness, aes(x=Country, y=Value, fill=Period)) +
   facet_wrap(~Indicator, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic() +
   ggtitle("Countries Relatedness in the considered IPC fields") + 
-  scale_y_continuous(limits=c(.45,2.35),oob = rescale_none)
+  scale_y_continuous(limits=c(.45,1.5),oob = rescale_none)
 
 Rel_byAI_b<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
@@ -3250,7 +3250,7 @@ Rel_byP_c <- ggplot(Relatedness2, aes(x=Country, y=Value, fill=Period)) +
   facet_wrap(~Indicator, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic() +
   ggtitle("Countries Relatedness in the considered IPC fields") + 
-  scale_y_continuous(limits=c(.45,2.35),oob = rescale_none)
+  scale_y_continuous(limits=c(.45,1.5),oob = rescale_none)
 
 Rel_byAI_c<- ggplot(Relatedness_AI2, aes(x=Country, y=Value, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
