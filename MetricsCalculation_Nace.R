@@ -2310,9 +2310,8 @@ First_period$JP_Com <- KnwComp_Country_1st_RCA$JP3
 i <- c(8:11)
 First_period[ , i] <- apply(First_period[ , i], 2,            # Specify own function within apply
                             function(x) as.integer(as.character(x)))
-
 First_period$nace2_code <- as.factor(First_period$nace2_code)
-
+write.csv2(First_period, file = "Data_calculations_Nace/Metrics_First_period_complexity.csv", row.names = F)
 #remove files we don't need:
 rm(AI_first_period, CN_first_period, JP_first_period, KR_first_period, KnwComp_Country_1st_RCA,
    mat_reg_tech1_AI, mat_reg_tech1_countries, reg_RCA1_AI, reg_RCA1_countries, reg_tech1_AI, reg_tech1_countries,
@@ -2498,6 +2497,7 @@ i <- c(8:11)
 Second_period[ , i] <- apply(Second_period[ , i], 2,            # Specify own function within apply
                              function(x) as.integer(as.character(x)))
 Second_period$nace2_code <-as.factor(Second_period$nace2_code)
+write.csv2(Second_period, file = "Data_calculations_Nace/Metrics_Second_period_complexity.csv", row.names = F)
 #remove files we don't need:
 rm(AI_Second_period, CN_Second_period, JP_Second_period, KR_Second_period, KnwComp_Country_2nd_RCA,
    mat_reg_tech2_AI, mat_reg_tech2_countries, reg_RCA2_AI, reg_RCA2_countries, reg_tech2_AI, reg_tech2_countries,
@@ -2675,6 +2675,7 @@ Third_period[ , i] <- apply(Third_period[ , i], 2,            # Specify own func
                             function(x) as.integer(as.character(x)))
 
 Third_period$nace2_code <- as.factor(Third_period$nace2_code)
+write.csv2(Third_period, file = "Data_calculations_Nace/Metrics_Third_period_complexity.csv", row.names = F)
 #remove files we don't need:
 rm(AI_Third_period, CN_Third_period, JP_Third_period, KR_Third_period, KnwComp_Country_3rd_RCA,
    mat_reg_tech3_AI, mat_reg_tech3_countries, reg_RCA3_AI, reg_RCA3_countries, reg_tech3_AI, reg_tech3_countries,
@@ -2843,6 +2844,103 @@ ggplot(AI_persp, aes(x=log10(AI_Com), y=log10(RCA_AI), label = '')) +
   ylab(NULL)
 dev.off()
 
+#2.5. New visualization ------
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+First_period <- read.csv("Data_calculations_Nace/Metrics_First_period_complexity.csv", sep = ";", header = TRUE, dec=",")
+Second_period <- read.csv("Data_calculations_Nace/Metrics_Second_period_complexity.csv", sep = ";", header = TRUE, dec=",")
+Third_period <- read.csv("Data_calculations_Nace/Metrics_Third_period_complexity.csv", sep = ";", header = TRUE, dec=",")
+
+First_period$Period <- "Period 1 (1974-1988)"
+Second_period$Period <- "Period 2 (1989-2003)"
+Third_period$Period <- "Period 3 (2004-2018)"
+
+KnowlComp_1st <- read.csv("Data_calculations_Nace/KnowledgeComp_1st.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_2nd <- read.csv("Data_calculations_Nace/KnowledgeComp_2nd.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd <- read.csv("Data_calculations_Nace/KnowledgeComp_3rd.csv", sep = ";", header = TRUE, dec=",")
+
+First_period$RCA_field <- KnowlComp_1st$RCA[match(First_period$nace2_code, KnowlComp_1st$X)]
+Second_period$RCA_field <- KnowlComp_2nd$RCA[match(Second_period$nace2_code, KnowlComp_2nd$X)]
+Third_period$RCA_field <- KnowlComp_3rd$RCA[match(Third_period$nace2_code, KnowlComp_3rd$X)]
+
+All_periods <- rbind(First_period, Second_period, Third_period)
+
+All_periods$Category <- "Other"
+Surr <- c("26.3", "26.1", "26.7", "27.33", "27.4", "27.5", "32.9")
+All_periods$Category[(All_periods$nace2_code %in% Surr)] <- "Surrounding codes"
+AIrel<- c("25.3", "29.3", "26.4", "27.12", "27.9", "28.25", "28.23")
+All_periods$Category[(All_periods$nace2_code %in% AIrel)] <- "AI-related codes"
+AIcor<- c("26.2","26.5", "26.51", "62")
+All_periods$Category[(All_periods$nace2_code %in% AIcor)] <- "AI-core codes"
+All_periods$Category <- factor(All_periods$Category, levels = c("AI-core codes", "AI-related codes", "Surrounding codes", "Other"))
+All_periods$Category2 <- All_periods$Category
+All_periods$Category2 <- as.numeric(All_periods$Category2)
+All_periods$Category2 <- as.numeric(All_periods$Category2)
+
+JP_knwCom <- ggplot(All_periods, aes(x=log10(RCA_JP), y=-(RCA_field), label = '')) + 
+  geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_periods, aes(label = ifelse(RCA_JP>1 & Category2<4,as.character(nace2_code),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Knowledge Complexity - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab(NULL) +
+  ylab(NULL)
+
+US_knwCom <- ggplot(All_periods, aes(x=log10(RCA_US), y=-(RCA_field), label = '')) + 
+  geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_periods, aes(label = ifelse(RCA_US>1 & Category2<4,as.character(nace2_code),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Knowledge Complexity - United States") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab(NULL) +
+  ylab(NULL)
+
+CN_knwCom <- ggplot(All_periods, aes(x=log10(RCA_CN), y=-(RCA_field), label = '')) + 
+  geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_periods, aes(label = ifelse(RCA_CN>1 & Category2<4,as.character(nace2_code),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Knowledge Complexity - China") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab(NULL) +
+  ylab(NULL)
+
+
+KR_knwCom <- ggplot(All_periods, aes(x=log10(RCA_KR), y=-(RCA_field), label = '')) + 
+  geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_periods, aes(label = ifelse(RCA_KR>1 & Category2<4,as.character(nace2_code),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Knowledge Complexity - South Korea") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab(NULL) +
+  ylab(NULL)
+
+tiff("Figures_Nace/Knowledge_Complexity_JP.jpg", width = 14, height = 8, units = 'in', res = 200)
+JP_knwCom
+dev.off()
+
+tiff("Figures_Nace/Knowledge_Complexity_CN.jpg", width = 14, height = 8, units = 'in', res = 200)
+CN_knwCom
+dev.off()
+
+tiff("Figures_Nace/Knowledge_Complexity_US.jpg", width = 14, height = 8, units = 'in', res = 200)
+US_knwCom
+dev.off()
+
+tiff("Figures_Nace/Knowledge_Complexity_KR.jpg", width = 14, height = 8, units = 'in', res = 200)
+KR_knwCom
+dev.off()
 
 #3. Visualization Indicators -----
 rm(list=ls())
