@@ -3065,6 +3065,8 @@ All_periods$Category2 <- All_periods$Category
 All_periods$Category2 <- as.numeric(All_periods$Category2)
 All_periods$Category2 <- as.numeric(All_periods$Category2)
 
+write.csv2(All_periods, file = "Data_calculations_IPC/Specializations_All_periods_IPC.csv", row.names = TRUE)
+
 JP_knwCom <- ggplot(All_periods, aes(x=log10(RCA_JP), y=-(RCA_field), label = '')) + 
   geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
   geom_text() +
@@ -3078,7 +3080,7 @@ JP_knwCom <- ggplot(All_periods, aes(x=log10(RCA_JP), y=-(RCA_field), label = ''
   ylab(NULL)
 
 US_knwCom <- ggplot(All_periods, aes(x=log10(RCA_US), y=-(RCA_field), label = '')) + 
-  geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
+  geom_point(aes(colour = Category, size = US_Com),show.legend = T, stroke = 2) +  
   geom_text() +
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
@@ -3090,7 +3092,7 @@ US_knwCom <- ggplot(All_periods, aes(x=log10(RCA_US), y=-(RCA_field), label = ''
   ylab(NULL)
 
 CN_knwCom <- ggplot(All_periods, aes(x=log10(RCA_CN), y=-(RCA_field), label = '')) + 
-  geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
+  geom_point(aes(colour = Category, size = CN_Com),show.legend = T, stroke = 2) +  
   geom_text() +
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
@@ -3103,7 +3105,7 @@ CN_knwCom <- ggplot(All_periods, aes(x=log10(RCA_CN), y=-(RCA_field), label = ''
 
 
 KR_knwCom <- ggplot(All_periods, aes(x=log10(RCA_KR), y=-(RCA_field), label = '')) + 
-  geom_point(aes(colour = Category, size = JP_Com),show.legend = T, stroke = 2) +  
+  geom_point(aes(colour = Category, size = KR_Com),show.legend = T, stroke = 2) +  
   geom_text() +
   geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
