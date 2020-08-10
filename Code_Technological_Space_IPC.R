@@ -15,7 +15,7 @@ library(netrankr) #library for calculating pagerank related indicators (i.e. cen
 #On this first part we will create the sparse matrix, calculate the similarity matrix and save it in a csv file 
 #named "Matrix_IPC"
 rm(list=ls())
-setwd("C:/Users/Matheus/Desktop") #for loading the big file
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") #for loading the big file
 
 #Now we will load a first big file containing all priorities and their related IPC codes published in or after 2004. This file has
 #58,841,893 lines. I will read it in 3 parts:
@@ -85,7 +85,7 @@ rm(IPC_all_patents_Part3)
 
 #We will load the second big file containing all priorities and their related IPC codes published in or before 2003. This file has
 #45,182,803 lines;
-setwd("C:/Users/Matheus/Desktop")
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho")
 c <- 45182803 -40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
@@ -140,7 +140,7 @@ write.csv2(mat_tech_AI_Final, file = "Data_IPC/Matrix_IPC.csv", row.names = TRUE
 
 #1.2.Technology Space ----
 #Now we will create the technology spaces, dividing them in 3 periods;
-setwd("C:/Users/Matheus/Desktop") 
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
 rm(list=ls())
 #First, we create the 2 functions we will use for every period:
 group_by_applnID <- function (data){
@@ -160,7 +160,7 @@ group_by_ctry_and_IPC <- function (data){
 
 #1.2.1.First Period ----
 #For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
-setwd("C:/Users/Matheus/Desktop") 
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
 c <- 45182803 -40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
@@ -205,7 +205,7 @@ write.csv2(reg_tech1, file = "Data_IPC/reg_tech_FirstPeriod.csv", row.names = F)
 
 #1.2.2.Second Period ----
 #For the second period, which goes from 1989 to 2003, we again need only the dataset from Part2:
-setwd("C:/Users/Matheus/Desktop") 
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
 c <- 45182803 -40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
@@ -246,7 +246,7 @@ write.csv2(reg_tech2, file = "Data_IPC/reg_tech_SecondPeriod.csv", row.names = F
 #For the third period, which goes from 2004 to 2018, we  need only the dataset from Part1. This
 #specific dataset only has patents from 2004 to 2018, so we don't have to filter it. But calculating
 #the reg_tech is very computationally expansive, so we have to divide that in 3 parts.
-setwd("C:/Users/Matheus/Desktop") 
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
 c <- 58841893-40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000, skip = 20000000)
@@ -949,7 +949,7 @@ dev.off()
 #Let's start with what we had on section 1.2.1.:
 
 #For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
-setwd("C:/Users/Matheus/Desktop") 
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
 c <- 45182803 -40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
@@ -1056,7 +1056,7 @@ IPC_AI
 dev.off()
 
 #For the second period we repeat again the code from the related section (1.2.3.):
-setwd("C:/Users/Matheus/Desktop") 
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
 c <- 45182803 -40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
@@ -1146,7 +1146,7 @@ IPC_AI
 dev.off()
 
 #And finnaly For the third period (section 1.2.3.), which goes from 2004 to 2018:
-setwd("C:/Users/Matheus/Desktop") 
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
 c <- 58841893-40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000, skip = 20000000)

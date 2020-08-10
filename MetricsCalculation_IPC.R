@@ -31,7 +31,7 @@ rownames(mat) <- c ("R1", "R2", "R3", "R4", "R5")
 colnames(mat) <- c ("I1", "I2", "I3", "I4", "I5")
 
 #i can get easily the number of patents in each techn_field per country (and thus, also total) by doing:
-setwd("C:/Users/Matheus/Desktop")
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho")
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 200000)
 names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
 IPC_all_patents_example <- IPC_all_patents_Part1[,c((-1), (-4), (-5))]
@@ -348,7 +348,7 @@ ggplot(First_period, aes(x=log10(RCA_US), y=log10(RCA_AI), label = techn_field_n
 
 #3.Indicators ----
 rm(list=ls())
-setwd("C:/Users/Matheus/Desktop") #for loading the big file
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho") #for loading the big file
 
 #3.1. First period ----
 #3.1.1.Load the data we need and filter it -----
@@ -458,6 +458,41 @@ write.csv2(KnowledgeComp_1st, file = "Data_calculations_IPC/KnowledgeComp_1st.cs
 write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs.csv", row.names = TRUE)
 
+#Considering Morc 1st period
+KnowledgeComp_1st_Morc <- as.data.frame(MORc(mat_1st, RCA = T))
+KnowledgeComp_1st_Morc$RCA <- MORc(mat_1st, RCA = T)
+KnowledgeComp_1st_Morc$RCA_Step0 <- MORc(mat_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_Morc$RCA_Step1 <- MORc(mat_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_Morc$RCA_Step2 <- MORc(mat_1st, steps = 2, RCA = T)
+
+#then select only the categories:
+Top4_1st <- mat_1st[,c(6,7,10,12)]
+Top3_1st <- mat_1st[,c(4,5,11)]
+Surrounding_1st <- mat_1st[,c(1,2,3,4,13,25,34)]
+
+KnowledgeComp_1st_Top4 <- as.data.frame(MORc(Top4_1st, RCA = T))
+KnowledgeComp_1st_Top4$RCA <- MORc(Top4_1st, RCA = T)
+KnowledgeComp_1st_Top4$RCA_Step0 <- MORc(Top4_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_Top4$RCA_Step1 <- MORc(Top4_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_Top4$RCA_Step2 <- MORc(Top4_1st, steps = 2, RCA = T)
+
+KnowledgeComp_1st_Top3 <- as.data.frame(MORc(Top3_1st, RCA = T))
+KnowledgeComp_1st_Top3$RCA <- MORc(Top3_1st, RCA = T)
+KnowledgeComp_1st_Top3$RCA_Step0 <- MORc(Top3_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_Top3$RCA_Step1 <- MORc(Top3_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_Top3$RCA_Step2 <- MORc(Top3_1st, steps = 2, RCA = T)
+
+KnowledgeComp_1st_Surr <- as.data.frame(MORc(Surrounding_1st, RCA = T))
+KnowledgeComp_1st_Surr$RCA <- MORc(Surrounding_1st, RCA = T)
+KnowledgeComp_1st_Surr$RCA_Step0 <- MORc(Surrounding_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_Surr$RCA_Step1 <- MORc(Surrounding_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_Surr$RCA_Step2 <- MORc(Surrounding_1st, steps = 2, RCA = T)
+
+write.csv2(KnowledgeComp_1st_Morc, file = "Data_calculations_IPC/KnowledgeComp_1st_Morc.csv", row.names = T)
+write.csv2(KnowledgeComp_1st_Top4, file = "Data_calculations_IPC/KnowledgeComp_1st_Top4.csv", row.names = T)
+write.csv2(KnowledgeComp_1st_Top3, file = "Data_calculations_IPC/KnowledgeComp_1st_Top3.csv", row.names = T)
+write.csv2(KnowledgeComp_1st_Surr, file = "Data_calculations_IPC/KnowledgeComp_1st_Surr.csv", row.names = T)
+
 #For AI complexity and Indicators:
 IPC_all_patents_1st_In <- IPC_all_patents_1st[,c((-1), (-4), (-2))]
 mat_1st <- as.data.frame(table(IPC_all_patents_1st_In$ctry_code2, IPC_all_patents_1st_In$techn_field_nr))
@@ -515,6 +550,42 @@ KnowledgeComp_PerCountry_1st_All_RCAs <- rbind(KnowledgeComp_PerCountry_1st_RCA,
 
 write.csv2(KnowledgeComp_PerCountry_1st_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_AI.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_1st_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_1st_All_RCAs_AI.csv", row.names = TRUE)
+
+#Considering Morc 1st period
+KnowledgeComp_1st_AI_Morc <- as.data.frame(MORc(mat_1st, RCA = T))
+KnowledgeComp_1st_AI_Morc$RCA <- MORc(mat_1st, RCA = T)
+KnowledgeComp_1st_AI_Morc$RCA_Step0 <- MORc(mat_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_AI_Morc$RCA_Step1 <- MORc(mat_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_AI_Morc$RCA_Step2 <- MORc(mat_1st, steps = 2, RCA = T)
+
+#then select only the categories:
+Top4_1st <- mat_1st[,c(6,7,10,12)]
+Top3_1st <- mat_1st[,c(4,5,11)]
+Surrounding_1st <- mat_1st[,c(1,2,3,4,13,25,34)]
+
+KnowledgeComp_1st_AI_Top4 <- as.data.frame(MORc(Top4_1st, RCA = T))
+KnowledgeComp_1st_AI_Top4$RCA <- MORc(Top4_1st, RCA = T)
+KnowledgeComp_1st_AI_Top4$RCA_Step0 <- MORc(Top4_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_AI_Top4$RCA_Step1 <- MORc(Top4_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_AI_Top4$RCA_Step2 <- MORc(Top4_1st, steps = 2, RCA = T)
+
+KnowledgeComp_1st_AI_Top3 <- as.data.frame(MORc(Top3_1st, RCA = T))
+KnowledgeComp_1st_AI_Top3$RCA <- MORc(Top3_1st, RCA = T)
+KnowledgeComp_1st_AI_Top3$RCA_Step0 <- MORc(Top3_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_AI_Top3$RCA_Step1 <- MORc(Top3_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_AI_Top3$RCA_Step2 <- MORc(Top3_1st, steps = 2, RCA = T)
+
+KnowledgeComp_1st_AI_Surr <- as.data.frame(MORc(Surrounding_1st, RCA = T))
+KnowledgeComp_1st_AI_Surr$RCA <- MORc(Surrounding_1st, RCA = T)
+KnowledgeComp_1st_AI_Surr$RCA_Step0 <- MORc(Surrounding_1st, steps = 0, RCA = T)
+KnowledgeComp_1st_AI_Surr$RCA_Step1 <- MORc(Surrounding_1st, steps = 1, RCA = T)
+KnowledgeComp_1st_AI_Surr$RCA_Step2 <- MORc(Surrounding_1st, steps = 2, RCA = T)
+
+write.csv2(KnowledgeComp_1st_AI_Morc, file = "Data_calculations_IPC/KnowledgeComp_1st_AI_Morc.csv", row.names = T)
+write.csv2(KnowledgeComp_1st_AI_Top4, file = "Data_calculations_IPC/KnowledgeComp_1st_AI_Top4.csv", row.names = T)
+write.csv2(KnowledgeComp_1st_AI_Top3, file = "Data_calculations_IPC/KnowledgeComp_1st_AI_Top3.csv", row.names = T)
+write.csv2(KnowledgeComp_1st_AI_Surr, file = "Data_calculations_IPC/KnowledgeComp_1st_AI_Surr.csv", row.names = T)
+
 
 #3.1.3. Calculate the relatedness -----
 #create the function we need:
@@ -963,7 +1034,7 @@ write.csv2(Relatedness_FirstPeriod, file = "Data_calculations_IPC/Relatedness_1s
 #3.2. Second period ----
 #Starting with an empty global environment:
 rm(list=ls())
-setwd("C:/Users/Matheus/Desktop")
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho")
 #3.2.1.Load the data we need and filter it -----
 #The file for the first period is composed of 45,182,803 lines which we will read in 3 parts:
 c <- 45182803 -40000000
@@ -1066,6 +1137,41 @@ write.csv2(KnowledgeComp_2nd, file = "Data_calculations_IPC/KnowledgeComp_2nd.cs
 write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs.csv", row.names = TRUE)
 
+#Considering Morc 2nd period
+KnowledgeComp_2nd_Morc <- as.data.frame(MORc(mat_2nd, RCA = T))
+KnowledgeComp_2nd_Morc$RCA <- MORc(mat_2nd, RCA = T)
+KnowledgeComp_2nd_Morc$RCA_Step0 <- MORc(mat_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_Morc$RCA_Step1 <- MORc(mat_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_Morc$RCA_Step2 <- MORc(mat_2nd, steps = 2, RCA = T)
+
+#then select only the categories:
+Top4_2nd <- mat_2nd[,c(6,7,10,12)]
+Top3_2nd <- mat_2nd[,c(4,5,11)]
+Surrounding_2nd <- mat_2nd[,c(1,2,3,4,13,25,34)]
+
+KnowledgeComp_2nd_Top4 <- as.data.frame(MORc(Top4_2nd, RCA = T))
+KnowledgeComp_2nd_Top4$RCA <- MORc(Top4_2nd, RCA = T)
+KnowledgeComp_2nd_Top4$RCA_Step0 <- MORc(Top4_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_Top4$RCA_Step1 <- MORc(Top4_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_Top4$RCA_Step2 <- MORc(Top4_2nd, steps = 2, RCA = T)
+
+KnowledgeComp_2nd_Top3 <- as.data.frame(MORc(Top3_2nd, RCA = T))
+KnowledgeComp_2nd_Top3$RCA <- MORc(Top3_2nd, RCA = T)
+KnowledgeComp_2nd_Top3$RCA_Step0 <- MORc(Top3_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_Top3$RCA_Step1 <- MORc(Top3_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_Top3$RCA_Step2 <- MORc(Top3_2nd, steps = 2, RCA = T)
+
+KnowledgeComp_2nd_Surr <- as.data.frame(MORc(Surrounding_2nd, RCA = T))
+KnowledgeComp_2nd_Surr$RCA <- MORc(Surrounding_2nd, RCA = T)
+KnowledgeComp_2nd_Surr$RCA_Step0 <- MORc(Surrounding_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_Surr$RCA_Step1 <- MORc(Surrounding_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_Surr$RCA_Step2 <- MORc(Surrounding_2nd, steps = 2, RCA = T)
+
+write.csv2(KnowledgeComp_2nd_Morc, file = "Data_calculations_IPC/KnowledgeComp_2nd_Morc.csv", row.names = T)
+write.csv2(KnowledgeComp_2nd_Top4, file = "Data_calculations_IPC/KnowledgeComp_2nd_Top4.csv", row.names = T)
+write.csv2(KnowledgeComp_2nd_Top3, file = "Data_calculations_IPC/KnowledgeComp_2nd_Top3.csv", row.names = T)
+write.csv2(KnowledgeComp_2nd_Surr, file = "Data_calculations_IPC/KnowledgeComp_2nd_Surr.csv", row.names = T)
+
 #For AI complexity and Indicators:
 IPC_all_patents_2nd_In <- IPC_all_patents_2nd[,c((-1), (-4), (-2))]
 mat_2nd <- as.data.frame(table(IPC_all_patents_2nd_In$ctry_code2, IPC_all_patents_2nd_In$techn_field_nr))
@@ -1124,6 +1230,40 @@ KnowledgeComp_PerCountry_2nd_All_RCAs <- rbind(KnowledgeComp_PerCountry_2nd_RCA,
 write.csv2(KnowledgeComp_PerCountry_2nd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_AI.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_2nd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_2nd_All_RCAs_AI.csv", row.names = TRUE)
 
+#Considering Morc 2nd period
+KnowledgeComp_2nd_AI_Morc <- as.data.frame(MORc(mat_2nd, RCA = T))
+KnowledgeComp_2nd_AI_Morc$RCA <- MORc(mat_2nd, RCA = T)
+KnowledgeComp_2nd_AI_Morc$RCA_Step0 <- MORc(mat_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_AI_Morc$RCA_Step1 <- MORc(mat_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_AI_Morc$RCA_Step2 <- MORc(mat_2nd, steps = 2, RCA = T)
+
+#then select only the categories:
+Top4_2nd <- mat_2nd[,c(6,7,10,12)]
+Top3_2nd <- mat_2nd[,c(4,5,11)]
+Surrounding_2nd <- mat_2nd[,c(1,2,3,4,13,25,34)]
+
+KnowledgeComp_2nd_AI_Top4 <- as.data.frame(MORc(Top4_2nd, RCA = T))
+KnowledgeComp_2nd_AI_Top4$RCA <- MORc(Top4_2nd, RCA = T)
+KnowledgeComp_2nd_AI_Top4$RCA_Step0 <- MORc(Top4_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_AI_Top4$RCA_Step1 <- MORc(Top4_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_AI_Top4$RCA_Step2 <- MORc(Top4_2nd, steps = 2, RCA = T)
+
+KnowledgeComp_2nd_AI_Top3 <- as.data.frame(MORc(Top3_2nd, RCA = T))
+KnowledgeComp_2nd_AI_Top3$RCA <- MORc(Top3_2nd, RCA = T)
+KnowledgeComp_2nd_AI_Top3$RCA_Step0 <- MORc(Top3_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_AI_Top3$RCA_Step1 <- MORc(Top3_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_AI_Top3$RCA_Step2 <- MORc(Top3_2nd, steps = 2, RCA = T)
+
+KnowledgeComp_2nd_AI_Surr <- as.data.frame(MORc(Surrounding_2nd, RCA = T))
+KnowledgeComp_2nd_AI_Surr$RCA <- MORc(Surrounding_2nd, RCA = T)
+KnowledgeComp_2nd_AI_Surr$RCA_Step0 <- MORc(Surrounding_2nd, steps = 0, RCA = T)
+KnowledgeComp_2nd_AI_Surr$RCA_Step1 <- MORc(Surrounding_2nd, steps = 1, RCA = T)
+KnowledgeComp_2nd_AI_Surr$RCA_Step2 <- MORc(Surrounding_2nd, steps = 2, RCA = T)
+
+write.csv2(KnowledgeComp_2nd_AI_Morc, file = "Data_calculations_IPC/KnowledgeComp_2nd_AI_Morc.csv", row.names = T)
+write.csv2(KnowledgeComp_2nd_AI_Top4, file = "Data_calculations_IPC/KnowledgeComp_2nd_AI_Top4.csv", row.names = T)
+write.csv2(KnowledgeComp_2nd_AI_Top3, file = "Data_calculations_IPC/KnowledgeComp_2nd_AI_Top3.csv", row.names = T)
+write.csv2(KnowledgeComp_2nd_AI_Surr, file = "Data_calculations_IPC/KnowledgeComp_2nd_AI_Surr.csv", row.names = T)
 
 #3.2.3. Calculate the relatedness -----
 #create the function we need:
@@ -1570,7 +1710,7 @@ write.csv2(Relatedness_SecondPeriod, file = "Data_calculations_IPC/Relatedness_2
 #3.3. Third period ----
 #Starting with an empty global environment:
 rm(list=ls())
-setwd("C:/Users/Matheus/Desktop")
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho")
 #3.3.1.Load the data we need and filter it -----
 #The file for the first period is composed of 58,841,893 lines which we will read in 3 parts:
 c <- 58841893 -40000000
@@ -1661,6 +1801,41 @@ write.csv2(KnowledgeComp_3rd, file = "Data_calculations_IPC/KnowledgeComp_3rd.cs
 write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs.csv", row.names = TRUE)
 
+#Considering Morc 3rd period
+KnowledgeComp_3rd_Morc <- as.data.frame(MORc(mat_3rd, RCA = T))
+KnowledgeComp_3rd_Morc$RCA <- MORc(mat_3rd, RCA = T)
+KnowledgeComp_3rd_Morc$RCA_Step0 <- MORc(mat_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_Morc$RCA_Step1 <- MORc(mat_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_Morc$RCA_Step2 <- MORc(mat_3rd, steps = 2, RCA = T)
+
+#then select only the categories:
+Top4_3rd <- mat_3rd[,c(6,7,10,12)]
+Top3_3rd <- mat_3rd[,c(4,5,11)]
+Surrounding_3rd <- mat_3rd[,c(1,2,3,4,13,25,34)]
+
+KnowledgeComp_3rd_Top4 <- as.data.frame(MORc(Top4_3rd, RCA = T))
+KnowledgeComp_3rd_Top4$RCA <- MORc(Top4_3rd, RCA = T)
+KnowledgeComp_3rd_Top4$RCA_Step0 <- MORc(Top4_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_Top4$RCA_Step1 <- MORc(Top4_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_Top4$RCA_Step2 <- MORc(Top4_3rd, steps = 2, RCA = T)
+
+KnowledgeComp_3rd_Top3 <- as.data.frame(MORc(Top3_3rd, RCA = T))
+KnowledgeComp_3rd_Top3$RCA <- MORc(Top3_3rd, RCA = T)
+KnowledgeComp_3rd_Top3$RCA_Step0 <- MORc(Top3_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_Top3$RCA_Step1 <- MORc(Top3_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_Top3$RCA_Step2 <- MORc(Top3_3rd, steps = 2, RCA = T)
+
+KnowledgeComp_3rd_Surr <- as.data.frame(MORc(Surrounding_3rd, RCA = T))
+KnowledgeComp_3rd_Surr$RCA <- MORc(Surrounding_3rd, RCA = T)
+KnowledgeComp_3rd_Surr$RCA_Step0 <- MORc(Surrounding_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_Surr$RCA_Step1 <- MORc(Surrounding_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_Surr$RCA_Step2 <- MORc(Surrounding_3rd, steps = 2, RCA = T)
+
+write.csv2(KnowledgeComp_3rd_Morc, file = "Data_calculations_IPC/KnowledgeComp_3rd_Morc.csv", row.names = T)
+write.csv2(KnowledgeComp_3rd_Top4, file = "Data_calculations_IPC/KnowledgeComp_3rd_Top4.csv", row.names = T)
+write.csv2(KnowledgeComp_3rd_Top3, file = "Data_calculations_IPC/KnowledgeComp_3rd_Top3.csv", row.names = T)
+write.csv2(KnowledgeComp_3rd_Surr, file = "Data_calculations_IPC/KnowledgeComp_3rd_Surr.csv", row.names = T)
+
 #For AI complexity and Indicators:
 IPC_all_patents_3rd_In <- IPC_all_patents_3rd[,c((-1), (-4), (-2))]
 mat_3rd <- as.data.frame(table(IPC_all_patents_3rd_In$ctry_code2, IPC_all_patents_3rd_In$techn_field_nr))
@@ -1719,6 +1894,40 @@ KnowledgeComp_PerCountry_3rd_All_RCAs <- rbind(KnowledgeComp_PerCountry_3rd_RCA,
 write.csv2(KnowledgeComp_PerCountry_3rd_All, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_AI.csv", row.names = TRUE)
 write.csv2(KnowledgeComp_PerCountry_3rd_All_RCAs, file = "Data_calculations_IPC/KnowledgeComp_PerCountry_3rd_All_RCAs_AI.csv", row.names = TRUE)
 
+#Considering Morc 3rd period
+KnowledgeComp_3rd_AI_Morc <- as.data.frame(MORc(mat_3rd, RCA = T))
+KnowledgeComp_3rd_AI_Morc$RCA <- MORc(mat_3rd, RCA = T)
+KnowledgeComp_3rd_AI_Morc$RCA_Step0 <- MORc(mat_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_AI_Morc$RCA_Step1 <- MORc(mat_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_AI_Morc$RCA_Step2 <- MORc(mat_3rd, steps = 2, RCA = T)
+
+#then select only the categories:
+Top4_3rd <- mat_3rd[,c(6,7,10,12)]
+Top3_3rd <- mat_3rd[,c(4,5,11)]
+Surrounding_3rd <- mat_3rd[,c(1,2,3,4,13,25,34)]
+
+KnowledgeComp_3rd_AI_Top4 <- as.data.frame(MORc(Top4_3rd, RCA = T))
+KnowledgeComp_3rd_AI_Top4$RCA <- MORc(Top4_3rd, RCA = T)
+KnowledgeComp_3rd_AI_Top4$RCA_Step0 <- MORc(Top4_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_AI_Top4$RCA_Step1 <- MORc(Top4_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_AI_Top4$RCA_Step2 <- MORc(Top4_3rd, steps = 2, RCA = T)
+
+KnowledgeComp_3rd_AI_Top3 <- as.data.frame(MORc(Top3_3rd, RCA = T))
+KnowledgeComp_3rd_AI_Top3$RCA <- MORc(Top3_3rd, RCA = T)
+KnowledgeComp_3rd_AI_Top3$RCA_Step0 <- MORc(Top3_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_AI_Top3$RCA_Step1 <- MORc(Top3_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_AI_Top3$RCA_Step2 <- MORc(Top3_3rd, steps = 2, RCA = T)
+
+KnowledgeComp_3rd_AI_Surr <- as.data.frame(MORc(Surrounding_3rd, RCA = T))
+KnowledgeComp_3rd_AI_Surr$RCA <- MORc(Surrounding_3rd, RCA = T)
+KnowledgeComp_3rd_AI_Surr$RCA_Step0 <- MORc(Surrounding_3rd, steps = 0, RCA = T)
+KnowledgeComp_3rd_AI_Surr$RCA_Step1 <- MORc(Surrounding_3rd, steps = 1, RCA = T)
+KnowledgeComp_3rd_AI_Surr$RCA_Step2 <- MORc(Surrounding_3rd, steps = 2, RCA = T)
+
+write.csv2(KnowledgeComp_3rd_AI_Morc, file = "Data_calculations_IPC/KnowledgeComp_3rd_AI_Morc.csv", row.names = T)
+write.csv2(KnowledgeComp_3rd_AI_Top4, file = "Data_calculations_IPC/KnowledgeComp_3rd_AI_Top4.csv", row.names = T)
+write.csv2(KnowledgeComp_3rd_AI_Top3, file = "Data_calculations_IPC/KnowledgeComp_3rd_AI_Top3.csv", row.names = T)
+write.csv2(KnowledgeComp_3rd_AI_Surr, file = "Data_calculations_IPC/KnowledgeComp_3rd_AI_Surr.csv", row.names = T)
 
 #3.2.3. Calculate the relatedness -----
 #create the function we need:
@@ -3531,6 +3740,234 @@ dev.off()
 #Entropy_RCA_Countries_b <- ggplot(Indicators_countries, aes(x=X, y=Entropy_RCA, fill=Period)) +
 #  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL)+
 #  theme_economist()+scale_colour_economist()
+
+#5.4.AI Knowledge Complexity Morc-----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+KnowlComp_AI_1st <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_AI_Morc.csv", sep = ";", header = F, dec=",")
+KnowlComp_AI_2nd <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_AI_Morc.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_AI_3rd <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_AI_Morc.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_AI_1st) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_2nd) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_3rd) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_AI_1st$Period <- "Period 1 (1974-1988)"
+KnowlComp_AI_2nd$Period <- "Period 2 (1989-2003)"
+KnowlComp_AI_3rd$Period <- "Period 3 (2004-2018)"
+
+KnowlComp_AI_1st<-KnowlComp_AI_1st[KnowlComp_AI_1st$Country == "AI_pat",]
+KnowlComp_AI_2nd<-KnowlComp_AI_2nd[KnowlComp_AI_2nd$Country == "AI_pat",]
+KnowlComp_AI_3rd<-KnowlComp_AI_3rd[KnowlComp_AI_3rd$Country == "AI_pat",]
+KnowledgeCompl_AI <- rbind(KnowlComp_AI_1st, KnowlComp_AI_2nd, KnowlComp_AI_3rd)
+KnowledgeCompl_AI$Category <- "Overall Complexity"
+
+KnowlComp_AI_1st_Top4 <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_AI_Top4.csv", sep = ";", header = F, dec=",")
+KnowlComp_AI_2nd_Top4 <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_AI_Top4.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_AI_3rd_Top4 <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_AI_Top4.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_AI_1st_Top4) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_2nd_Top4) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_3rd_Top4) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_AI_1st_Top4$Period <- "Period 1 (1974-1988)"
+KnowlComp_AI_2nd_Top4$Period <- "Period 2 (1989-2003)"
+KnowlComp_AI_3rd_Top4$Period <- "Period 3 (2004-2018)"
+
+KnowlComp_AI_1st_Top4<-KnowlComp_AI_1st_Top4[KnowlComp_AI_1st_Top4$Country == "AI_pat",]
+KnowlComp_AI_2nd_Top4<-KnowlComp_AI_2nd_Top4[KnowlComp_AI_2nd_Top4$Country == "AI_pat",]
+KnowlComp_AI_3rd_Top4<-KnowlComp_AI_3rd_Top4[KnowlComp_AI_3rd_Top4$Country == "AI_pat",]
+KnowledgeCompl_AI_Top4 <- rbind(KnowlComp_AI_1st_Top4, KnowlComp_AI_2nd_Top4, KnowlComp_AI_3rd_Top4)
+KnowledgeCompl_AI_Top4$Category <- "AI-core codes"
+
+KnowlComp_AI_1st_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_AI_Top3.csv", sep = ";", header = F, dec=",")
+KnowlComp_AI_2nd_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_AI_Top3.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_AI_3rd_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_AI_Top3.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_AI_1st_Top3) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_2nd_Top3) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_3rd_Top3) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_AI_1st_Top3$Period <- "Period 1 (1974-1988)"
+KnowlComp_AI_2nd_Top3$Period <- "Period 2 (1989-2003)"
+KnowlComp_AI_3rd_Top3$Period <- "Period 3 (2004-2018)"
+
+KnowlComp_AI_1st_Top3<-KnowlComp_AI_1st_Top3[KnowlComp_AI_1st_Top3$Country == "AI_pat",]
+KnowlComp_AI_2nd_Top3<-KnowlComp_AI_2nd_Top3[KnowlComp_AI_2nd_Top3$Country == "AI_pat",]
+KnowlComp_AI_3rd_Top3<-KnowlComp_AI_3rd_Top3[KnowlComp_AI_3rd_Top3$Country == "AI_pat",]
+KnowledgeCompl_AI_Top3 <- rbind(KnowlComp_AI_1st_Top3, KnowlComp_AI_2nd_Top3, KnowlComp_AI_3rd_Top3)
+KnowledgeCompl_AI_Top3$Category <- "AI-related codes"
+
+KnowlComp_AI_1st_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_AI_Surr.csv", sep = ";", header = F, dec=",")
+KnowlComp_AI_2nd_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_AI_Surr.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_AI_3rd_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_AI_Surr.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_AI_1st_Surr) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_2nd_Surr) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_AI_3rd_Surr) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_AI_1st_Surr$Period <- "Period 1 (1974-1988)"
+KnowlComp_AI_2nd_Surr$Period <- "Period 2 (1989-2003)"
+KnowlComp_AI_3rd_Surr$Period <- "Period 3 (2004-2018)"
+
+KnowlComp_AI_1st_Surr<-KnowlComp_AI_1st_Surr[KnowlComp_AI_1st_Surr$Country == "AI_pat",]
+KnowlComp_AI_2nd_Surr<-KnowlComp_AI_2nd_Surr[KnowlComp_AI_2nd_Surr$Country == "AI_pat",]
+KnowlComp_AI_3rd_Surr<-KnowlComp_AI_3rd_Surr[KnowlComp_AI_3rd_Surr$Country == "AI_pat",]
+KnowledgeCompl_AI_Surr <- rbind(KnowlComp_AI_1st_Surr, KnowlComp_AI_2nd_Surr, KnowlComp_AI_3rd_Surr)
+KnowledgeCompl_AI_Surr$Category <- "Surrounding codes"
+
+All_data_AI_knowlComp_Morc <- rbind(KnowledgeCompl_AI, KnowledgeCompl_AI_Top4, KnowledgeCompl_AI_Top3, KnowledgeCompl_AI_Surr)
+write.csv2(All_data_AI_knowlComp_Morc, file = "Data_calculations_IPC/All_data_AI_knowlComp_Morc.csv", row.names = F)
+
+#5.5.Countries Knowledge Complexity Morc-----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+KnowlComp_1st <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_Morc.csv", sep = ";", header = F, dec=",")
+KnowlComp_2nd <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_Morc.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_Morc.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_1st) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_2nd) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_3rd) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_1st$Period <- "Period 1 (1974-1988)"
+KnowlComp_2nd$Period <- "Period 2 (1989-2003)"
+KnowlComp_3rd$Period <- "Period 3 (2004-2018)"
+
+KnowledgeCompl <- rbind(KnowlComp_1st, KnowlComp_2nd, KnowlComp_3rd)
+KnowledgeCompl$Category <- "Overall Complexity"
+
+KnowlComp_1st_Top4 <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_Top4.csv", sep = ";", header = F, dec=",")
+KnowlComp_2nd_Top4 <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_Top4.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd_Top4 <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_Top4.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_1st_Top4) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_2nd_Top4) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_3rd_Top4) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_1st_Top4$Period <- "Period 1 (1974-1988)"
+KnowlComp_2nd_Top4$Period <- "Period 2 (1989-2003)"
+KnowlComp_3rd_Top4$Period <- "Period 3 (2004-2018)"
+
+KnowledgeCompl_Top4 <- rbind(KnowlComp_1st_Top4, KnowlComp_2nd_Top4, KnowlComp_3rd_Top4)
+KnowledgeCompl_Top4$Category <- "AI-core codes"
+
+KnowlComp_1st_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_Top3.csv", sep = ";", header = F, dec=",")
+KnowlComp_2nd_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_Top3.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_Top3.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_1st_Top3) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_2nd_Top3) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_3rd_Top3) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_1st_Top3$Period <- "Period 1 (1974-1988)"
+KnowlComp_2nd_Top3$Period <- "Period 2 (1989-2003)"
+KnowlComp_3rd_Top3$Period <- "Period 3 (2004-2018)"
+
+KnowledgeCompl_Top3 <- rbind(KnowlComp_1st_Top3, KnowlComp_2nd_Top3, KnowlComp_3rd_Top3)
+KnowledgeCompl_Top3$Category <- "AI-related codes"
+
+KnowlComp_1st_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_Surr.csv", sep = ";", header = F, dec=",")
+KnowlComp_2nd_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_Surr.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd_Surr.csv", sep = ";", header = TRUE, dec=",")
+
+names(KnowlComp_1st_Surr) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_2nd_Surr) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+names(KnowlComp_3rd_Surr) <- c("Country", "MORc", "RCA", "RCA_step0", "RCA_step1", "RCA_step2")
+
+KnowlComp_1st_Surr$Period <- "Period 1 (1974-1988)"
+KnowlComp_2nd_Surr$Period <- "Period 2 (1989-2003)"
+KnowlComp_3rd_Surr$Period <- "Period 3 (2004-2018)"
+
+KnowledgeCompl_Surr <- rbind(KnowlComp_1st_Surr, KnowlComp_2nd_Surr, KnowlComp_3rd_Surr)
+KnowledgeCompl_Surr$Category <- "Surrounding codes"
+
+All_data_knowlComp_Morc <- rbind(KnowledgeCompl, KnowledgeCompl_Top4, KnowledgeCompl_Top3, KnowledgeCompl_Surr)
+
+All_data_knowlComp_Morc<-All_data_knowlComp_Morc[All_data_knowlComp_Morc$Country == "US"|
+                                                   All_data_knowlComp_Morc$Country == "CN"|
+                                                   All_data_knowlComp_Morc$Country == "KR"|
+                                                   All_data_knowlComp_Morc$Country == "JP",]
+write.csv2(All_data_knowlComp_Morc, file = "Data_calculations_IPC/All_data_knowlComp_Morc.csv", row.names = F)
+
+#5.6.Visualization Morc ----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+KnowledgeCompl <- read.csv("Data_calculations_IPC/All_data_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=",")
+KnowledgeCompl_AI <- read.csv("Data_calculations_IPC/All_data_AI_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=".")
+KnowledgeCompl_AI$RCA <- as.numeric(KnowledgeCompl_AI$RCA)
+
+Comp_byP_a <- 
+  ggplot(KnowledgeCompl, aes(x=Country, y=(RCA_step2), fill=Category)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Period, ncol = 3)+
+  scale_fill_brewer(palette="Paired") + theme_classic() + 
+  ggtitle("Countries Knowledge Complexity in the considered IPC fields")
+
+Comp_byAI_a<- 
+  ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Indicator)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ labs(x = "") + 
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Period, ncol = 3)+
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Knowledge Complexity in the considered IPC fields") 
+
+Comp_byP_b <- 
+  ggplot(KnowledgeCompl, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() +
+  ggtitle("Countries Knowledge Complexity in the considered IPC fields") 
+
+Comp_byAI_b<- 
+  ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Knowledge Complexity in the considered IPC fields")
+
+KnowledgeCompl_all2 <- KnowledgeCompl_all
+KnowledgeCompl_all2$Indicator <- factor(KnowledgeCompl_all2$Indicator, levels = c("Overall Complexity", "AI-core codes",
+                                                                                  "AI-related codes", "Surrounding codes"))
+
+KnowledgeCompl_AI_all2 <- KnowledgeCompl_AI_all
+KnowledgeCompl_AI_all2$Indicator <- factor(KnowledgeCompl_AI_all2$Indicator, levels = c("Overall Complexity", "AI-core codes",
+                                                                                        "AI-related codes", "Surrounding codes"))
+
+Comp_byP_c <-
+  ggplot(KnowledgeCompl_all2, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic()  + theme(legend.position="bottom") +
+  ggtitle("Countries Knowledge Complexity in the considered IPC fields") 
+
+Comp_byAI_c<- 
+  ggplot(KnowledgeCompl_AI_all2, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  facet_wrap(~Indicator, ncol = 4) +
+  scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Knowledge Complexity in the considered IPC fields")
+
+
+tiff("Figures_IPC/KnowledgeComplexity_opta.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Comp_byAI_a, Comp_byP_a, cols=1)
+dev.off()
+
+tiff("Figures_IPC/KnowledgeComplexity_optb.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Comp_byAI_b, Comp_byP_b, cols=1) 
+dev.off()
+
+
+tiff("Figures_IPC/Relatedness_and_Complex_countries.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Rel_byP_c, Comp_byP_c, cols=1) 
+dev.off()
+
+tiff("Figures_IPC/Relatedness_and_Complex_AI.jpg", width = 8, height = 6, units = 'in', res = 200)
+multiplot(Rel_byAI_c, Comp_byAI_c, cols=1) 
+dev.off()
 
 #6.Network Metrics----
 #This first part is not ready yet (nor necessary). The important part starts again at line 3573
