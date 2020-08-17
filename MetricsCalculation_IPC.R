@@ -3891,6 +3891,7 @@ All_data_knowlComp_Morc<-All_data_knowlComp_Morc[All_data_knowlComp_Morc$Country
 write.csv2(All_data_knowlComp_Morc, file = "Data_calculations_IPC/All_data_knowlComp_Morc.csv", row.names = F)
 
 #5.6.Visualization Morc ----
+#5.6.1. Complexities and relatedness ----
 #rm(list=ls())
 #setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
@@ -3957,6 +3958,132 @@ dev.off()
 
 tiff("Figures_IPC/Relatedness_and_Complex_Morc_AI.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byAI_c, Comp_byAI_c, cols=1) 
+dev.off()
+
+#5.6.2. Fig 11 ----
+#rm(list=ls())
+#setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+#Mort: Computes an index of knowledge complexity of industries using the method of reflection
+
+KnowlComp_1st <- read.csv("Data_calculations_IPC/KnowledgeComp_1st.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_2nd <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd.csv", sep = ";", header = TRUE, dec=",")
+KnowlComp_3rd <- read.csv("Data_calculations_IPC/KnowledgeComp_3rd.csv", sep = ";", header = TRUE, dec=",")
+
+KnowlComp_1st <- KnowlComp_1st %>% rename(MORt = MORt.mat_1st., techn_field_nr = X)
+KnowlComp_2nd <- KnowlComp_2nd %>% rename(MORt = MORt.mat_2nd., techn_field_nr = X)
+KnowlComp_3rd <- KnowlComp_3rd %>% rename(MORt = MORt.mat_3rd., techn_field_nr = X)
+
+KnowlComp_1st$Period <- "Period 1 (1974-1988)"
+KnowlComp_2nd$Period <- "Period 2 (1989-2003)"
+KnowlComp_3rd$Period <- "Period 3 (2004-2018)"
+
+All_KwnCom<- rbind(KnowlComp_1st, KnowlComp_2nd, KnowlComp_3rd)
+rm(KnowlComp_1st, KnowlComp_2nd, KnowlComp_3rd)
+#Morc: Compute an index of knowledge complexity of regions using the method of reflection
+
+KnowledgeCompl <- read.csv("Data_calculations_IPC/All_data_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=",")
+#KnowledgeCompl_AI <- read.csv("Data_calculations_IPC/All_data_AI_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=",")
+
+Specialisations <- read.csv("Data_calculations_IPC/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE, dec=",")
+Specialisations<- Specialisations[,c(2,4,5,6,7,8,14,16,17)]
+
+a<- Specialisations3 %>%
+  mutate(ifelse(Specialisation < 1,0,1))
+
+library(dplyr)
+library(tidyr)
+# add row index so later spreading indexed correctly
+Specialisations3<-Specialisations %>% rownames_to_column() %>% 
+  # melt to long format
+  gather(RCA_, value, -techn_field_nr, -field_name,-rowname, -Period, -Category, -Category2)
+
+Specialisations3$RCA_ <- gsub("RCA_", "", str_trim(Specialisations3$RCA_))
+Specialisations3 <- Specialisations3[,(-1)]
+Specialisations3 <- Specialisations3 %>% rename(Country = RCA_, Specialisation = value)
+Specialisations3$Binary <- ifelse(Specialisations3$Specialisation < 1,0,1)
+
+All_data <- merge(All_KwnCom, Specialisations3, all=F, by=c("Period", "techn_field_nr"))
+#All_data2 <- merge(KnowledgeCompl, All_data, all=T, by=c("Country", "Period", "Category"))
+rm(Specialisations3, Specialisations,All_KwnCom,KnowledgeCompl)
+
+All_data$Category <- factor(All_data$Category, levels = c("AI-core codes", "AI-related codes",
+                                                                     "Surrounding codes", "Other"))
+BinarySum<- aggregate(All_data[,16], list(All_data$Country, All_data$techn_field_nr), sum)
+names(BinarySum)<- c("Country", "techn_field_nr", "SumBinary")
+
+All_data <- merge(All_data, BinarySum, all=F, by=c("Country", "techn_field_nr"))
+
+All_data_JP <- All_data[All_data$Country == "JP",]
+All_data_CN <- All_data[All_data$Country == "CN",]
+All_data_US <- All_data[All_data$Country == "US",]
+All_data_KR <- All_data[All_data$Country == "KR",]
+
+#I'm using the indicators RCA and Step 0; they were calculated in the following way:
+#KnowledgeComp_1st <- as.data.frame(MORt(mat_1st))
+#KnowledgeComp_1st$Step0 <- MORt(mat_1st, steps = 0)
+#KnowledgeComp_1st$Step1 <- MORt(mat_1st, steps = 1)
+#KnowledgeComp_1st$Step2 <- MORt(mat_1st, steps = 2)
+
+#KnowledgeComp_1st$RCA <- MORt(mat_1st_RCAs)
+
+#Thus, RCA refers to specialisations, while Step0 to ubiquity (and without interaction);
+#the problem is that uniquity is non-country specific, which means all countries have the same size of dots;
+
+tiff("Figures_IPC/New_KnowledgeComplJP.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_JP, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_JP, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+ # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of the country's RCA in each technology (Country specific)") +
+  ylab("Index of knowledge complexity of technology (General)")
+dev.off()
+
+tiff("Figures_IPC/New_KnowledgeComplCN.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_CN, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_CN, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of the country's RCA in each technology (Country specific)") +
+  ylab("Index of knowledge complexity of technology (General)")
+dev.off()
+
+tiff("Figures_IPC/New_KnowledgeComplUS.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_US, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_US, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of the country's RCA in each technology (Country specific)") +
+  ylab("Index of knowledge complexity of technology (General)")
+dev.off()
+
+tiff("Figures_IPC/New_KnowledgeComplKR.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_KR, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_KR, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of the country's RCA in each technology (Country specific)") +
+  ylab("Index of knowledge complexity of technology (General)")
 dev.off()
 
 #6.Network Metrics----
