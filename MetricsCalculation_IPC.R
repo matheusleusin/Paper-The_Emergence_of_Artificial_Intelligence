@@ -3670,7 +3670,7 @@ ggplot(KnowledgeCompl_all, aes(x=Country, y=(Value), fill=Indicator)) +
 Comp_byAI_a<- 
 ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Indicator)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ labs(x = "") + 
-  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity (MORt)") +
   facet_wrap(~Period, ncol = 3)+
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields") 
@@ -3685,7 +3685,7 @@ ggplot(KnowledgeCompl_all, aes(x=Country, y=Value, fill=Period)) +
 Comp_byAI_b<- 
 ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
-  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity (MORt)") +
   facet_wrap(~Indicator, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
@@ -3708,7 +3708,7 @@ Comp_byP_c <-
 Comp_byAI_c<- 
   ggplot(KnowledgeCompl_AI_all2, aes(x=Country, y=Value, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
-  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity (MORt)") +
   facet_wrap(~Indicator, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
@@ -3727,7 +3727,7 @@ tiff("Figures_IPC/Relatedness_and_Complex_countries.jpg", width = 8, height = 6,
 multiplot(Rel_byP_c, Comp_byP_c, cols=1) 
 dev.off()
 
-tiff("Figures_IPC/Relatedness_and_Complex_AI.jpg", width = 8, height = 6, units = 'in', res = 200)
+tiff("Figures_IPC/Relatedness_and_Complex_AI_new.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byAI_c, Comp_byAI_c, cols=1) 
 dev.off()
 
@@ -3909,7 +3909,7 @@ Comp_byP_a <-
 Comp_byAI_a<- 
   ggplot(KnowledgeCompl_AI, aes(x=Country, y=RCA_step2, fill=Category)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ labs(x = "") + 
-  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity (MORc)") +
   facet_wrap(~Period, ncol = 3)+
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields") 
@@ -3924,7 +3924,7 @@ Comp_byP_b <-
 Comp_byAI_b<- 
   ggplot(KnowledgeCompl_AI, aes(x=Country, y=RCA_step2, fill=Category)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
-  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity (MORc)") +
   facet_wrap(~Category, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
@@ -3939,7 +3939,7 @@ KnowledgeCompl_AI2$Category <- factor(KnowledgeCompl_AI2$Category, levels = c("O
 
 Comp_byP_c <-
   ggplot(KnowledgeCompl2, aes(x=Country, y=RCA_step2, fill=Period)) +
-  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity") +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity (MORc)") +
   facet_wrap(~Category, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic()  + theme(legend.position="bottom") +
   ggtitle("Countries Knowledge Complexity in the considered IPC fields") 
@@ -3947,12 +3947,12 @@ Comp_byP_c <-
 Comp_byAI_c<- 
   ggplot(KnowledgeCompl_AI2, aes(x=Country, y=RCA_step2, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
-  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity (MORc)") +
   facet_wrap(~Category, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
 
-tiff("Figures_IPC/Relatedness_and_Complex_Morc_countries.jpg", width = 8, height = 6, units = 'in', res = 200)
+tiff("Figures_IPC/Relatedness_and_Complex_Morc_countries_new.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byP_c, Comp_byP_c, cols=1) 
 dev.off()
 
@@ -3988,8 +3988,8 @@ KnowledgeCompl <- read.csv("Data_calculations_IPC/All_data_knowlComp_Morc.csv", 
 Specialisations <- read.csv("Data_calculations_IPC/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE, dec=",")
 Specialisations<- Specialisations[,c(2,4,5,6,7,8,14,16,17)]
 
-a<- Specialisations3 %>%
-  mutate(ifelse(Specialisation < 1,0,1))
+#a<- Specialisations3 %>%
+#  mutate(ifelse(Specialisation < 1,0,1))
 
 library(dplyr)
 library(tidyr)
@@ -4040,8 +4040,8 @@ ggplot(All_data_JP, aes(x=log10(Specialisation), y=-(RCA), label = '')) +
   scale_size_continuous(range = c(1, 10)) +
  # ggtitle("Knowledge Complexity of technologies - Japan") +
   facet_wrap(~Period, ncol = 3) +
-  xlab("Log10 of the country's RCA in each technology (Country specific)") +
-  ylab("Index of knowledge complexity of technology (General)")
+  xlab("Log10 of Japan's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
 dev.off()
 
 tiff("Figures_IPC/New_KnowledgeComplCN.jpg", width = 14, height = 8, units = 'in', res = 200)
@@ -4054,8 +4054,8 @@ ggplot(All_data_CN, aes(x=log10(Specialisation), y=-(RCA), label = '')) +
   scale_size_continuous(range = c(1, 10)) +
   # ggtitle("Knowledge Complexity of technologies - Japan") +
   facet_wrap(~Period, ncol = 3) +
-  xlab("Log10 of the country's RCA in each technology (Country specific)") +
-  ylab("Index of knowledge complexity of technology (General)")
+  xlab("Log10 of China's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
 dev.off()
 
 tiff("Figures_IPC/New_KnowledgeComplUS.jpg", width = 14, height = 8, units = 'in', res = 200)
@@ -4068,8 +4068,8 @@ ggplot(All_data_US, aes(x=log10(Specialisation), y=-(RCA), label = '')) +
   scale_size_continuous(range = c(1, 10)) +
   # ggtitle("Knowledge Complexity of technologies - Japan") +
   facet_wrap(~Period, ncol = 3) +
-  xlab("Log10 of the country's RCA in each technology (Country specific)") +
-  ylab("Index of knowledge complexity of technology (General)")
+  xlab("Log10 of United State's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
 dev.off()
 
 tiff("Figures_IPC/New_KnowledgeComplKR.jpg", width = 14, height = 8, units = 'in', res = 200)
@@ -4082,8 +4082,8 @@ ggplot(All_data_KR, aes(x=log10(Specialisation), y=-(RCA), label = '')) +
   scale_size_continuous(range = c(1, 10)) +
   # ggtitle("Knowledge Complexity of technologies - Japan") +
   facet_wrap(~Period, ncol = 3) +
-  xlab("Log10 of the country's RCA in each technology (Country specific)") +
-  ylab("Index of knowledge complexity of technology (General)")
+  xlab("Log10 of South Korea's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
 dev.off()
 
 #6.Network Metrics----
