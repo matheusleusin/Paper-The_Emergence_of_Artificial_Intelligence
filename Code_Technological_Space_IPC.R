@@ -307,6 +307,7 @@ mat_tech_AI_Final <- matrix
 
 mat_tech_rel_AI <- mat_tech_AI_Final %>% 
   relatedness(method = "cosine")
+write.table(mat_tech_rel_AI, file = "Data_IPC/Relatedness_Allperiods2.csv", row.names = F, dec = ".")
 
 IPC_names <- read.csv("Data_IPC/ipc_technology.csv", sep = ";", header = TRUE)%>%
   select(field_nr, sector, field_name) %>%
