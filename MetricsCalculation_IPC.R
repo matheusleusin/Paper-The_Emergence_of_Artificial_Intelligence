@@ -3938,7 +3938,7 @@ KnowledgeCompl_AI2$Category <- factor(KnowledgeCompl_AI2$Category, levels = c("O
                                                                                         "AI-related codes", "Surrounding codes"))
 
 Comp_byP_c <-
-  ggplot(KnowledgeCompl2, aes(x=Country, y=RCA_step2, fill=Period)) +
+  ggplot(KnowledgeCompl2, aes(x=Country, y=RCA_step1, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity (MORc)") +
   facet_wrap(~Category, ncol = 4) +
   scale_fill_brewer(palette="Paired") + theme_classic()  + theme(legend.position="bottom") +
@@ -4029,6 +4029,20 @@ All_data_KR <- All_data[All_data$Country == "KR",]
 
 #Thus, RCA refers to specialisations, while Step0 to ubiquity (and without interaction);
 #the problem is that uniquity is non-country specific, which means all countries have the same size of dots;
+ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = First_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),'')),nudge_y = -0.6) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
 
 tiff("Figures_IPC/New_KnowledgeComplJP.jpg", width = 14, height = 8, units = 'in', res = 200)
 ggplot(All_data_JP, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
@@ -4038,7 +4052,7 @@ ggplot(All_data_JP, aes(x=log10(Specialisation), y=-(RCA), label = '')) +
   scale_color_brewer(palette="Dark2") + theme_minimal() +
   geom_label_repel(data = All_data_JP, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
   scale_size_continuous(range = c(1, 10)) +
- # ggtitle("Knowledge Complexity of technologies - Japan") +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
   facet_wrap(~Period, ncol = 3) +
   xlab("Log10 of Japan's RCA in each technology") +
   ylab("Index of knowledge complexity of technology (MORt)")
@@ -4084,6 +4098,67 @@ ggplot(All_data_KR, aes(x=log10(Specialisation), y=-(RCA), label = '')) +
   facet_wrap(~Period, ncol = 3) +
   xlab("Log10 of South Korea's RCA in each technology") +
   ylab("Index of knowledge complexity of technology (MORt)")
+dev.off()
+
+
+tiff("Figures_IPC/New_KnowledgeComplJP_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_JP, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_JP, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+ # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of Japan's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)") +
+  ylim(-30, -90)
+dev.off()
+
+tiff("Figures_IPC/New_KnowledgeComplCN_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_CN, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_CN, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of China's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")+
+  ylim(-30, -90)
+dev.off()
+
+tiff("Figures_IPC/New_KnowledgeComplUS_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_US, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_US, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of United State's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")+
+  ylim(-30, -90)
+dev.off()
+
+tiff("Figures_IPC/New_KnowledgeComplKR_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_KR, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_KR, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of South Korea's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")+
+  ylim(-30, -90)
 dev.off()
 
 #6.Network Metrics----
