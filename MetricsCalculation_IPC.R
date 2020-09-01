@@ -3264,12 +3264,12 @@ All_periods <- rbind(First_period, Second_period, Third_period)
 
 All_periods$Category <- "Other"
 Surr <- c(1, 2, 3, 13, 25, 34)
-All_periods$Category[(All_periods$techn_field_nr %in% Surr)] <- "Surrounding codes"
+All_periods$Category[(All_periods$techn_field_nr %in% Surr)] <- "Surrounding fields"
 AIrel<- c(11, 5, 4)
-All_periods$Category[(All_periods$techn_field_nr %in% AIrel)] <- "AI-related codes"
+All_periods$Category[(All_periods$techn_field_nr %in% AIrel)] <- "AI-related fields"
 AIcor<- c(6,7,10,12)
-All_periods$Category[(All_periods$techn_field_nr %in% AIcor)] <- "AI-core codes"
-All_periods$Category <- factor(All_periods$Category, levels = c("AI-core codes", "AI-related codes", "Surrounding codes", "Other"))
+All_periods$Category[(All_periods$techn_field_nr %in% AIcor)] <- "AI-core fields"
+All_periods$Category <- factor(All_periods$Category, levels = c("AI-core fields", "AI-related fields", "Surrounding fields", "Other"))
 All_periods$Category2 <- All_periods$Category
 All_periods$Category2 <- as.numeric(All_periods$Category2)
 All_periods$Category2 <- as.numeric(All_periods$Category2)
@@ -3475,15 +3475,15 @@ Relatedness1$Indicator <- "Overall Relatedness"
 
 Relatedness2 <- Relatedness[,c(1,14,6)]
 names(Relatedness2) <- c("Country", "Period", "Value")
-Relatedness2$Indicator <- "AI-core codes"
+Relatedness2$Indicator <- "AI-core fields"
 
 Relatedness3 <- Relatedness[,c(1,14,9)]
 names(Relatedness3) <- c("Country", "Period", "Value")
-Relatedness3$Indicator <- "AI-related codes"
+Relatedness3$Indicator <- "AI-related fields"
 
 Relatedness4 <- Relatedness[,c(1,14,12)]
 names(Relatedness4) <- c("Country", "Period", "Value")
-Relatedness4$Indicator <- "Surrounding codes"
+Relatedness4$Indicator <- "Surrounding fields"
 
 Relatedness <- rbind(Relatedness1, Relatedness2, Relatedness3, Relatedness4)
 rm(Relatedness1, Relatedness2, Relatedness3, Relatedness4)
@@ -3553,12 +3553,12 @@ Rel_byAI_b<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Period)) +
   scale_y_continuous(limits=c(.1,2.35),oob = rescale_none)
 
 Relatedness2 <- Relatedness
-Relatedness2$Indicator <- factor(Relatedness2$Indicator, levels = c("Overall Relatedness", "AI-core codes",
-                                                                    "AI-related codes", "Surrounding codes"))
+Relatedness2$Indicator <- factor(Relatedness2$Indicator, levels = c("Overall Relatedness", "AI-core fields",
+                                                                    "AI-related fields", "Surrounding fields"))
 
 Relatedness_AI2 <- Relatedness_AI
-Relatedness_AI2$Indicator <- factor(Relatedness_AI2$Indicator, levels = c("Overall Relatedness", "AI-core codes",
-                                                                          "AI-related codes", "Surrounding codes"))
+Relatedness_AI2$Indicator <- factor(Relatedness_AI2$Indicator, levels = c("Overall Relatedness", "AI-core fields",
+                                                                          "AI-related fields", "Surrounding fields"))
 Rel_byP_c <- ggplot(Relatedness2, aes(x=Country, y=Value, fill=Period)) +
   geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Relatedness") +
   facet_wrap(~Indicator, ncol = 4) +
@@ -3599,14 +3599,14 @@ KnowledgeCompl <- KnowledgeCompl[KnowledgeCompl$X == "US3" |
                                    KnowledgeCompl$X == "KR3"| 
                                    KnowledgeCompl$X == "JP3", ]
 
-KnowledgeCompl$"AI-core codes" = rowSums(KnowledgeCompl[,c("X6", "X7", "X10", "X12")])
+KnowledgeCompl$"AI-core fields" = rowSums(KnowledgeCompl[,c("X6", "X7", "X10", "X12")])
 KnowledgeCompl$"Overall Complexity" = rowSums(KnowledgeCompl[,c(2:36)])
-KnowledgeCompl$"AI-related codes" = rowSums(KnowledgeCompl[,c("X11", "X4", "X5")])
-KnowledgeCompl$"Surrounding codes" = rowSums(KnowledgeCompl[,c("X3", "X2", "X1", "X13", "X25", "X34")])
+KnowledgeCompl$"AI-related fields" = rowSums(KnowledgeCompl[,c("X11", "X4", "X5")])
+KnowledgeCompl$"Surrounding fields" = rowSums(KnowledgeCompl[,c("X3", "X2", "X1", "X13", "X25", "X34")])
 
 KnowledgeCompl2<- KnowledgeCompl[,c(1, 38, 39)]
 names(KnowledgeCompl2) <- c("Country", "Period", "Value")
-KnowledgeCompl2$Indicator <- "AI-core codes"
+KnowledgeCompl2$Indicator <- "AI-core fields"
 
 KnowledgeCompl3<- KnowledgeCompl[,c(1, 38, 40)]
 names(KnowledgeCompl3) <- c("Country", "Period", "Value")
@@ -3614,11 +3614,11 @@ KnowledgeCompl3$Indicator <- "Overall Complexity"
 
 KnowledgeCompl4<- KnowledgeCompl[,c(1, 38, 41)]
 names(KnowledgeCompl4) <- c("Country", "Period", "Value")
-KnowledgeCompl4$Indicator <- "AI-related codes"
+KnowledgeCompl4$Indicator <- "AI-related fields"
 
 KnowledgeCompl5<- KnowledgeCompl[,c(1, 38, 42)]
 names(KnowledgeCompl5) <- c("Country", "Period", "Value")
-KnowledgeCompl5$Indicator <- "Surrounding codes"
+KnowledgeCompl5$Indicator <- "Surrounding fields"
 
 KnowledgeCompl_all <- rbind(KnowledgeCompl2, KnowledgeCompl3, KnowledgeCompl4, KnowledgeCompl5)
 KnowledgeCompl_all$Country <- gsub("CN3", "CN", str_trim(KnowledgeCompl_all$Country))
@@ -3636,14 +3636,14 @@ KnowlComp_3rd_AI$Period <- "Period 3 (2004-2018)"
 KnowledgeCompl_AI <- rbind(KnowlComp_1st_AI, KnowlComp_2nd_AI, KnowlComp_3rd_AI)
 
 KnowledgeCompl_AI <- KnowledgeCompl_AI[KnowledgeCompl_AI$X == "AI_pat3", ]
-KnowledgeCompl_AI$"AI-core codes" = rowSums(KnowledgeCompl_AI[,c("X6", "X7", "X10", "X12")])
+KnowledgeCompl_AI$"AI-core fields" = rowSums(KnowledgeCompl_AI[,c("X6", "X7", "X10", "X12")])
 KnowledgeCompl_AI$"Overall Complexity" = rowSums(KnowledgeCompl_AI[,c(2:36)])
-KnowledgeCompl_AI$"AI-related codes" = rowSums(KnowledgeCompl_AI[,c("X11", "X4", "X5")])
-KnowledgeCompl_AI$"Surrounding codes" = rowSums(KnowledgeCompl_AI[,c("X3", "X2", "X1", "X13", "X25", "X34")])
+KnowledgeCompl_AI$"AI-related fields" = rowSums(KnowledgeCompl_AI[,c("X11", "X4", "X5")])
+KnowledgeCompl_AI$"Surrounding fields" = rowSums(KnowledgeCompl_AI[,c("X3", "X2", "X1", "X13", "X25", "X34")])
 
 KnowledgeCompl_AI2<- KnowledgeCompl_AI[,c(1, 38, 39)]
 names(KnowledgeCompl_AI2) <- c("Country", "Period", "Value")
-KnowledgeCompl_AI2$Indicator <- "AI-core codes"
+KnowledgeCompl_AI2$Indicator <- "AI-core fields"
 
 KnowledgeCompl_AI3<- KnowledgeCompl_AI[,c(1, 38, 40)]
 names(KnowledgeCompl_AI3) <- c("Country", "Period", "Value")
@@ -3651,11 +3651,11 @@ KnowledgeCompl_AI3$Indicator <- "Overall Complexity"
 
 KnowledgeCompl_AI4<- KnowledgeCompl_AI[,c(1, 38, 41)]
 names(KnowledgeCompl_AI4) <- c("Country", "Period", "Value")
-KnowledgeCompl_AI4$Indicator <- "AI-related codes"
+KnowledgeCompl_AI4$Indicator <- "AI-related fields"
 
 KnowledgeCompl_AI5<- KnowledgeCompl_AI[,c(1, 38, 42)]
 names(KnowledgeCompl_AI5) <- c("Country", "Period", "Value")
-KnowledgeCompl_AI5$Indicator <- "Surrounding codes"
+KnowledgeCompl_AI5$Indicator <- "Surrounding fields"
 
 KnowledgeCompl_AI_all <- rbind(KnowledgeCompl_AI2, KnowledgeCompl_AI3, KnowledgeCompl_AI4, KnowledgeCompl_AI5)
 KnowledgeCompl_AI_all$Country <- gsub("AI_pat3", "AI", str_trim(KnowledgeCompl_AI_all$Country))
@@ -3691,12 +3691,12 @@ ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Period)) +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
 
 KnowledgeCompl_all2 <- KnowledgeCompl_all
-KnowledgeCompl_all2$Indicator <- factor(KnowledgeCompl_all2$Indicator, levels = c("Overall Complexity", "AI-core codes",
-                                                                                  "AI-related codes", "Surrounding codes"))
+KnowledgeCompl_all2$Indicator <- factor(KnowledgeCompl_all2$Indicator, levels = c("Overall Complexity", "AI-core fields",
+                                                                                  "AI-related fields", "Surrounding fields"))
 
 KnowledgeCompl_AI_all2 <- KnowledgeCompl_AI_all
-KnowledgeCompl_AI_all2$Indicator <- factor(KnowledgeCompl_AI_all2$Indicator, levels = c("Overall Complexity", "AI-core codes",
-                                                                                        "AI-related codes", "Surrounding codes"))
+KnowledgeCompl_AI_all2$Indicator <- factor(KnowledgeCompl_AI_all2$Indicator, levels = c("Overall Complexity", "AI-core fields",
+                                                                                        "AI-related fields", "Surrounding fields"))
 
 Comp_byP_c <-
   ggplot(KnowledgeCompl_all2, aes(x=Country, y=Value, fill=Period)) +
@@ -3727,7 +3727,7 @@ tiff("Figures_IPC/Relatedness_and_Complex_countries.jpg", width = 8, height = 6,
 multiplot(Rel_byP_c, Comp_byP_c, cols=1) 
 dev.off()
 
-tiff("Figures_IPC/Relatedness_and_Complex_AI_new.jpg", width = 8, height = 6, units = 'in', res = 200)
+tiff("Figures_IPC/Relatedness_and_Complex_AI_new2.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byAI_c, Comp_byAI_c, cols=1) 
 dev.off()
 
@@ -3778,7 +3778,7 @@ KnowlComp_AI_1st_Top4<-KnowlComp_AI_1st_Top4[KnowlComp_AI_1st_Top4$Country == "A
 KnowlComp_AI_2nd_Top4<-KnowlComp_AI_2nd_Top4[KnowlComp_AI_2nd_Top4$Country == "AI_pat",]
 KnowlComp_AI_3rd_Top4<-KnowlComp_AI_3rd_Top4[KnowlComp_AI_3rd_Top4$Country == "AI_pat",]
 KnowledgeCompl_AI_Top4 <- rbind(KnowlComp_AI_1st_Top4, KnowlComp_AI_2nd_Top4, KnowlComp_AI_3rd_Top4)
-KnowledgeCompl_AI_Top4$Category <- "AI-core codes"
+KnowledgeCompl_AI_Top4$Category <- "AI-core fields"
 
 KnowlComp_AI_1st_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_AI_Top3.csv", sep = ";", header = F, dec=".")
 KnowlComp_AI_2nd_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_AI_Top3.csv", sep = ";", header = TRUE, dec=".")
@@ -3796,7 +3796,7 @@ KnowlComp_AI_1st_Top3<-KnowlComp_AI_1st_Top3[KnowlComp_AI_1st_Top3$Country == "A
 KnowlComp_AI_2nd_Top3<-KnowlComp_AI_2nd_Top3[KnowlComp_AI_2nd_Top3$Country == "AI_pat",]
 KnowlComp_AI_3rd_Top3<-KnowlComp_AI_3rd_Top3[KnowlComp_AI_3rd_Top3$Country == "AI_pat",]
 KnowledgeCompl_AI_Top3 <- rbind(KnowlComp_AI_1st_Top3, KnowlComp_AI_2nd_Top3, KnowlComp_AI_3rd_Top3)
-KnowledgeCompl_AI_Top3$Category <- "AI-related codes"
+KnowledgeCompl_AI_Top3$Category <- "AI-related fields"
 
 KnowlComp_AI_1st_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_AI_Surr.csv", sep = ";", header = F, dec=".")
 KnowlComp_AI_2nd_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_AI_Surr.csv", sep = ";", header = TRUE, dec=".")
@@ -3814,7 +3814,7 @@ KnowlComp_AI_1st_Surr<-KnowlComp_AI_1st_Surr[KnowlComp_AI_1st_Surr$Country == "A
 KnowlComp_AI_2nd_Surr<-KnowlComp_AI_2nd_Surr[KnowlComp_AI_2nd_Surr$Country == "AI_pat",]
 KnowlComp_AI_3rd_Surr<-KnowlComp_AI_3rd_Surr[KnowlComp_AI_3rd_Surr$Country == "AI_pat",]
 KnowledgeCompl_AI_Surr <- rbind(KnowlComp_AI_1st_Surr, KnowlComp_AI_2nd_Surr, KnowlComp_AI_3rd_Surr)
-KnowledgeCompl_AI_Surr$Category <- "Surrounding codes"
+KnowledgeCompl_AI_Surr$Category <- "Surrounding fields"
 
 All_data_AI_knowlComp_Morc <- rbind(KnowledgeCompl_AI, KnowledgeCompl_AI_Top4, KnowledgeCompl_AI_Top3, KnowledgeCompl_AI_Surr)
 write.csv2(All_data_AI_knowlComp_Morc, file = "Data_calculations_IPC/All_data_AI_knowlComp_Morc.csv", row.names = F)
@@ -3850,7 +3850,7 @@ KnowlComp_2nd_Top4$Period <- "Period 2 (1989-2003)"
 KnowlComp_3rd_Top4$Period <- "Period 3 (2004-2018)"
 
 KnowledgeCompl_Top4 <- rbind(KnowlComp_1st_Top4, KnowlComp_2nd_Top4, KnowlComp_3rd_Top4)
-KnowledgeCompl_Top4$Category <- "AI-core codes"
+KnowledgeCompl_Top4$Category <- "AI-core fields"
 
 KnowlComp_1st_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_Top3.csv", sep = ";", header = F, dec=".")
 KnowlComp_2nd_Top3 <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_Top3.csv", sep = ";", header = TRUE, dec=".")
@@ -3865,7 +3865,7 @@ KnowlComp_2nd_Top3$Period <- "Period 2 (1989-2003)"
 KnowlComp_3rd_Top3$Period <- "Period 3 (2004-2018)"
 
 KnowledgeCompl_Top3 <- rbind(KnowlComp_1st_Top3, KnowlComp_2nd_Top3, KnowlComp_3rd_Top3)
-KnowledgeCompl_Top3$Category <- "AI-related codes"
+KnowledgeCompl_Top3$Category <- "AI-related fields"
 
 KnowlComp_1st_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_1st_Surr.csv", sep = ";", header = F, dec=".")
 KnowlComp_2nd_Surr <- read.csv("Data_calculations_IPC/KnowledgeComp_2nd_Surr.csv", sep = ";", header = TRUE, dec=".")
@@ -3880,7 +3880,7 @@ KnowlComp_2nd_Surr$Period <- "Period 2 (1989-2003)"
 KnowlComp_3rd_Surr$Period <- "Period 3 (2004-2018)"
 
 KnowledgeCompl_Surr <- rbind(KnowlComp_1st_Surr, KnowlComp_2nd_Surr, KnowlComp_3rd_Surr)
-KnowledgeCompl_Surr$Category <- "Surrounding codes"
+KnowledgeCompl_Surr$Category <- "Surrounding fields"
 
 All_data_knowlComp_Morc <- rbind(KnowledgeCompl, KnowledgeCompl_Top4, KnowledgeCompl_Top3, KnowledgeCompl_Surr)
 
@@ -3898,6 +3898,8 @@ write.csv2(All_data_knowlComp_Morc, file = "Data_calculations_IPC/All_data_knowl
 KnowledgeCompl <- read.csv("Data_calculations_IPC/All_data_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=",")
 KnowledgeCompl_AI <- read.csv("Data_calculations_IPC/All_data_AI_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=",")
 #insert here some formula to convert the character data to numbers;
+
+
 
 Comp_byP_a <- 
   ggplot(KnowledgeCompl, aes(x=Country, y=(RCA_step2), fill=Category)) +
@@ -3930,12 +3932,12 @@ Comp_byAI_b<-
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
 
 KnowledgeCompl2 <- KnowledgeCompl
-KnowledgeCompl2$Category <- factor(KnowledgeCompl2$Category, levels = c("Overall Complexity", "AI-core codes",
-                                                                                  "AI-related codes", "Surrounding codes"))
+KnowledgeCompl2$Category <- factor(KnowledgeCompl2$Category, levels = c("Overall Complexity", "AI-core fields",
+                                                                                  "AI-related fields", "Surrounding fields"))
 
 KnowledgeCompl_AI2 <- KnowledgeCompl_AI
-KnowledgeCompl_AI2$Category <- factor(KnowledgeCompl_AI2$Category, levels = c("Overall Complexity", "AI-core codes",
-                                                                                        "AI-related codes", "Surrounding codes"))
+KnowledgeCompl_AI2$Category <- factor(KnowledgeCompl_AI2$Category, levels = c("Overall Complexity", "AI-core fields",
+                                                                                        "AI-related fields", "Surrounding fields"))
 
 Comp_byP_c <-
   ggplot(KnowledgeCompl2, aes(x=Country, y=RCA_step1, fill=Period)) +
@@ -3952,7 +3954,7 @@ Comp_byAI_c<-
   scale_fill_brewer(palette="Paired") + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
 
-tiff("Figures_IPC/Relatedness_and_Complex_Morc_countries_new.jpg", width = 8, height = 6, units = 'in', res = 200)
+tiff("Figures_IPC/Relatedness_and_Complex_Morc_countries_new2.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byP_c, Comp_byP_c, cols=1) 
 dev.off()
 
@@ -4007,8 +4009,8 @@ All_data <- merge(All_KwnCom, Specialisations3, all=F, by=c("Period", "techn_fie
 #All_data2 <- merge(KnowledgeCompl, All_data, all=T, by=c("Country", "Period", "Category"))
 rm(Specialisations3, Specialisations,All_KwnCom,KnowledgeCompl)
 
-All_data$Category <- factor(All_data$Category, levels = c("AI-core codes", "AI-related codes",
-                                                                     "Surrounding codes", "Other"))
+All_data$Category <- factor(All_data$Category, levels = c("AI-core fields", "AI-related fields",
+                                                                     "Surrounding fields", "fields"))
 BinarySum<- aggregate(All_data[,16], list(All_data$Country, All_data$techn_field_nr), sum)
 names(BinarySum)<- c("Country", "techn_field_nr", "SumBinary")
 
