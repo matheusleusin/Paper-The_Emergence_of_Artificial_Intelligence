@@ -1,15 +1,3 @@
 # Paper_AI_as_a_GPT
 
-This repository relates to a working paper analyzing the AI diffusion
-
-## Relevant literature (in order of relevance)
-
-1. [Balland, P.A., Boschma, R., Crespo, J. and Rigby, D.L., 2019. Smart specialization policy in the European Union: relatedness, knowledge complexity and regional diversification. Regional Studies, 53(9), pp.1252-1268.](https://www.tandfonline.com/doi/abs/10.1080/00343404.2018.1437900) → Discusses aspects on smart specialization policies and how the concepts of relatedness and knowledge complexity may help in building better policies.
-2. [Petralia, S., Balland, P.A. and Morrison, A., 2017. Climbing the ladder of technological development. Research Policy, 46(5), pp.956-969.](https://www.sciencedirect.com/science/article/pii/S004873331730063X?casa_token=1peumjfjyH4AAAAA:mIySQnQXBNjlBBwRRqjBRkvUqBNAs7cznjnWa90nI4yPxpECQdraEoZlox1DhXLGNCKyo3XFUg) → Use an econometric model to show that the likelihood of diversification is higher for those technologies that are related to countries’ existing profile of competences, and that this effect is stronger at earlier stages of development. They also make their analysis in periods of time.
-3. [Hidalgo, C.A., Klinger, B., Barabási, A.L. and Hausmann, R., 2007. The product space conditions the development of nations. Science, 317(5837), pp.482-487.](https://science.sciencemag.org/content/317/5837/482.abstract?casa_token=v9euhUGNolkAAAAA:Y8fbpihGo8tF3W3KQ477gc7KvimY9Sw93RzISYIDN7wJDRHFNmEDyVM5_yUJjCkkM_vTSRVu3YGBtA) → A semminal paper that is short and easy to read, explains the main fundamentals of the Economic Complexity theory
-4. [Boschma, R., Coenen, L., Frenken, K. and Truffer, B., 2017. Towards a theory of regional diversification: combining insights from Evolutionary Economic Geography and Transition Studies. Regional studies, 51(1), pp.31-45.](https://rsa.tandfonline.com/doi/abs/10.1080/00343404.2016.1258460?casa_token=llYnvj8LmlAAAAAA:q5QYH6kV_xTG2AvXWXJy34cYkATBvTUalzWrjvtNKmjPR26iT0zvPQD8BXC-SrifeFNPKOaNQteNVQY) → Discusses aspects of related and unrelated diversification.
-5. [Boschma, R., 2015. Towards an evolutionary perspective on regional resilience. Regional Studies, 49(5), pp.733-751.](https://rsa.tandfonline.com/doi/abs/10.1080/00343404.2014.959481?casa_token=U_NRhz2arVMAAAAA:Ma2JLoWeFEF6yIxYpwsDnnnc7jz9mvlAiANXFgJvmWbFPX3h-2deFDHxy7FJtv9ZZEeh4_GDYkgBOoU) → Discusses aspects of resilience, network effects and the effects of institutions under an evolutionary perspective
-
-## Big files
-The files [All_patents_and_Naces_Part1](https://seafile.zfn.uni-bremen.de/f/3281086eef4946ef8187/) and [All_patents_and_Naces_Part2](https://seafile.zfn.uni-bremen.de/f/9d7c9ae326da4f3283bd/), used for the Nace analysis, are available for download in two separate 7z zipped files (less than 150 mb zipped each);
-The files [All_patents_and_IPCs_Part1](https://seafile.zfn.uni-bremen.de/f/1589bee674af4154a4c8/) and [All_patents_and_IPCs_Part2](https://seafile.zfn.uni-bremen.de/f/44712f3bb3c5421cbe74/), used for the IPC analysis, are also available in the same way and format.
+This repository relates to a working paper analyzing AI emergence as a GPT.
