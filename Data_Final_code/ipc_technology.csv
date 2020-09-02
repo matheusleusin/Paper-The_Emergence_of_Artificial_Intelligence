@@ -1,0 +1,762 @@
+ipc_maingroup_symbol;field_nr;sector;field_name
+A01B;29;Mechanical engineering;Other special machines
+A01C;29;Mechanical engineering;Other special machines
+A01D;29;Mechanical engineering;Other special machines
+A01F;29;Mechanical engineering;Other special machines
+A01G;29;Mechanical engineering;Other special machines
+A01H;18;Chemistry;Food chemistry
+A01J;29;Mechanical engineering;Other special machines
+A01K;29;Mechanical engineering;Other special machines
+A01L;29;Mechanical engineering;Other special machines
+A01M;29;Mechanical engineering;Other special machines
+A01N;19;Chemistry;Basic materials chemistry 
+A01P;19;Chemistry;Basic materials chemistry 
+A21B;29;Mechanical engineering;Other special machines
+A21C;29;Mechanical engineering;Other special machines
+A21D;18;Chemistry;Food chemistry
+A22B;29;Mechanical engineering;Other special machines
+A22C;29;Mechanical engineering;Other special machines
+A23B;18;Chemistry;Food chemistry
+A23C;18;Chemistry;Food chemistry
+A23D;18;Chemistry;Food chemistry
+A23F;18;Chemistry;Food chemistry
+A23G;18;Chemistry;Food chemistry
+A23J;18;Chemistry;Food chemistry
+A23K;18;Chemistry;Food chemistry
+A23L;18;Chemistry;Food chemistry
+A23N;29;Mechanical engineering;Other special machines
+A23P;29;Mechanical engineering;Other special machines
+A24B;34;Other fields;Other consumer goods
+A24C;34;Other fields;Other consumer goods
+A24D;34;Other fields;Other consumer goods
+A24F;34;Other fields;Other consumer goods
+A41B;34;Other fields;Other consumer goods
+A41C;34;Other fields;Other consumer goods
+A41D;34;Other fields;Other consumer goods
+A41F;34;Other fields;Other consumer goods
+A41G;34;Other fields;Other consumer goods
+A41H;28;Mechanical engineering;Textile and paper machines
+A42B;34;Other fields;Other consumer goods
+A42C;34;Other fields;Other consumer goods
+A43B;34;Other fields;Other consumer goods
+A43C;34;Other fields;Other consumer goods
+A43D;28;Mechanical engineering;Textile and paper machines
+A44B;34;Other fields;Other consumer goods
+A44C;34;Other fields;Other consumer goods
+A45B;34;Other fields;Other consumer goods
+A45C;34;Other fields;Other consumer goods
+A45D;34;Other fields;Other consumer goods
+A45F;34;Other fields;Other consumer goods
+A46B;34;Other fields;Other consumer goods
+A46D;28;Mechanical engineering;Textile and paper machines
+A47B;33;Other fields;Furniture, games
+A47C;33;Other fields;Furniture, games
+A47D;33;Other fields;Furniture, games
+A47F;33;Other fields;Furniture, games
+A47G;33;Other fields;Furniture, games
+A47H;33;Other fields;Furniture, games
+A47J;33;Other fields;Furniture, games
+A47K;33;Other fields;Furniture, games
+A47L;33;Other fields;Furniture, games
+A61B;13;Instruments;Medical technology
+A61C;13;Instruments;Medical technology
+A61D;13;Instruments;Medical technology
+A61F;13;Instruments;Medical technology
+A61G;13;Instruments;Medical technology
+A61H;13;Instruments;Medical technology
+A61J;13;Instruments;Medical technology
+A61K   6;16;Chemistry;Pharmaceuticals
+A61K   8;14;Chemistry;Organic fine chemistry
+A61K   9;16;Chemistry;Pharmaceuticals
+A61K  31;16;Chemistry;Pharmaceuticals
+A61K  33;16;Chemistry;Pharmaceuticals
+A61K  35;16;Chemistry;Pharmaceuticals
+A61K  36;16;Chemistry;Pharmaceuticals
+A61K  38;16;Chemistry;Pharmaceuticals
+A61K  39;16;Chemistry;Pharmaceuticals
+A61K  41;16;Chemistry;Pharmaceuticals
+A61K  45;16;Chemistry;Pharmaceuticals
+A61K  47;16;Chemistry;Pharmaceuticals
+A61K  48;16;Chemistry;Pharmaceuticals
+A61K  49;16;Chemistry;Pharmaceuticals
+A61K  50;16;Chemistry;Pharmaceuticals
+A61K  51;16;Chemistry;Pharmaceuticals
+A61K 101;16;Chemistry;Pharmaceuticals
+A61K 103;16;Chemistry;Pharmaceuticals
+A61K 125;16;Chemistry;Pharmaceuticals
+A61K 127;16;Chemistry;Pharmaceuticals
+A61K 129;16;Chemistry;Pharmaceuticals
+A61K 131;16;Chemistry;Pharmaceuticals
+A61K 133;16;Chemistry;Pharmaceuticals
+A61K 135;16;Chemistry;Pharmaceuticals
+A61L;13;Instruments;Medical technology
+A61M;13;Instruments;Medical technology
+A61N;13;Instruments;Medical technology
+A61P;16;Chemistry;Pharmaceuticals
+A61Q;14;Chemistry;Organic fine chemistry
+A62B;34;Other fields;Other consumer goods
+A62C;24;Chemistry;Environmental technology
+A62D;26;Mechanical engineering;Machine tools
+A63B;33;Other fields;Furniture, games
+A63C;33;Other fields;Furniture, games
+A63D;33;Other fields;Furniture, games
+A63F;33;Other fields;Furniture, games
+A63G;33;Other fields;Furniture, games
+A63H;33;Other fields;Furniture, games
+A63J;33;Other fields;Furniture, games
+A63K;33;Other fields;Furniture, games
+A99Z;34;Other fields;Other consumer goods
+B01B;23;Chemistry;Chemical engineering
+B01D   1;23;Chemistry;Chemical engineering
+B01D   3;23;Chemistry;Chemical engineering
+B01D   5;23;Chemistry;Chemical engineering
+B01D   7;23;Chemistry;Chemical engineering
+B01D   8;23;Chemistry;Chemical engineering
+B01D   9;23;Chemistry;Chemical engineering
+B01D  11;23;Chemistry;Chemical engineering
+B01D  12;23;Chemistry;Chemical engineering
+B01D  15;23;Chemistry;Chemical engineering
+B01D  17;23;Chemistry;Chemical engineering
+B01D  19;23;Chemistry;Chemical engineering
+B01D  21;23;Chemistry;Chemical engineering
+B01D  24;23;Chemistry;Chemical engineering
+B01D  25;23;Chemistry;Chemical engineering
+B01D  27;23;Chemistry;Chemical engineering
+B01D  29;23;Chemistry;Chemical engineering
+B01D  33;23;Chemistry;Chemical engineering
+B01D  35;23;Chemistry;Chemical engineering
+B01D  36;23;Chemistry;Chemical engineering
+B01D  37;23;Chemistry;Chemical engineering
+B01D  39;23;Chemistry;Chemical engineering
+B01D  41;23;Chemistry;Chemical engineering
+B01D  43;23;Chemistry;Chemical engineering
+B01D  45;24;Chemistry;Environmental technology
+B01D  46;24;Chemistry;Environmental technology
+B01D  47;24;Chemistry;Environmental technology
+B01D  49;24;Chemistry;Environmental technology
+B01D  50;24;Chemistry;Environmental technology
+B01D  51;24;Chemistry;Environmental technology
+B01D  52;24;Chemistry;Environmental technology
+B01D  53;24;Chemistry;Environmental technology
+B01D  57;23;Chemistry;Chemical engineering
+B01D  59;23;Chemistry;Chemical engineering
+B01D  61;23;Chemistry;Chemical engineering
+B01D  63;23;Chemistry;Chemical engineering
+B01D  65;23;Chemistry;Chemical engineering
+B01D  67;23;Chemistry;Chemical engineering
+B01D  69;23;Chemistry;Chemical engineering
+B01D  71;23;Chemistry;Chemical engineering
+B01F;23;Chemistry;Chemical engineering
+B01J;23;Chemistry;Chemical engineering
+B01L;23;Chemistry;Chemical engineering
+B02B;29;Mechanical engineering;Other special machines
+B02C;23;Chemistry;Chemical engineering
+B03B;23;Chemistry;Chemical engineering
+B03C;23;Chemistry;Chemical engineering
+B03D;23;Chemistry;Chemical engineering
+B04B;23;Chemistry;Chemical engineering
+B04C;23;Chemistry;Chemical engineering
+B05B;23;Chemistry;Chemical engineering
+B05C;21;Chemistry;Surface technology, coating
+B05D;21;Chemistry;Surface technology, coating
+B06B;23;Chemistry;Chemical engineering
+B07B;23;Chemistry;Chemical engineering
+B07C;23;Chemistry;Chemical engineering
+B08B;23;Chemistry;Chemical engineering
+B09B;24;Chemistry;Environmental technology
+B09C;24;Chemistry;Environmental technology
+B21B;26;Mechanical engineering;Machine tools
+B21C;26;Mechanical engineering;Machine tools
+B21D;26;Mechanical engineering;Machine tools
+B21F;26;Mechanical engineering;Machine tools
+B21G;26;Mechanical engineering;Machine tools
+B21H;26;Mechanical engineering;Machine tools
+B21J;26;Mechanical engineering;Machine tools
+B21K;26;Mechanical engineering;Machine tools
+B21L;26;Mechanical engineering;Machine tools
+B22C;20;Chemistry;Materials, metallurgy
+B22D;20;Chemistry;Materials, metallurgy
+B22F;20;Chemistry;Materials, metallurgy
+B23B;26;Mechanical engineering;Machine tools
+B23C;26;Mechanical engineering;Machine tools
+B23D;26;Mechanical engineering;Machine tools
+B23F;26;Mechanical engineering;Machine tools
+B23G;26;Mechanical engineering;Machine tools
+B23H;26;Mechanical engineering;Machine tools
+B23K;26;Mechanical engineering;Machine tools
+B23P;26;Mechanical engineering;Machine tools
+B23Q;26;Mechanical engineering;Machine tools
+B24B;26;Mechanical engineering;Machine tools
+B24C;26;Mechanical engineering;Machine tools
+B24D;26;Mechanical engineering;Machine tools
+B25B;26;Mechanical engineering;Machine tools
+B25C;26;Mechanical engineering;Machine tools
+B25D;26;Mechanical engineering;Machine tools
+B25F;26;Mechanical engineering;Machine tools
+B25G;26;Mechanical engineering;Machine tools
+B25H;26;Mechanical engineering;Machine tools
+B25J;25;Mechanical engineering;Handling
+B26B;26;Mechanical engineering;Machine tools
+B26D;26;Mechanical engineering;Machine tools
+B26F;26;Mechanical engineering;Machine tools
+B27B;26;Mechanical engineering;Machine tools
+B27C;26;Mechanical engineering;Machine tools
+B27D;26;Mechanical engineering;Machine tools
+B27F;26;Mechanical engineering;Machine tools
+B27G;26;Mechanical engineering;Machine tools
+B27H;26;Mechanical engineering;Machine tools
+B27J;26;Mechanical engineering;Machine tools
+B27K;26;Mechanical engineering;Machine tools
+B27L;26;Mechanical engineering;Machine tools
+B27M;26;Mechanical engineering;Machine tools
+B27N;26;Mechanical engineering;Machine tools
+B28B;29;Mechanical engineering;Other special machines
+B28C;29;Mechanical engineering;Other special machines
+B28D;29;Mechanical engineering;Other special machines
+B29B;29;Mechanical engineering;Other special machines
+B29C;29;Mechanical engineering;Other special machines
+B29D;29;Mechanical engineering;Other special machines
+B29K;29;Mechanical engineering;Other special machines
+B29L;29;Mechanical engineering;Other special machines
+B30B;26;Mechanical engineering;Machine tools
+B31B;28;Mechanical engineering;Textile and paper machines
+B31C;28;Mechanical engineering;Textile and paper machines
+B31D;28;Mechanical engineering;Textile and paper machines
+B31F;28;Mechanical engineering;Textile and paper machines
+B32B;21;Chemistry;Surface technology, coating
+B33Y;29;Mechanical engineering;Other special machines
+B41B;28;Mechanical engineering;Textile and paper machines
+B41C;28;Mechanical engineering;Textile and paper machines
+B41D;28;Mechanical engineering;Textile and paper machines
+B41F;28;Mechanical engineering;Textile and paper machines
+B41G;28;Mechanical engineering;Textile and paper machines
+B41J;28;Mechanical engineering;Textile and paper machines
+B41K;28;Mechanical engineering;Textile and paper machines
+B41L;28;Mechanical engineering;Textile and paper machines
+B41M;28;Mechanical engineering;Textile and paper machines
+B41N;28;Mechanical engineering;Textile and paper machines
+B42B;34;Other fields;Other consumer goods
+B42C;34;Other fields;Other consumer goods
+B42D;34;Other fields;Other consumer goods
+B42F;34;Other fields;Other consumer goods
+B43K;34;Other fields;Other consumer goods
+B43L;34;Other fields;Other consumer goods
+B43M;34;Other fields;Other consumer goods
+B44B;34;Other fields;Other consumer goods
+B44C;34;Other fields;Other consumer goods
+B44D;34;Other fields;Other consumer goods
+B44F;34;Other fields;Other consumer goods
+B60B;32;Mechanical engineering;Transport
+B60C;32;Mechanical engineering;Transport
+B60D;32;Mechanical engineering;Transport
+B60F;32;Mechanical engineering;Transport
+B60G;32;Mechanical engineering;Transport
+B60H;32;Mechanical engineering;Transport
+B60J;32;Mechanical engineering;Transport
+B60K;32;Mechanical engineering;Transport
+B60L;32;Mechanical engineering;Transport
+B60M;32;Mechanical engineering;Transport
+B60N;32;Mechanical engineering;Transport
+B60P;32;Mechanical engineering;Transport
+B60Q;32;Mechanical engineering;Transport
+B60R;32;Mechanical engineering;Transport
+B60S;32;Mechanical engineering;Transport
+B60T;32;Mechanical engineering;Transport
+B60V;32;Mechanical engineering;Transport
+B60W;32;Mechanical engineering;Transport
+B61B;32;Mechanical engineering;Transport
+B61C;32;Mechanical engineering;Transport
+B61D;32;Mechanical engineering;Transport
+B61F;32;Mechanical engineering;Transport
+B61G;32;Mechanical engineering;Transport
+B61H;32;Mechanical engineering;Transport
+B61J;32;Mechanical engineering;Transport
+B61K;32;Mechanical engineering;Transport
+B61L;32;Mechanical engineering;Transport
+B62B;32;Mechanical engineering;Transport
+B62C;32;Mechanical engineering;Transport
+B62D;32;Mechanical engineering;Transport
+B62H;32;Mechanical engineering;Transport
+B62J;32;Mechanical engineering;Transport
+B62K;32;Mechanical engineering;Transport
+B62L;32;Mechanical engineering;Transport
+B62M;32;Mechanical engineering;Transport
+B63B;32;Mechanical engineering;Transport
+B63C;32;Mechanical engineering;Transport
+B63G;32;Mechanical engineering;Transport
+B63H;32;Mechanical engineering;Transport
+B63J;32;Mechanical engineering;Transport
+B64B;32;Mechanical engineering;Transport
+B64C;32;Mechanical engineering;Transport
+B64D;32;Mechanical engineering;Transport
+B64F;32;Mechanical engineering;Transport
+B64G;32;Mechanical engineering;Transport
+B65B;25;Mechanical engineering;Handling
+B65C;25;Mechanical engineering;Handling
+B65D;25;Mechanical engineering;Handling
+B65F;24;Chemistry;Environmental technology
+B65G;25;Mechanical engineering;Handling
+B65H;25;Mechanical engineering;Handling
+B66B;25;Mechanical engineering;Handling
+B66C;25;Mechanical engineering;Handling
+B66D;25;Mechanical engineering;Handling
+B66F;25;Mechanical engineering;Handling
+B67B;25;Mechanical engineering;Handling
+B67C;25;Mechanical engineering;Handling
+B67D;25;Mechanical engineering;Handling
+B68B;34;Other fields;Other consumer goods
+B68C;34;Other fields;Other consumer goods
+B68F;34;Other fields;Other consumer goods
+B68G;34;Other fields;Other consumer goods
+B81B;22;Chemistry;Micro-structural and nano-technology
+B81C;22;Chemistry;Micro-structural and nano-technology
+B82B;22;Chemistry;Micro-structural and nano-technology
+B82Y;22;Chemistry;Micro-structural and nano-technology
+B99Z;29;Mechanical engineering;Other special machines
+C01B;20;Chemistry;Materials, metallurgy
+C01C;20;Chemistry;Materials, metallurgy
+C01D;20;Chemistry;Materials, metallurgy
+C01F;20;Chemistry;Materials, metallurgy
+C01G;20;Chemistry;Materials, metallurgy
+C02F;24;Chemistry;Environmental technology
+C03B;29;Mechanical engineering;Other special machines
+C03C;20;Chemistry;Materials, metallurgy
+C04B;20;Chemistry;Materials, metallurgy
+C05B;19;Chemistry;Basic materials chemistry 
+C05C;19;Chemistry;Basic materials chemistry 
+C05D;19;Chemistry;Basic materials chemistry 
+C05F;19;Chemistry;Basic materials chemistry 
+C05G;19;Chemistry;Basic materials chemistry 
+C06B;19;Chemistry;Basic materials chemistry 
+C06C;19;Chemistry;Basic materials chemistry 
+C06D;19;Chemistry;Basic materials chemistry 
+C06F;19;Chemistry;Basic materials chemistry 
+C07B;14;Chemistry;Organic fine chemistry
+C07C;14;Chemistry;Organic fine chemistry
+C07D;14;Chemistry;Organic fine chemistry
+C07F;14;Chemistry;Organic fine chemistry
+C07G;15;Chemistry;Biotechnology
+C07H;14;Chemistry;Organic fine chemistry
+C07J;14;Chemistry;Organic fine chemistry
+C07K;15;Chemistry;Biotechnology
+C08B;17;Chemistry;Macromolecular chemistry, polymers
+C08C;17;Chemistry;Macromolecular chemistry, polymers
+C08F;17;Chemistry;Macromolecular chemistry, polymers
+C08G;17;Chemistry;Macromolecular chemistry, polymers
+C08H;17;Chemistry;Macromolecular chemistry, polymers
+C08J;29;Mechanical engineering;Other special machines
+C08K;17;Chemistry;Macromolecular chemistry, polymers
+C08L;17;Chemistry;Macromolecular chemistry, polymers
+C09B;19;Chemistry;Basic materials chemistry 
+C09C;19;Chemistry;Basic materials chemistry 
+C09D;19;Chemistry;Basic materials chemistry 
+C09F;19;Chemistry;Basic materials chemistry 
+C09G;19;Chemistry;Basic materials chemistry 
+C09H;19;Chemistry;Basic materials chemistry 
+C09J;19;Chemistry;Basic materials chemistry 
+C09K;19;Chemistry;Basic materials chemistry 
+C10B;19;Chemistry;Basic materials chemistry 
+C10C;19;Chemistry;Basic materials chemistry 
+C10F;19;Chemistry;Basic materials chemistry 
+C10G;19;Chemistry;Basic materials chemistry 
+C10H;19;Chemistry;Basic materials chemistry 
+C10J;19;Chemistry;Basic materials chemistry 
+C10K;19;Chemistry;Basic materials chemistry 
+C10L;19;Chemistry;Basic materials chemistry 
+C10M;19;Chemistry;Basic materials chemistry 
+C10N;19;Chemistry;Basic materials chemistry 
+C11B;19;Chemistry;Basic materials chemistry 
+C11C;19;Chemistry;Basic materials chemistry 
+C11D;19;Chemistry;Basic materials chemistry 
+C12C;18;Chemistry;Food chemistry
+C12F;18;Chemistry;Food chemistry
+C12G;18;Chemistry;Food chemistry
+C12H;18;Chemistry;Food chemistry
+C12J;18;Chemistry;Food chemistry
+C12L;29;Mechanical engineering;Other special machines
+C12M;15;Chemistry;Biotechnology
+C12N;15;Chemistry;Biotechnology
+C12P;15;Chemistry;Biotechnology
+C12Q;15;Chemistry;Biotechnology
+C12R;15;Chemistry;Biotechnology
+C12S;15;Chemistry;Biotechnology
+C13B   5;29;Mechanical engineering;Other special machines
+C13B  10;18;Chemistry;Food chemistry
+C13B  15;29;Mechanical engineering;Other special machines
+C13B  20;18;Chemistry;Food chemistry
+C13B  25;29;Mechanical engineering;Other special machines
+C13B  30;18;Chemistry;Food chemistry
+C13B  35;18;Chemistry;Food chemistry
+C13B  40;18;Chemistry;Food chemistry
+C13B  45;29;Mechanical engineering;Other special machines
+C13B  50;18;Chemistry;Food chemistry
+C13B  99;18;Chemistry;Food chemistry
+C13C;29;Mechanical engineering;Other special machines
+C13D;18;Chemistry;Food chemistry
+C13F;18;Chemistry;Food chemistry
+C13G;29;Mechanical engineering;Other special machines
+C13H;29;Mechanical engineering;Other special machines
+C13J;18;Chemistry;Food chemistry
+C13K;18;Chemistry;Food chemistry
+C14B;28;Mechanical engineering;Textile and paper machines
+C14C;23;Chemistry;Chemical engineering
+C21B;20;Chemistry;Materials, metallurgy
+C21C;20;Chemistry;Materials, metallurgy
+C21D;20;Chemistry;Materials, metallurgy
+C22B;20;Chemistry;Materials, metallurgy
+C22C;20;Chemistry;Materials, metallurgy
+C22F;20;Chemistry;Materials, metallurgy
+C23C;21;Chemistry;Surface technology, coating
+C23D;21;Chemistry;Surface technology, coating
+C23F;21;Chemistry;Surface technology, coating
+C23G;21;Chemistry;Surface technology, coating
+C25B;21;Chemistry;Surface technology, coating
+C25C;21;Chemistry;Surface technology, coating
+C25D;21;Chemistry;Surface technology, coating
+C25F;21;Chemistry;Surface technology, coating
+C30B;21;Chemistry;Surface technology, coating
+C40B;14;Chemistry;Organic fine chemistry
+C99Z;19;Chemistry;Basic materials chemistry 
+D01B;28;Mechanical engineering;Textile and paper machines
+D01C;28;Mechanical engineering;Textile and paper machines
+D01D;28;Mechanical engineering;Textile and paper machines
+D01F;28;Mechanical engineering;Textile and paper machines
+D01G;28;Mechanical engineering;Textile and paper machines
+D01H;28;Mechanical engineering;Textile and paper machines
+D02G;28;Mechanical engineering;Textile and paper machines
+D02H;28;Mechanical engineering;Textile and paper machines
+D02J;28;Mechanical engineering;Textile and paper machines
+D03C;28;Mechanical engineering;Textile and paper machines
+D03D;28;Mechanical engineering;Textile and paper machines
+D03J;28;Mechanical engineering;Textile and paper machines
+D04B;28;Mechanical engineering;Textile and paper machines
+D04C;28;Mechanical engineering;Textile and paper machines
+D04D;34;Other fields;Other consumer goods
+D04G;28;Mechanical engineering;Textile and paper machines
+D04H;28;Mechanical engineering;Textile and paper machines
+D05B;28;Mechanical engineering;Textile and paper machines
+D05C;28;Mechanical engineering;Textile and paper machines
+D06B;23;Chemistry;Chemical engineering
+D06C;23;Chemistry;Chemical engineering
+D06F;34;Other fields;Other consumer goods
+D06G;28;Mechanical engineering;Textile and paper machines
+D06H;28;Mechanical engineering;Textile and paper machines
+D06J;28;Mechanical engineering;Textile and paper machines
+D06L;23;Chemistry;Chemical engineering
+D06M;28;Mechanical engineering;Textile and paper machines
+D06N;34;Other fields;Other consumer goods
+D06P;28;Mechanical engineering;Textile and paper machines
+D06Q;28;Mechanical engineering;Textile and paper machines
+D07B;34;Other fields;Other consumer goods
+D21B;28;Mechanical engineering;Textile and paper machines
+D21C;28;Mechanical engineering;Textile and paper machines
+D21D;28;Mechanical engineering;Textile and paper machines
+D21F;28;Mechanical engineering;Textile and paper machines
+D21G;28;Mechanical engineering;Textile and paper machines
+D21H;28;Mechanical engineering;Textile and paper machines
+D21J;28;Mechanical engineering;Textile and paper machines
+D99Z;28;Mechanical engineering;Textile and paper machines
+E01B;35;Other fields;Civil engineering
+E01C;35;Other fields;Civil engineering
+E01D;35;Other fields;Civil engineering
+E01F   1;35;Other fields;Civil engineering
+E01F   3;35;Other fields;Civil engineering
+E01F   5;35;Other fields;Civil engineering
+E01F   7;35;Other fields;Civil engineering
+E01F   8;24;Chemistry;Environmental technology
+E01F   9;35;Other fields;Civil engineering
+E01F  11;35;Other fields;Civil engineering
+E01F  13;35;Other fields;Civil engineering
+E01F  15;35;Other fields;Civil engineering
+E01H;35;Other fields;Civil engineering
+E02B;35;Other fields;Civil engineering
+E02C;35;Other fields;Civil engineering
+E02D;35;Other fields;Civil engineering
+E02F;35;Other fields;Civil engineering
+E03B;35;Other fields;Civil engineering
+E03C;35;Other fields;Civil engineering
+E03D;35;Other fields;Civil engineering
+E03F;35;Other fields;Civil engineering
+E04B;35;Other fields;Civil engineering
+E04C;35;Other fields;Civil engineering
+E04D;35;Other fields;Civil engineering
+E04F;35;Other fields;Civil engineering
+E04G;35;Other fields;Civil engineering
+E04H;35;Other fields;Civil engineering
+E05B;35;Other fields;Civil engineering
+E05C;35;Other fields;Civil engineering
+E05D;35;Other fields;Civil engineering
+E05F;35;Other fields;Civil engineering
+E05G;35;Other fields;Civil engineering
+E06B;35;Other fields;Civil engineering
+E06C;35;Other fields;Civil engineering
+E21B;35;Other fields;Civil engineering
+E21C;35;Other fields;Civil engineering
+E21D;35;Other fields;Civil engineering
+E21F;35;Other fields;Civil engineering
+E99Z;35;Other fields;Civil engineering
+F01B;27;Mechanical engineering;Engines, pumps, turbines
+F01C;27;Mechanical engineering;Engines, pumps, turbines
+F01D;27;Mechanical engineering;Engines, pumps, turbines
+F01K;27;Mechanical engineering;Engines, pumps, turbines
+F01L;27;Mechanical engineering;Engines, pumps, turbines
+F01M;27;Mechanical engineering;Engines, pumps, turbines
+F01N;24;Chemistry;Environmental technology
+F01P;27;Mechanical engineering;Engines, pumps, turbines
+F02B;27;Mechanical engineering;Engines, pumps, turbines
+F02C;27;Mechanical engineering;Engines, pumps, turbines
+F02D;27;Mechanical engineering;Engines, pumps, turbines
+F02F;27;Mechanical engineering;Engines, pumps, turbines
+F02G;27;Mechanical engineering;Engines, pumps, turbines
+F02K;27;Mechanical engineering;Engines, pumps, turbines
+F02M;27;Mechanical engineering;Engines, pumps, turbines
+F02N;27;Mechanical engineering;Engines, pumps, turbines
+F02P;27;Mechanical engineering;Engines, pumps, turbines
+F03B;27;Mechanical engineering;Engines, pumps, turbines
+F03C;27;Mechanical engineering;Engines, pumps, turbines
+F03D;27;Mechanical engineering;Engines, pumps, turbines
+F03G;27;Mechanical engineering;Engines, pumps, turbines
+F03H;27;Mechanical engineering;Engines, pumps, turbines
+F04B;27;Mechanical engineering;Engines, pumps, turbines
+F04C;27;Mechanical engineering;Engines, pumps, turbines
+F04D;27;Mechanical engineering;Engines, pumps, turbines
+F04F;27;Mechanical engineering;Engines, pumps, turbines
+F15B;31;Mechanical engineering;Mechanical elements
+F15C;31;Mechanical engineering;Mechanical elements
+F15D;31;Mechanical engineering;Mechanical elements
+F16B;31;Mechanical engineering;Mechanical elements
+F16C;31;Mechanical engineering;Mechanical elements
+F16D;31;Mechanical engineering;Mechanical elements
+F16F;31;Mechanical engineering;Mechanical elements
+F16G;31;Mechanical engineering;Mechanical elements
+F16H;31;Mechanical engineering;Mechanical elements
+F16J;31;Mechanical engineering;Mechanical elements
+F16K;31;Mechanical engineering;Mechanical elements
+F16L;31;Mechanical engineering;Mechanical elements
+F16M;31;Mechanical engineering;Mechanical elements
+F16N;31;Mechanical engineering;Mechanical elements
+F16P;31;Mechanical engineering;Mechanical elements
+F16S;31;Mechanical engineering;Mechanical elements
+F16T;31;Mechanical engineering;Mechanical elements
+F17B;31;Mechanical engineering;Mechanical elements
+F17C;31;Mechanical engineering;Mechanical elements
+F17D;31;Mechanical engineering;Mechanical elements
+F21H;1;Electrical engineering;Electrical machinery, apparatus, energy
+F21K;1;Electrical engineering;Electrical machinery, apparatus, energy
+F21L;1;Electrical engineering;Electrical machinery, apparatus, energy
+F21S;1;Electrical engineering;Electrical machinery, apparatus, energy
+F21V;1;Electrical engineering;Electrical machinery, apparatus, energy
+F21W;1;Electrical engineering;Electrical machinery, apparatus, energy
+F21Y;1;Electrical engineering;Electrical machinery, apparatus, energy
+F22B;30;Mechanical engineering;Thermal processes and apparatus
+F22D;30;Mechanical engineering;Thermal processes and apparatus
+F22G;30;Mechanical engineering;Thermal processes and apparatus
+F23B;30;Mechanical engineering;Thermal processes and apparatus
+F23C;30;Mechanical engineering;Thermal processes and apparatus
+F23D;30;Mechanical engineering;Thermal processes and apparatus
+F23G;24;Chemistry;Environmental technology
+F23H;30;Mechanical engineering;Thermal processes and apparatus
+F23J;24;Chemistry;Environmental technology
+F23K;30;Mechanical engineering;Thermal processes and apparatus
+F23L;30;Mechanical engineering;Thermal processes and apparatus
+F23M;30;Mechanical engineering;Thermal processes and apparatus
+F23N;30;Mechanical engineering;Thermal processes and apparatus
+F23Q;30;Mechanical engineering;Thermal processes and apparatus
+F23R;27;Mechanical engineering;Engines, pumps, turbines
+F24B;30;Mechanical engineering;Thermal processes and apparatus
+F24C;30;Mechanical engineering;Thermal processes and apparatus
+F24D;30;Mechanical engineering;Thermal processes and apparatus
+F24F;30;Mechanical engineering;Thermal processes and apparatus
+F24H;30;Mechanical engineering;Thermal processes and apparatus
+F24J;30;Mechanical engineering;Thermal processes and apparatus
+F24S;30;Mechanical engineering;Thermal processes and apparatus
+F24T;30;Mechanical engineering;Thermal processes and apparatus
+F24V;30;Mechanical engineering;Thermal processes and apparatus
+F25B;30;Mechanical engineering;Thermal processes and apparatus
+F25C;30;Mechanical engineering;Thermal processes and apparatus
+F25D;34;Other fields;Other consumer goods
+F25J;23;Chemistry;Chemical engineering
+F26B;23;Chemistry;Chemical engineering
+F27B;30;Mechanical engineering;Thermal processes and apparatus
+F27D;30;Mechanical engineering;Thermal processes and apparatus
+F28B;30;Mechanical engineering;Thermal processes and apparatus
+F28C;30;Mechanical engineering;Thermal processes and apparatus
+F28D;30;Mechanical engineering;Thermal processes and apparatus
+F28F;30;Mechanical engineering;Thermal processes and apparatus
+F28G;30;Mechanical engineering;Thermal processes and apparatus
+F41A;29;Mechanical engineering;Other special machines
+F41B;29;Mechanical engineering;Other special machines
+F41C;29;Mechanical engineering;Other special machines
+F41F;29;Mechanical engineering;Other special machines
+F41G;29;Mechanical engineering;Other special machines
+F41H;29;Mechanical engineering;Other special machines
+F41J;29;Mechanical engineering;Other special machines
+F42B;29;Mechanical engineering;Other special machines
+F42C;29;Mechanical engineering;Other special machines
+F42D;29;Mechanical engineering;Other special machines
+F99Z;27;Mechanical engineering;Engines, pumps, turbines
+G01B;10;Instruments;Measurement
+G01C;10;Instruments;Measurement
+G01D;10;Instruments;Measurement
+G01F;10;Instruments;Measurement
+G01G;10;Instruments;Measurement
+G01H;10;Instruments;Measurement
+G01J;10;Instruments;Measurement
+G01K;10;Instruments;Measurement
+G01L;10;Instruments;Measurement
+G01M;10;Instruments;Measurement
+G01N   1;10;Instruments;Measurement
+G01N   3;10;Instruments;Measurement
+G01N   5;10;Instruments;Measurement
+G01N   7;10;Instruments;Measurement
+G01N   9;10;Instruments;Measurement
+G01N  11;10;Instruments;Measurement
+G01N  13;10;Instruments;Measurement
+G01N  15;10;Instruments;Measurement
+G01N  17;10;Instruments;Measurement
+G01N  19;10;Instruments;Measurement
+G01N  21;10;Instruments;Measurement
+G01N  22;10;Instruments;Measurement
+G01N  23;10;Instruments;Measurement
+G01N  24;10;Instruments;Measurement
+G01N  25;10;Instruments;Measurement
+G01N  27;10;Instruments;Measurement
+G01N  29;10;Instruments;Measurement
+G01N  30;10;Instruments;Measurement
+G01N  31;10;Instruments;Measurement
+G01N  33;11;Instruments;Analysis of biological materials
+G01N  35;10;Instruments;Measurement
+G01N  37;10;Instruments;Measurement
+G01P;10;Instruments;Measurement
+G01Q;10;Instruments;Measurement
+G01R;10;Instruments;Measurement
+G01S;10;Instruments;Measurement
+G01T;24;Chemistry;Environmental technology
+G01V;10;Instruments;Measurement
+G01W;10;Instruments;Measurement
+G02B;9;Instruments;Optics
+G02C;9;Instruments;Optics
+G02F;9;Instruments;Optics
+G03B;9;Instruments;Optics
+G03C;9;Instruments;Optics
+G03D;9;Instruments;Optics
+G03F;9;Instruments;Optics
+G03G;9;Instruments;Optics
+G03H;9;Instruments;Optics
+G04B;10;Instruments;Measurement
+G04C;10;Instruments;Measurement
+G04D;10;Instruments;Measurement
+G04F;10;Instruments;Measurement
+G04G;10;Instruments;Measurement
+G04R;10;Instruments;Measurement
+G05B;12;Instruments;Control
+G05D;12;Instruments;Control
+G05F;12;Instruments;Control
+G05G;31;Mechanical engineering;Mechanical elements
+G06C;6;Electrical engineering;Computer technology
+G06D;6;Electrical engineering;Computer technology
+G06E;6;Electrical engineering;Computer technology
+G06F;6;Electrical engineering;Computer technology
+G06G;6;Electrical engineering;Computer technology
+G06J;6;Electrical engineering;Computer technology
+G06K;6;Electrical engineering;Computer technology
+G06M;6;Electrical engineering;Computer technology
+G06N;6;Electrical engineering;Computer technology
+G06Q;7;Electrical engineering;IT methods for management
+G06T;6;Electrical engineering;Computer technology
+G07B;12;Instruments;Control
+G07C;12;Instruments;Control
+G07D;12;Instruments;Control
+G07F;12;Instruments;Control
+G07G;12;Instruments;Control
+G08B;12;Instruments;Control
+G08C;3;Electrical engineering;Telecommunications
+G08G;12;Instruments;Control
+G09B;12;Instruments;Control
+G09C;12;Instruments;Control
+G09D;12;Instruments;Control
+G09F;2;Electrical engineering;Audio-visual technology
+G09G;2;Electrical engineering;Audio-visual technology
+G10B;34;Other fields;Other consumer goods
+G10C;34;Other fields;Other consumer goods
+G10D;34;Other fields;Other consumer goods
+G10F;34;Other fields;Other consumer goods
+G10G;34;Other fields;Other consumer goods
+G10H;34;Other fields;Other consumer goods
+G10K;34;Other fields;Other consumer goods
+G10L;6;Electrical engineering;Computer technology
+G11B;2;Electrical engineering;Audio-visual technology
+G11C;6;Electrical engineering;Computer technology
+G12B;10;Instruments;Measurement
+G16H;13;Instruments;Medical technology
+G21B;27;Mechanical engineering;Engines, pumps, turbines
+G21C;27;Mechanical engineering;Engines, pumps, turbines
+G21D;27;Mechanical engineering;Engines, pumps, turbines
+G21F;27;Mechanical engineering;Engines, pumps, turbines
+G21G;27;Mechanical engineering;Engines, pumps, turbines
+G21H;27;Mechanical engineering;Engines, pumps, turbines
+G21J;27;Mechanical engineering;Engines, pumps, turbines
+G21K;27;Mechanical engineering;Engines, pumps, turbines
+G99Z;10;Instruments;Measurement
+H01B;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01C;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01F;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01G;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01H;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01J;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01K;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01L;8;Electrical engineering;Semiconductors
+H01M;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01P;3;Electrical engineering;Telecommunications
+H01Q;3;Electrical engineering;Telecommunications
+H01R;1;Electrical engineering;Electrical machinery, apparatus, energy
+H01S;9;Instruments;Optics
+H01T;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02B;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02G;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02H;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02J;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02K;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02M;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02N;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02P;1;Electrical engineering;Electrical machinery, apparatus, energy
+H02S;1;Electrical engineering;Electrical machinery, apparatus, energy
+H03B;5;Electrical engineering;Basic communication processes
+H03C;5;Electrical engineering;Basic communication processes
+H03D;5;Electrical engineering;Basic communication processes
+H03F;5;Electrical engineering;Basic communication processes
+H03G;5;Electrical engineering;Basic communication processes
+H03H;5;Electrical engineering;Basic communication processes
+H03J;5;Electrical engineering;Basic communication processes
+H03K;5;Electrical engineering;Basic communication processes
+H03L;5;Electrical engineering;Basic communication processes
+H03M;5;Electrical engineering;Basic communication processes
+H04B;3;Electrical engineering;Telecommunications
+H04H;3;Electrical engineering;Telecommunications
+H04J;3;Electrical engineering;Telecommunications
+H04K;3;Electrical engineering;Telecommunications
+H04L;4;Electrical engineering;Digital communication
+H04M;3;Electrical engineering;Telecommunications
+H04N   1;3;Electrical engineering;Telecommunications
+H04N   3;2;Electrical engineering;Audio-visual technology
+H04N   5;2;Electrical engineering;Audio-visual technology
+H04N   7;2;Electrical engineering;Audio-visual technology
+H04N   9;2;Electrical engineering;Audio-visual technology
+H04N  11;2;Electrical engineering;Audio-visual technology
+H04N  13;2;Electrical engineering;Audio-visual technology
+H04N  15;2;Electrical engineering;Audio-visual technology
+H04N  17;2;Electrical engineering;Audio-visual technology
+H04N  19;2;Electrical engineering;Audio-visual technology
+H04N  21;4;Electrical engineering;Digital communication
+H04N 101;2;Electrical engineering;Audio-visual technology
+H04Q;3;Electrical engineering;Telecommunications
+H04R;2;Electrical engineering;Audio-visual technology
+H04S;2;Electrical engineering;Audio-visual technology
+H04W;4;Electrical engineering;Digital communication
+H05B;1;Electrical engineering;Electrical machinery, apparatus, energy
+H05C;1;Electrical engineering;Electrical machinery, apparatus, energy
+H05F;1;Electrical engineering;Electrical machinery, apparatus, energy
+H05G;13;Instruments;Medical technology
+H05H;23;Chemistry;Chemical engineering
+H05K;2;Electrical engineering;Audio-visual technology
+H99Z;1;Electrical engineering;Electrical machinery, apparatus, energy

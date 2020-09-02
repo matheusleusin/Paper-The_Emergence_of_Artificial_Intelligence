@@ -272,7 +272,7 @@ reg_tech5 <- group_by_ctry_and_IPC(reg_tech5)
 reg_tech6 <- group_by_applnID(IPC_all_patents_Part3)
 rm(IPC_all_patents_Part3)
 reg_tech6 <- group_by_ctry_and_IPC(reg_tech6)
-
+#
 #now we merge them
 tabledata2 <- merge(reg_tech4, reg_tech5, all=T, by=c("ctry_code", "techn_field_nr"))
 tabledata2 <- merge(tabledata2, reg_tech6, all=T, by=c("ctry_code", "techn_field_nr"))
