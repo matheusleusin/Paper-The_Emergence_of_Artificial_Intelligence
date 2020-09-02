@@ -397,30 +397,16 @@ Global_technological_space <- g_tech_AI %>%
   theme_graph()+
   ggtitle("Technology Space: IPC codes")
 
-jpeg("Figures_IPC/Global_technological_space.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC_Total1
-dev.off()
-
-jpeg("Figures_IPC/IPC_all_option2.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC_Total2
+jpeg("Data_Final_code/Global_technological_space.jpg", width = 14, height = 10, units = 'in', res = 200)
+Global_technological_space
 dev.off()
 
 #Now we start the analysis per country:
 #1st period
 country_select <- c("CN", "US", "JP", "KR")
 i = 1
-IPC1 <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
-  ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = RCA, size = dgr)) + 
-  geom_node_text(aes(label = field_name), size = 5, repel = TRUE) +
-  scale_color_gradient(low = "skyblue", high = "red") +
-  theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
 
-#option "b" for China
-IPC1b <- g_tech_AI %N>%
+IPC1 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
@@ -429,29 +415,6 @@ IPC1b <- g_tech_AI %N>%
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("IPC Technology Space: China (1974-1988)")
-
-CN_1st <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
-  filter(RCA == 1) %>%
-  mutate(n_neighbors = local_size(mindist = 1),
-         weighted_degree = centrality_degree() / local_ave_degree(),
-         triangles = local_triangles(),
-         #centrality_alpha= centrality_alpha(),
-         centrality_authority = centrality_authority(),
-         centrality_betweenness = centrality_betweenness(),
-         #centrality_power=centrality_power(),
-         centrality_closeness = centrality_closeness(),
-         centrality_eigen = centrality_eigen(),
-         centrality_hub= centrality_hub(),
-         centrality_subgraph=centrality_subgraph(),
-         centrality_degree=centrality_degree(),
-         centrality_closeness_harmonic=centrality_closeness_harmonic(),
-         centrality_closeness_residual=centrality_closeness_residual(),
-         centrality_betweenness_network=centrality_betweenness_network(),
-         #centrality_information=centrality_information()
-  ) %>%
-  as_tibble() 
-CN_1st$Country <- country_select[i]
 
 i = 2
 IPC2 <- g_tech_AI %N>%
@@ -464,29 +427,6 @@ IPC2 <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("IPC Technology Space: USA (1974-1988)")
 
-US_1st <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
-  filter(RCA == 1) %>%
-  mutate(n_neighbors = local_size(mindist = 1),
-         weighted_degree = centrality_degree() / local_ave_degree(),
-         triangles = local_triangles(),
-         #centrality_alpha= centrality_alpha(),
-         centrality_authority = centrality_authority(),
-         centrality_betweenness = centrality_betweenness(),
-         #centrality_power=centrality_power(),
-         centrality_closeness = centrality_closeness(),
-         centrality_eigen = centrality_eigen(),
-         centrality_hub= centrality_hub(),
-         centrality_subgraph=centrality_subgraph(),
-         centrality_degree=centrality_degree(),
-         centrality_closeness_harmonic=centrality_closeness_harmonic(),
-         centrality_closeness_residual=centrality_closeness_residual(),
-         centrality_betweenness_network=centrality_betweenness_network(),
-         #centrality_information=centrality_information()
-  ) %>%
-  as_tibble() 
-US_1st$Country <- country_select[i]
-
 i = 3
 IPC3 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -497,29 +437,6 @@ IPC3 <- g_tech_AI %N>%
   scale_color_gradient(low = "skyblue", high = "red") +
   theme_graph() +
   ggtitle("IPC Technology Space: Japan (1974-1988)")
-
-JP_1st <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
-  filter(RCA == 1) %>%
-  mutate(n_neighbors = local_size(mindist = 1),
-         weighted_degree = centrality_degree() / local_ave_degree(),
-         triangles = local_triangles(),
-         #centrality_alpha= centrality_alpha(),
-         centrality_authority = centrality_authority(),
-         centrality_betweenness = centrality_betweenness(),
-         #centrality_power=centrality_power(),
-         centrality_closeness = centrality_closeness(),
-         centrality_eigen = centrality_eigen(),
-         centrality_hub= centrality_hub(),
-         centrality_subgraph=centrality_subgraph(),
-         centrality_degree=centrality_degree(),
-         centrality_closeness_harmonic=centrality_closeness_harmonic(),
-         centrality_closeness_residual=centrality_closeness_residual(),
-         centrality_betweenness_network=centrality_betweenness_network(),
-         #centrality_information=centrality_information()
-  ) %>%
-  as_tibble() 
-JP_1st$Country <- country_select[i]
 
 i = 4
 IPC4 <- g_tech_AI %N>%
@@ -532,50 +449,20 @@ IPC4 <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("IPC Technology Space: South Korea (1974-1988)")
 
-KR_1st <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
-  filter(RCA == 1) %>%
-  mutate(n_neighbors = local_size(mindist = 1),
-         weighted_degree = centrality_degree() / local_ave_degree(),
-         triangles = local_triangles(),
-         #centrality_alpha= centrality_alpha(),
-         centrality_authority = centrality_authority(),
-         centrality_betweenness = centrality_betweenness(),
-         #centrality_power=centrality_power(),
-         centrality_closeness = centrality_closeness(),
-         centrality_eigen = centrality_eigen(),
-         centrality_hub= centrality_hub(),
-         centrality_subgraph=centrality_subgraph(),
-         centrality_degree=centrality_degree(),
-         centrality_closeness_harmonic=centrality_closeness_harmonic(),
-         centrality_closeness_residual=centrality_closeness_residual(),
-         centrality_betweenness_network=centrality_betweenness_network(),
-         #centrality_information=centrality_information()
-  ) %>%
-  as_tibble() 
-KR_1st$Country <- country_select[i]
-
-NetworkMetrics1st <- rbind(CN_1st,US_1st,JP_1st,KR_1st)
-NetworkMetrics1st$Period <- "1st"
-
 #For saving the pictures:
-jpeg("Figures_IPC/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Data_Final_code/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC1
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_CN_persp_Period1_optionB.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC1b
-dev.off()
-
-jpeg("Figures_IPC/IPC_all_US_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Data_Final_code/IPC_all_US_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC2
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_JP_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Data_Final_code/IPC_all_JP_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC3
 dev.off()
 
-jpeg("Figures_IPC/IPC_all_KR_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Data_Final_code/IPC_all_KR_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC4
 dev.off()
 
