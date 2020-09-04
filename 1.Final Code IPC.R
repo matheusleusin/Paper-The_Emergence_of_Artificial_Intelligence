@@ -2344,8 +2344,393 @@ tiff("Data_Final_code/Relatedness_and_Complex_Morc_countries.jpg", width = 8, he
 multiplot(Rel_byP_c, Comp_byP_c, cols=1) 
 dev.off()
 
-#3. THIRD PART: 4-digits analysis
-#Here we calculate RCAs for 4-digits, Variety and fig 8; #3.3.4. Specialisations versus techn fields----
+#3. THIRD PART: 4-digits analysis and Fig8 ----
+#Here we calculate RCAs for 4-digits, Variety and fig 8; #3.3.4. Specialisations versus techn fields
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#3.1.Fig 8 ----
+#3.1.1.Create specialisations summary ----
+# Which is used for Fig8
+reg_tech1_countries <- read.csv("Data_Final_code/reg_tech_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+#4.1.1. First Period Countries
+mat_reg_tech1_countries <- reg_tech1_countries %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1_countries %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1_countries <- mat_reg_tech1_countries %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###4.1.2. First Period AI
+reg_tech1_AI <- read.csv("Data_Final_code/reg_techAI_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+mat_reg_tech1_AI <- reg_tech1_AI %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1_AI %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1_AI <- mat_reg_tech1_AI %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+IPC_names <- read.csv("Data_Final_code/ipc_technology.csv", sep = ";", header = TRUE)%>%
+  select(field_nr, sector, field_name) %>%
+  distinct(field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = field_nr) %>%
+  arrange(techn_field_nr)
+IPC_names <- IPC_names[,(-1)]
+#select countries
+US_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "US",]
+CN_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "CN",]
+KR_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "KR",]
+JP_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "JP",]
+AI_first_period <- reg_RCA1_AI[,2:3][reg_RCA1_AI$ctry_code == "AI_pat",]
+
+First_period <- merge(merge(merge(merge(merge(
+  IPC_names,US_first_period), CN_first_period, by = "techn_field_nr"), KR_first_period, by = "techn_field_nr"), 
+  JP_first_period, by = "techn_field_nr"), AI_first_period, by = "techn_field_nr")
+names(First_period) = c("techn_field_nr", "sector", "field_name", "RCA_US", "RCA_CN","RCA_KR","RCA_JP", "RCA_AI")
+write.csv2(First_period, file = "Data_Final_code/Metrics_First_period_complexity.csv", row.names = F)
+
+#4.2.Second period
+reg_tech2_countries <- read.csv("Data_Final_code/reg_tech_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
+#4.2.1. Second Period Countries
+mat_reg_tech2_countries <- reg_tech2_countries %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech2_countries %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA2_countries <- mat_reg_tech2_countries %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###4.2.2. Second Period AI
+reg_tech2_AI <- read.csv("Data_Final_code/reg_techAI_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+mat_reg_tech2_AI <- reg_tech2_AI %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech2_AI %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA2_AI <- mat_reg_tech2_AI %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+#select countries
+US_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "US",]
+CN_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "CN",]
+KR_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "KR",]
+JP_Second_period <- reg_RCA2_countries[,2:3][reg_RCA2_countries$ctry_code == "JP",]
+AI_Second_period <- reg_RCA2_AI[,2:3][reg_RCA2_AI$ctry_code == "AI_pat",]
+
+Second_period <- merge(merge(merge(merge(merge(
+  IPC_names,US_Second_period), CN_Second_period, by = "techn_field_nr"), KR_Second_period, by = "techn_field_nr"), 
+  JP_Second_period, by = "techn_field_nr"), AI_Second_period, by = "techn_field_nr")
+names(Second_period) = c("techn_field_nr", "sector", "field_name", "RCA_US", "RCA_CN","RCA_KR","RCA_JP", "RCA_AI")
+write.csv2(Second_period, file = "Data_Final_code/Metrics_Second_period_complexity.csv", row.names = F)
+
+#4.3.Third period
+reg_tech3_countries <- read.csv("Data_Final_code/reg_tech_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+#4.3.1. Third Period Countries
+mat_reg_tech3_countries <- reg_tech3_countries %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech3_countries %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA3_countries <- mat_reg_tech3_countries %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###4.3.2. Third Period AI
+reg_tech3_AI <- read.csv("Data_Final_code/reg_techAI_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+mat_reg_tech3_AI <- reg_tech3_AI %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech3_AI %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA3_AI <- mat_reg_tech3_AI %>% location.quotient(binary = F) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+#select countries
+US_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "US",]
+CN_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "CN",]
+KR_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "KR",]
+JP_Third_period <- reg_RCA3_countries[,2:3][reg_RCA3_countries$ctry_code == "JP",]
+AI_Third_period <- reg_RCA3_AI[,2:3][reg_RCA3_AI$ctry_code == "AI_pat",]
+
+Third_period <- merge(merge(merge(merge(merge(
+  IPC_names,US_Third_period), CN_Third_period, by = "techn_field_nr"), KR_Third_period, by = "techn_field_nr"), 
+  JP_Third_period, by = "techn_field_nr"), AI_Third_period, by = "techn_field_nr")
+names(Third_period) = c("techn_field_nr", "sector", "field_name", "RCA_US", "RCA_CN","RCA_KR","RCA_JP", "RCA_AI")
+write.csv2(Third_period, file = "Data_Final_code/Metrics_Third_period_complexity.csv", row.names = F)
+
+#put it all together
+First_period <- read.csv("Data_Final_code/Metrics_First_period_complexity.csv", sep = ";", header = TRUE, dec=",")
+Second_period <- read.csv("Data_Final_code/Metrics_Second_period_complexity.csv", sep = ";", header = TRUE, dec=",")
+Third_period <- read.csv("Data_Final_code/Metrics_Third_period_complexity.csv", sep = ";", header = TRUE, dec=",")
+
+First_period$Period <- "Period 1 (1974-1988)"
+Second_period$Period <- "Period 2 (1989-2003)"
+Third_period$Period <- "Period 3 (2004-2018)"
+
+All_periods <- rbind(First_period, Second_period, Third_period)
+
+All_periods$Category <- "Other"
+Surr <- c(1, 2, 3, 13, 25, 34)
+All_periods$Category[(All_periods$techn_field_nr %in% Surr)] <- "Surrounding fields"
+AIrel<- c(11, 5, 4)
+All_periods$Category[(All_periods$techn_field_nr %in% AIrel)] <- "AI-related fields"
+AIcor<- c(6,7,10,12)
+All_periods$Category[(All_periods$techn_field_nr %in% AIcor)] <- "AI-core fields"
+All_periods$Category <- factor(All_periods$Category, levels = c("AI-core fields", "AI-related fields", "Surrounding fields", "Other"))
+All_periods$Category2 <- All_periods$Category
+All_periods$Category2 <- as.numeric(All_periods$Category2)
+All_periods$Category2 <- as.numeric(All_periods$Category2)
+
+write.csv2(All_periods, file = "Data_Final_code/Specializations_All_periods_IPC.csv", row.names = TRUE)
+
+#3.1.2.Plot Fig8 ----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
 
 
+KnowledgeCompl <- read.csv("Data_Final_code/All_data_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=",")
+Specialisations <- read.csv("Data_Final_code/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE, dec=",")
+Specialisations <- Specialisations[,(-1)]
+library(dplyr)
+library(tidyr)
+# add row index so later spreading indexed correctly
+Specialisations3<-Specialisations %>% rownames_to_column() %>% 
+  # melt to long format
+  gather(RCA_, value, -techn_field_nr, -field_name,-rowname, -Period, -Category, -Category2)
 
+Specialisations3$RCA_ <- gsub("RCA_", "", str_trim(Specialisations3$RCA_))
+Specialisations3 <- Specialisations3[,(-1)]
+Specialisations3 <- Specialisations3 %>% rename(Country = RCA_, Specialisation = value)
+Specialisations3$Binary <- ifelse(Specialisations3$Specialisation < 1,0,1)
+
+#the problem is below:
+##########################
+All_data <- merge(KnowledgeCompl, Specialisations3, all=F, by=c("Period", "techn_field_nr"))
+#All_data2 <- merge(KnowledgeCompl, All_data, all=T, by=c("Country", "Period", "Category"))
+rm(Specialisations3, Specialisations,All_KwnCom,KnowledgeCompl)
+
+All_data$Category <- factor(All_data$Category, levels = c("AI-core fields", "AI-related fields",
+                                                          "Surrounding fields", "fields"))
+BinarySum<- aggregate(All_data[,16], list(All_data$Country, All_data$techn_field_nr), sum)
+names(BinarySum)<- c("Country", "techn_field_nr", "SumBinary")
+
+All_data <- merge(All_data, BinarySum, all=F, by=c("Country", "techn_field_nr"))
+
+All_data_JP <- All_data[All_data$Country == "JP",]
+All_data_CN <- All_data[All_data$Country == "CN",]
+All_data_US <- All_data[All_data$Country == "US",]
+All_data_KR <- All_data[All_data$Country == "KR",]
+
+
+ggplot(First_period, aes(x=log10(RCA_JP), y=log10(RCA_AI), label = '')) + 
+  geom_point(aes(colour = sector, size = JP_Com),show.legend = F, stroke = 2) +  
+  geom_text() +
+  geom_hline(yintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2)+
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = First_period, aes(label = ifelse(RCA_JP>1 & RCA_AI>1,as.character(field_name),'')),nudge_y = -0.6) +
+  geom_rect(aes(NULL, NULL, xmin = Inf, xmax = 0), ymin = Inf, ymax = 0,alpha=0.005,fill="royalblue2") +
+  scale_size_continuous(range = c(1, 10)) +
+  ggtitle("Japan") +
+  xlab(NULL) +
+  ylab(NULL)+
+  ylim(-2, 2)+
+  xlim(-0.6, 0.6)
+
+tiff("Data_Final_code/New_KnowledgeComplJP.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_JP, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_JP, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of Japan's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
+dev.off()
+
+tiff("Data_Final_code/New_KnowledgeComplCN.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_CN, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_CN, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of China's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
+dev.off()
+
+tiff("Data_Final_code/New_KnowledgeComplUS.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_US, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_US, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of United State's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
+dev.off()
+
+tiff("Data_Final_code/New_KnowledgeComplKR.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_KR, aes(x=log10(Specialisation), y=-(RCA), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_KR, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_x = -0.05, nudge_y = 10) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of South Korea's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")
+dev.off()
+
+
+tiff("Data_Final_code/New_KnowledgeComplJP_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_JP, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_JP, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of Japan's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)") +
+  ylim(-30, -90)
+dev.off()
+
+tiff("Data_Final_code/New_KnowledgeComplCN_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_CN, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_CN, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of China's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")+
+  ylim(-30, -90)
+dev.off()
+
+tiff("Data_Final_code/New_KnowledgeComplUS_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_US, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_US, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of United State's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")+
+  ylim(-30, -90)
+dev.off()
+
+tiff("Data_Final_code/New_KnowledgeComplKR_new.jpg", width = 14, height = 8, units = 'in', res = 200)
+ggplot(All_data_KR, aes(x=log10(Specialisation), y=-(RCA_Step2), label = '')) + 
+  geom_point(aes(colour = Category, size = Specialisation),show.legend = T, stroke = 2) +  
+  geom_text() +
+  geom_vline(xintercept=0, linetype="dashed", color = "black", size=0.5, alpha = 1/2) +
+  scale_color_brewer(palette="Dark2") + theme_minimal() +
+  geom_label_repel(data = All_data_KR, aes(label = ifelse(Specialisation>1 & Category2<4,as.character(field_name),'')),nudge_y = -15) +
+  scale_size_continuous(range = c(1, 10)) +
+  # ggtitle("Knowledge Complexity of technologies - Japan") +
+  facet_wrap(~Period, ncol = 3) +
+  xlab("Log10 of South Korea's RCA in each technology") +
+  ylab("Index of knowledge complexity of technology (MORt)")+
+  ylim(-30, -90)
+dev.off()
