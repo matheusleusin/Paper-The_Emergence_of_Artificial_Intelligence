@@ -195,13 +195,30 @@ rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
+#For all countries:
 #now we apply the 2 functions we created at the beginning of this section:
 reg_tech1 <- group_by_applnID(IPC_all_patents_FirstPeriod)
-rm(IPC_all_patents_FirstPeriod)
 reg_tech1 <- group_by_ctry_and_IPC(reg_tech1)
 
 #and save the final file, so we can use it again in section 1.3. (around the line 330)
 write.csv2(reg_tech1, file = "Data_Final_code/reg_tech_FirstPeriod.csv", row.names = F)
+
+#For AI:
+patents_AI_specific <- read.csv("Data_Final_code/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+
+#now we replace the AI data on the IPC dataset;
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_FirstPeriod)
+IPC_all_patents_FirstPeriod[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+
+reg_tech_AI1 <- group_by_applnID(IPC_all_patents_FirstPeriod)
+rm(IPC_all_patents_FirstPeriod)
+reg_tech_AI1 <- group_by_ctry_and_IPC(reg_tech_AI1)
+
+#and save the final file, so we can use it again in section 1.3. (around the line 330)
+write.csv2(reg_tech_AI1, file = "Data_Final_code/reg_techAI_FirstPeriod.csv", row.names = F)
 
 #1.2.2.Second Period ----
 #For the second period, which goes from 1989 to 2003, we again need only the dataset from Part2:
@@ -236,11 +253,27 @@ IPC_all_patents_SecondPeriod <- rbind(IPC_all_patents_Part1, IPC_all_patents_Par
 rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
+#For all countries
 reg_tech2 <- group_by_applnID(IPC_all_patents_SecondPeriod)
-rm(IPC_all_patents_SecondPeriod)
 reg_tech2 <- group_by_ctry_and_IPC(reg_tech2)
 write.csv2(reg_tech2, file = "Data_Final_code/reg_tech_SecondPeriod.csv", row.names = F)
+
+#For AI:
+patents_AI_specific <- read.csv("Data_Final_code/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+
+#now we replace the AI data on the IPC dataset;
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_SecondPeriod)
+IPC_all_patents_SecondPeriod[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+
+reg_tech_AI2 <- group_by_applnID(IPC_all_patents_SecondPeriod)
+rm(IPC_all_patents_SecondPeriod)
+reg_tech_AI2 <- group_by_ctry_and_IPC(reg_tech_AI2)
+
+#and save the final file, so we can use it again in section 1.3. (around the line 330)
+write.csv2(reg_tech_AI2, file = "Data_Final_code/reg_techAI_SecondPeriod.csv", row.names = F)
 
 #1.2.3.Third Period ----
 #For the third period, which goes from 2004 to 2018, we  need only the dataset from Part1. This
@@ -261,16 +294,14 @@ IPC_all_patents_Part2 <- IPC_all_patents_Part2[, c((-4), (-5))]
 IPC_all_patents_Part3 <- IPC_all_patents_Part3[, c((-4), (-5))]
 
 #here we divide our calculations of the reg_tech (which was not necessary on the 2 previous periods)
+#For countries
 reg_tech4 <- group_by_applnID(IPC_all_patents_Part1)
-rm(IPC_all_patents_Part1)
 reg_tech4 <- group_by_ctry_and_IPC(reg_tech4)
 
 reg_tech5 <- group_by_applnID(IPC_all_patents_Part2)
-rm(IPC_all_patents_Part2)
 reg_tech5 <- group_by_ctry_and_IPC(reg_tech5)
 
 reg_tech6 <- group_by_applnID(IPC_all_patents_Part3)
-rm(IPC_all_patents_Part3)
 reg_tech6 <- group_by_ctry_and_IPC(reg_tech6)
 
 #now we merge them
@@ -290,6 +321,49 @@ names(tabledata2) <- c("ctry_code", "techn_field_nr", "n_tech_reg")
 
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 write.csv2(tabledata2, file = "Data_Final_code/reg_tech_ThirdPeriod.csv", row.names = F)
+
+#For AI:
+patents_AI_specific <- read.csv("Data_Final_code/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
+patents_AI_specific$ctry_code <- "AI_pat"
+
+setDT(patents_AI_specific)
+setDT(IPC_all_patents_Part1)
+setDT(IPC_all_patents_Part2)
+setDT(IPC_all_patents_Part3)
+IPC_all_patents_Part1[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+IPC_all_patents_Part2[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+IPC_all_patents_Part3[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
+
+reg_tech_AI4 <- group_by_applnID(IPC_all_patents_Part1)
+rm(IPC_all_patents_Part1)
+reg_tech_AI4 <- group_by_ctry_and_IPC(reg_tech_AI4)
+
+reg_tech_AI5 <- group_by_applnID(IPC_all_patents_Part2)
+rm(IPC_all_patents_Part2)
+reg_tech_AI5 <- group_by_ctry_and_IPC(reg_tech_AI5)
+
+reg_tech_AI6 <- group_by_applnID(IPC_all_patents_Part3)
+rm(IPC_all_patents_Part3)
+reg_tech_AI6 <- group_by_ctry_and_IPC(reg_tech_AI6)
+
+#now we merge them
+tabledata_AI2 <- merge(reg_tech_AI4, reg_tech_AI5, all=T, by=c("ctry_code", "techn_field_nr"))
+tabledata_AI2 <- merge(tabledata_AI2, reg_tech_AI6, all=T, by=c("ctry_code", "techn_field_nr"))
+
+#remove the big files
+rm(reg_tech_AI4, reg_tech_AI5, reg_tech_AI6)
+
+#replace NAs, so we don't have problems when summing:
+tabledata_AI2[is.na(tabledata_AI2)] <- 0
+
+#do the summ, exclude the tables used, and rename the dataset accordingly:
+tabledata_AI2$sum <- rowSums(tabledata_AI2[,c(3:5)])
+tabledata_AI2 <- tabledata_AI2[, c((-3), (-4), (-5))]
+names(tabledata_AI2) <- c("ctry_code", "techn_field_nr", "n_tech_reg")
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+write.csv2(tabledata_AI2, file = "Data_Final_code/reg_techAI_ThirdPeriod.csv", row.names = F)
 
 #1.3.Calculate the g_tech_AI ----
 #Now we load all the files we already saved. We start by loading the janitor library, which is used here for converting
@@ -334,6 +408,7 @@ g_tech_AI %N>%
   as_tibble() %>%
   slice(1:10)
 
+#1.3.1.Calculate reg_RCAs for countries ----
 #Now we read the data per period and calculate the RCAs:
 reg_tech1 <- read.csv("Data_Final_code/reg_tech_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
 reg_tech2 <- read.csv("Data_Final_code/reg_tech_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
@@ -387,7 +462,61 @@ reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>%
   gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
   arrange(ctry_code, techn_field_nr)
 
-#1.4.IPC Visualization -----
+#1.3.2.Calculate reg_RCAs for AI ----
+#Now we read the data per period and calculate the RCAs:
+reg_tech1 <- read.csv("Data_Final_code/reg_techAI_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+reg_tech2 <- read.csv("Data_Final_code/reg_techAI_SecondPeriod.csv", sep = ";", header = TRUE, dec=",")
+reg_tech3 <- read.csv("Data_Final_code/reg_techAI_ThirdPeriod.csv", sep = ";", header = TRUE, dec=",")
+
+###First Period:
+mat_reg_tech1 <- reg_tech1 %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1 %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA_AI1 <- mat_reg_tech1 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###second period:
+mat_reg_tech2 <- reg_tech2 %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech2 %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA_AI2 <- mat_reg_tech2 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+###Third Period:
+mat_reg_tech3 <- reg_tech3 %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech3 %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA_AI3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+#1.4. IPC Visualization General-----
 #Finally, we start with the visualizations. For the Global perspective, considering the whole data, we have:
 Global_technological_space <- g_tech_AI %>%
   ggraph(layout =  coords_tech_AI) + 
@@ -401,6 +530,7 @@ jpeg("Data_Final_code/Global_technological_space.jpg", width = 14, height = 10, 
 Global_technological_space
 dev.off()
 
+#1.4.1. IPC Visualization Per country-----
 #Now we start the analysis per country:
 #1st period
 country_select <- c("CN", "US", "JP", "KR")
@@ -591,108 +721,14 @@ jpeg("Data_Final_code/IPC_all_KR_persp_Period3.jpg", width = 14, height = 10, un
 IPC4
 dev.off()
 
-#1.5.AI perspective-----
-#For the AI perspective we use the same code as before. The only difference is that we replace the countries names
-#with the name "AI_pat" in every AI-related patent. In this way, we can use the "AI_pat" to measure the 
-#specialization of AI patents as if they were countries.
+#1.4.2. IPC Visualization AI-----
 
-#Let's start with what we had on section 1.2.1.:
-
-#For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
-setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
-c <- 45182803 -40000000
-IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)
-IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
-IPC_all_patents_Part3 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = c, skip = 40000000)
-
-names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-
-#we want to pick only the registers from the period we want (from 1974 to 1988, including both cited years)
-a = 1973
-b = 1989
-
-IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year < b,]
-IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year > a,]
-
-IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year < b,]
-IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year > a,]
-
-IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year < b,]
-IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year > a,]
-
-IPC_all_patents_Part1 <- IPC_all_patents_Part1[, c((-4), (-5))]
-IPC_all_patents_Part2 <- IPC_all_patents_Part2[, c((-4), (-5))]
-IPC_all_patents_Part3 <- IPC_all_patents_Part3[, c((-4), (-5))]
-
-#we combine the 3 files:
-IPC_all_patents_FirstPeriod <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
-#and exclude the 3 big ones we just used, so we have back our memory:
-rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
-
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-####   ### #######   ### ###
-#Now we insert our AI data. This is the only part that changes from the previous code.
-####   ### #######   ### ###
-
-patents_AI_specific <- read.csv("Data_Final_code/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
-patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
-patents_AI_specific$ctry_code <- "AI_pat"
-
-#now we replace the AI data on the IPC dataset;
-setDT(patents_AI_specific)
-setDT(IPC_all_patents_FirstPeriod)
-IPC_all_patents_FirstPeriod[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
-
-####   ### #######   ### ###
-#now we go back to our old code and apply the 2 functions we had already created:
-####   ### #######   ### ###
-group_by_applnID <- function (data){
-  data %>%
-    group_by(appln_id) %>%
-    mutate(field_weight = 1 / n()) %>%
-    ungroup()
-}
-
-group_by_ctry_and_IPC <- function (data){
-  data %<>%
-    group_by(ctry_code, techn_field_nr) %>%
-    summarise(n_tech_reg = sum(field_weight)) %>%
-    ungroup() %>%
-    drop_na() 
-}
-
-reg_tech1 <- group_by_applnID(IPC_all_patents_FirstPeriod)
-rm(IPC_all_patents_FirstPeriod)
-reg_tech1 <- group_by_ctry_and_IPC(reg_tech1)
-
-#and save the final file, so we can use it again in section 1.3. (around the line 330)
-write.csv2(reg_tech1, file = "Data_Final_code/reg_techAI_FirstPeriod.csv", row.names = F)
-
-###First Period:
-mat_reg_tech1 <- reg_tech1 %>%
-  arrange(techn_field_nr, ctry_code) %>%
-  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
-
-rownames(mat_reg_tech1) <- mat_reg_tech1 %>% pull(ctry_code)
-
-mat_reg_tech1 %<>% select(-ctry_code) %>%
-  as.matrix() %>%
-  round()
-
-reg_RCA1 <- mat_reg_tech1 %>% location.quotient(binary = TRUE) %>% 
-  as.data.frame() %>% 
-  rownames_to_column("ctry_code") %>% 
-  as_tibble() %>% 
-  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
-  arrange(ctry_code, techn_field_nr)
-
+#First period
+reg_RCA_AI1
 country_select <- c("AI_pat")
 i = 1
-IPC_AI <- g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+IPC_AI1 <- g_tech_AI %N>%
+  left_join(reg_RCA_AI1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
@@ -701,88 +737,13 @@ IPC_AI <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("Technology Space: AI patents (1974-1988)")
 
-jpeg("Figures_IPC/IPC_all_AIpatents_specific_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC_AI
+jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC_AI1
 dev.off()
 
-#For the second period we repeat again the code from the related section (1.2.3.):
-setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
-c <- 45182803 -40000000
-IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)
-IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
-IPC_all_patents_Part3 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = c, skip = 40000000)
-
-names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-
-a = 1988
-b = 2004
-
-IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year < b,]
-IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year > a,]
-
-IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year < b,]
-IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year > a,]
-
-IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year < b,]
-IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year > a,]
-
-IPC_all_patents_Part1 <- IPC_all_patents_Part1[, c((-4), (-5))]
-IPC_all_patents_Part2 <- IPC_all_patents_Part2[, c((-4), (-5))]
-IPC_all_patents_Part3 <- IPC_all_patents_Part3[, c((-4), (-5))]
-
-#we combine the 3 files:
-IPC_all_patents_SecondPeriod <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
-#and exclude the 3 big ones we just used, so we have back our memory:
-rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
-
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-####   ### #######   ### ###
-#Now we insert our AI data. This is the only part that changes from the previous code.
-####   ### #######   ### ###
-
-patents_AI_specific <- read.csv("Data_Final_code/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
-patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
-patents_AI_specific$ctry_code <- "AI_pat"
-#I want to select some patents on these IPC_all_patents dataset and change the patent_office to, let's say, AI;
-setDT(patents_AI_specific)
-setDT(IPC_all_patents_SecondPeriod)
-IPC_all_patents_SecondPeriod[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
-
-####   ### #######   ### ###
-#now we go back to our old code and apply the 2 functions we had already created:
-####   ### #######   ### ###
-
-reg_tech2 <- group_by_applnID(IPC_all_patents_SecondPeriod)
-rm(IPC_all_patents_SecondPeriod)
-reg_tech2 <- group_by_ctry_and_IPC(reg_tech2)
-
-write.csv2(reg_tech2, file = "Data_Final_code/reg_techAI_SecondPeriod.csv", row.names = F)
-
-###Second Period:
-mat_reg_tech2 <- reg_tech2 %>%
-  arrange(techn_field_nr, ctry_code) %>%
-  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
-
-rownames(mat_reg_tech2) <- mat_reg_tech2 %>% pull(ctry_code)
-
-mat_reg_tech2 %<>% select(-ctry_code) %>%
-  as.matrix() %>%
-  round()
-
-reg_RCA2 <- mat_reg_tech2 %>% location.quotient(binary = TRUE) %>% 
-  as.data.frame() %>% 
-  rownames_to_column("ctry_code") %>% 
-  as_tibble() %>% 
-  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
-  arrange(ctry_code, techn_field_nr)
-
-country_select <- c("AI_pat")
-i = 1
-IPC_AI <- g_tech_AI %N>%
-  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+#Second period
+IPC_AI2 <- g_tech_AI %N>%
+  left_join(reg_RCA_AI2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
@@ -791,102 +752,13 @@ IPC_AI <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("Technology Space: AI patents (1989-2003)")
 
-jpeg("Figures_IPC/IPC_all_AIpatents_specific_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC_AI
+jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC_AI2
 dev.off()
 
-#And finnaly For the third period (section 1.2.3.), which goes from 2004 to 2018:
-setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
-c <- 58841893-40000000
-IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000)
-IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = 20000000, skip = 20000000)
-IPC_all_patents_Part3 <- fread("All_patents_and_IPCs_Part1.csv", header = F, nrow = c, skip = 40000000)
-
-names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
-
-IPC_all_patents_Part1 <- IPC_all_patents_Part1[, c((-4), (-5))]
-IPC_all_patents_Part2 <- IPC_all_patents_Part2[, c((-4), (-5))]
-IPC_all_patents_Part3 <- IPC_all_patents_Part3[, c((-4), (-5))]
-
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-
-####   ### #######   ### ###
-#Now we insert our AI data. This is the only part that changes from the previous code.
-####   ### #######   ### ###
-
-patents_AI_specific <- read.csv("Data_Final_code/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
-patents_AI_specific$ctry_code <- as.vector(patents_AI_specific$ctry_code)
-patents_AI_specific$ctry_code <- "AI_pat"
-
-setDT(patents_AI_specific)
-setDT(IPC_all_patents_Part1)
-setDT(IPC_all_patents_Part2)
-setDT(IPC_all_patents_Part3)
-IPC_all_patents_Part1[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
-IPC_all_patents_Part2[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
-IPC_all_patents_Part3[patents_AI_specific, on = c("appln_id"), ctry_code := i.ctry_code]
-
-####   ### #######   ### ###
-#now we go back to our old code and apply the 2 functions we had already created:
-####   ### #######   ### ###
-
-#here we divide our calculations of the reg_tech (which was not necessary on the 2 previous periods)
-reg_tech4 <- group_by_applnID(IPC_all_patents_Part1)
-rm(IPC_all_patents_Part1)
-reg_tech4 <- group_by_ctry_and_IPC(reg_tech4)
-
-reg_tech5 <- group_by_applnID(IPC_all_patents_Part2)
-rm(IPC_all_patents_Part2)
-reg_tech5 <- group_by_ctry_and_IPC(reg_tech5)
-
-reg_tech6 <- group_by_applnID(IPC_all_patents_Part3)
-rm(IPC_all_patents_Part3)
-reg_tech6 <- group_by_ctry_and_IPC(reg_tech6)
-
-#now we merge them
-tabledata2 <- merge(reg_tech4, reg_tech5, all=T, by=c("ctry_code", "techn_field_nr"))
-tabledata2 <- merge(tabledata2, reg_tech6, all=T, by=c("ctry_code", "techn_field_nr"))
-
-#remove the big files
-rm(reg_tech4, reg_tech5, reg_tech6)
-
-#replace NAs, so we don't have problems when summing:
-tabledata2[is.na(tabledata2)] <- 0
-
-#do the summ, exclude the tables used, and rename the dataset accordingly:
-tabledata2$sum <- rowSums(tabledata2[,c(3:5)])
-tabledata2 <- tabledata2[, c((-3), (-4), (-5))]
-names(tabledata2) <- c("ctry_code", "techn_field_nr", "n_tech_reg")
-
-setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
-write.csv2(tabledata2, file = "Data_Final_code/reg_techAI_ThirdPeriod.csv", row.names = F)
-
-###Third Period:
-reg_tech3 <- tabledata2
-
-mat_reg_tech3 <- reg_tech3 %>%
-  arrange(techn_field_nr, ctry_code) %>%
-  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
-
-rownames(mat_reg_tech3) <- mat_reg_tech3 %>% pull(ctry_code)
-
-mat_reg_tech3 %<>% select(-ctry_code) %>%
-  as.matrix() %>%
-  round()
-
-reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>% 
-  as.data.frame() %>% 
-  rownames_to_column("ctry_code") %>% 
-  as_tibble() %>% 
-  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
-  arrange(ctry_code, techn_field_nr)
-
-country_select <- c("AI_pat")
-i = 1
-IPC_AI <- g_tech_AI %N>%
-  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+#Third period
+IPC_AI3 <- g_tech_AI %N>%
+  left_join(reg_RCA_AI3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = RCA, size = dgr)) + 
@@ -895,6 +767,6 @@ IPC_AI <- g_tech_AI %N>%
   theme_graph() +
   ggtitle("Technology Space: AI patents (2004-2018)")
 
-jpeg("Figures_IPC/IPC_all_AIpatents_specific_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
-IPC_AI
+jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
+IPC_AI3
 dev.off()
