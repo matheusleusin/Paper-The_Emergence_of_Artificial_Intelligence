@@ -4009,8 +4009,10 @@ All_data <- merge(All_KwnCom, Specialisations3, all=F, by=c("Period", "techn_fie
 #All_data2 <- merge(KnowledgeCompl, All_data, all=T, by=c("Country", "Period", "Category"))
 rm(Specialisations3, Specialisations,All_KwnCom,KnowledgeCompl)
 
-All_data$Category <- factor(All_data$Category, levels = c("AI-core fields", "AI-related fields",
-                                                                     "Surrounding fields", "fields"))
+#All_data$Category <- factor(All_data$Category, levels = c("AI-core fields", "AI-related fields",
+#                                                                     "Surrounding fields", "fields"))
+All_data$Category <- factor(All_data$Category, levels = c("AI-core codes", "AI-related codes",
+                                                          "Surrounding codes", "Other"))
 BinarySum<- aggregate(All_data[,16], list(All_data$Country, All_data$techn_field_nr), sum)
 names(BinarySum)<- c("Country", "techn_field_nr", "SumBinary")
 
