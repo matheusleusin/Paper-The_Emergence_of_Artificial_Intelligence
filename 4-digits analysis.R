@@ -398,6 +398,9 @@ write.csv2(Data3period, file = "Data_4digits_analysis/Data3period_RCA.csv", row.
 IPC_RCAs <- rbind(Data1period, Data2period, Data3period)
 write.csv2(IPC_RCAs, file = "Data_4digits_analysis/IPC_RCAs.csv", row.names = F)
 #1.4.Visualisation RCAs ----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
 multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
   library(grid)
   
@@ -436,6 +439,8 @@ multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
 
 library(plyr)
 
+IPC_RCAs <- read.csv("Data_4digits_analysis/IPC_RCAs.csv", sep = ";", header = TRUE, dec=",")
+
 #Select the 4 countries we want
 IPC_RCAs_Top4 <- IPC_RCAs[IPC_RCAs$ctry_code == "CN" | 
                             IPC_RCAs$ctry_code == "KR"| 
@@ -468,6 +473,17 @@ FigGen <- ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
   ylab(NULL)
 
+#Black and white
+FigGen_Black <- 
+ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=1/1.4, size=4) +
+  facet_wrap(~Label, ncol = 5)  +
+  scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic() +
+  geom_vline(data=Gen, aes(xintercept=Value.mean,  colour=Period),
+             linetype="dashed", size=1) +  
+  ggtitle("Countries' Performance by IPC code - General Perspective") +
+  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
+  ylab(NULL)
+
 #Figure AI:
 Ais <- ddply(IPC_RCAs_Top4, c("Period", "Label"), summarise, Value.mean=log10(mean(RCA_AI)))
 FigAI <- ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=1/1.4, size=4) +
@@ -478,9 +494,26 @@ FigAI <- ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period))
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
   ylab(NULL)
 
+#black and white:
+FigAI_Black <- 
+ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=1/1.4, size=4) +
+  facet_wrap(~Label, ncol = 5) +
+  scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic() +
+  geom_vline(data=Ais, aes(xintercept=Value.mean,  colour=Period),
+             linetype="dashed", size=1) +
+  ggtitle("Countries' Performance by IPC code - AI-specific Perspective") +
+  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
+  ylab(NULL)
+
 tiff("Data_4digits_analysis/Plot_IPC_RCA.jpg", width = 14, height = 7, units = 'in', res = 200)
 multiplot(FigGen, FigAI, cols=1)
 dev.off()
+
+#black and white:
+tiff("Data_4digits_analysis/Plot_IPC_RCABl.jpg", width = 14, height = 7, units = 'in', res = 200)
+multiplot(FigGen_Black, FigAI_Black, cols=1)
+dev.off()
+
 #2.SECOND PART: Variety with AI----
 ##2.1. Creation of Variety per country ----
 #this is a very messy code, but it works;
