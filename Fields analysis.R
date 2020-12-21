@@ -384,17 +384,32 @@ mat_tech_rel_AI <- mat_tech_AI_Final %>%
   relatedness(method = "cosine")
 write.table(mat_tech_rel_AI, file = "Data_Final_code/Relatedness_Allperiods2.csv", row.names = F, dec = ".")
 
-IPC_names <- read.csv("Data_Final_code/ipc_technology.csv", sep = ";", header = TRUE)%>%
-  select(field_nr, sector, field_name) %>%
-  distinct(field_nr, .keep_all = TRUE) %>%
-  mutate(field_nr = field_nr) %>%
-  arrange(field_nr)
+#IPC_names <- read.csv("Data_Final_code/ipc_technology.csv", sep = ";", header = TRUE)%>%
+#  select(field_nr, sector, field_name) %>%
+#  distinct(field_nr, .keep_all = TRUE) %>%
+#  mutate(field_nr = field_nr) %>%
+#  arrange(field_nr)
+
+IPC_names <- read.csv("Data_Final_code/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE)%>%
+  select(techn_field_nr, sector, field_name, Category) %>%
+  distinct(techn_field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = techn_field_nr) %>%
+  arrange(techn_field_nr)
+
+IPC_names$Category <- factor(IPC_names$Category, levels = c("AI-core fields", "AI-related fields",
+                                                            "Surrounding fields", "Other"))
+
+#g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
+ # left_join(IPC_names %>% mutate(field_nr = field_nr %>% as.character()), by = c("name" = "field_nr")) %>%
+#  mutate(dgr = centrality_eigen(weights = weight)) %E>%
+#  filter(weight >= mean(weight))
 
 g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
-  left_join(IPC_names %>% mutate(field_nr = field_nr %>% as.character()), by = c("name" = "field_nr")) %>%
+  left_join(IPC_names %>% mutate(techn_field_nr = techn_field_nr %>% as.character()), by = c("name" = "techn_field_nr")) %>%
   mutate(dgr = centrality_eigen(weights = weight)) %E>%
   filter(weight >= mean(weight))
 
+#1.3.3.Coords -----
 coords_tech_AI <- g_tech_AI %>% igraph::layout.fruchterman.reingold() %>% as_tibble()
 colnames(coords_tech_AI) <- c("x", "y")
 write.csv2(coords_tech_AI, file = "Data_Final_code/coords_tech_AI.csv", row.names = T)
@@ -519,7 +534,8 @@ reg_RCA_AI3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>%
 
 #1.4. IPC Visualization General-----
 #Finally, we start with the visualizations. For the Global perspective, considering the whole data, we have:
-Global_technological_space <- g_tech_AI %>%
+Global_technological_space <- 
+g_tech_AI %>%
   ggraph(layout =  coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
   geom_node_point(aes(colour = sector, size = dgr)) + 
@@ -550,7 +566,6 @@ jpeg("Data_Final_code/Global_technological_space_blackAndWhite.jpg", width = 14,
 Global_technological_spaceGrey
 dev.off()
 
-
 #1.4.1. IPC Visualization Per country-----
 #Now we start the analysis per country:
 #1st period
@@ -573,11 +588,12 @@ g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=15) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("IPC Technology Space: China (1974-1988)") 
 
 i = 2
 IPC2 <- g_tech_AI %N>%
@@ -595,11 +611,12 @@ g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (1974-1988)")
+  ggtitle("IPC Technology Space: USA (1974-1988)") 
 
 i = 3
 IPC3 <- g_tech_AI %N>%
@@ -617,7 +634,8 @@ IPC3Black <-
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
@@ -639,11 +657,12 @@ g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size =10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (1974-1988)")
+  ggtitle("IPC Technology Space: South Korea (1974-1988)") #+ guides(colour = guide_legend(override.aes = list(size=8)))
 
 #For saving the pictures:
 jpeg("Data_Final_code/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
@@ -679,6 +698,19 @@ jpeg("Data_Final_code/IPC_all_KR_persp_Period1Bl.jpg", width = 14, height = 10, 
 IPC4Black
 dev.off()
 
+jpeg("Data_Final_code/testLabel.jpg", width = 14, height = 10, units = 'in', res = 200)
+  g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=15) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "grey19"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (1974-1988)") + theme(legend.text = element_text(size = 15))
+dev.off()
+  
 #Per Country 2nd period
 i = 1
 IPC1 <- g_tech_AI %N>%
@@ -696,7 +728,8 @@ g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19")) +
   theme_graph() +
@@ -718,7 +751,8 @@ IPC2Black <-
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19")) +
   theme_graph() +
@@ -740,7 +774,8 @@ IPC3Black <-
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-    geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+    geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
     geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
     scale_color_manual(values=c("gray90", "grey19")) +
   theme_graph() +
@@ -762,7 +797,8 @@ IPC4Black <-
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-    geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+    geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
     geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
     scale_color_manual(values=c("gray90", "grey19")) +
   theme_graph() +
@@ -819,7 +855,8 @@ IPC1Black <-
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
@@ -841,7 +878,8 @@ IPC2Black <-
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-    geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+    geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
     geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
     scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
@@ -862,7 +900,8 @@ IPC3Black <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
@@ -884,7 +923,8 @@ IPC4Black <-
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
-  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size = 10) +
+  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
@@ -948,7 +988,8 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
-  ggtitle("Technology Space: AI patents (1974-1988)")
+  ggtitle("Technology Space: AI patents (1974-1988)") + guides(colour = guide_legend(override.aes = list(size=10)))
+#+ theme(text = element_text(size = 20))
 
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI1
@@ -979,7 +1020,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
-  ggtitle("Technology Space: AI patents (1989-2003)")
+  ggtitle("Technology Space: AI patents (1989-2003)") + guides(colour = guide_legend(override.aes = list(size=10)))
 
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI2
@@ -1010,7 +1051,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
-  ggtitle("Technology Space: AI patents (2004-2018)") #+ guides(colour = guide_legend(override.aes = list(size=10))) 
+  ggtitle("Technology Space: AI patents (2004-2018)") + guides(colour = guide_legend(override.aes = list(size=10))) 
 
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI3
@@ -2690,14 +2731,6 @@ Test4 <-Test2[Test2$Indicator == "AI-core fields",]
 Test5 <-Test2[Test2$Indicator == "Surrounding fields",] 
 Test6 <- Test2[Test2$Indicator == "AI-related fields",] 
 
-Test3 %>%
-#  tail(10) %>%
-  ggplot(aes(x=(RCA_step1), y=(Value), color=Period, shape = Country)) +
-  geom_line( color="black") +
-  geom_point(size=6) + 
-  scale_shape_manual(values=c(16, 15, 17, 18))
- # theme_ipsum()
-
 Test2 %>%
   ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
   geom_point(size=8) + 
@@ -2789,12 +2822,79 @@ jpeg("Data_Final_code/AI_fig.jpg", width = 14, height = 10, units = 'in', res = 
 AI_fig
 dev.off()
 
-jpeg("Data_Final_code/AI_And_countries3.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Data_Final_code/AI_And_countries4.jpg", width = 14, height = 8, units = 'in', res = 200)
 multiplot(AI_fig, Overall, cols=1) 
 dev.off()
 
-#maybe add limiters to X and Y to make the graphics look better; maybe plot them 1 by one and unify
-#using ggplot; maybe add labels to each dot; rename x and y labels;
+#maybe add limiters to X and Y to make the graphics look better;
+
+#new figure development of AI patents per country
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+patents_AI_specific <- read.csv("Data_Final_code/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific <- patents_AI_specific[,c((1), (3:4))]
+
+length(unique(patents_AI_specific$appln_id))
+
+patents_AI_specific %<>% 
+  #group_by(Publication_number) %>% 
+  mutate(DistinctOwnerInf = !duplicated(appln_id)) %>%
+  ungroup()
+
+patents_AI_specific %<>% 
+  group_by(appln_id) %>% 
+  mutate(DistinctpatentOffice = !duplicated(patent_office)) %>%
+  ungroup()
+
+patents_AI_specific %<>% 
+  group_by(appln_id) %>% 
+  mutate(DistinctpatentOffice = n_distinct(patent_office, na.rm = T)) %>%
+  ungroup()
+
+table(patents_AI_specific$DistinctpatentOffice)
+test<- patents_AI_specific[1,]
+
+test$patent_office <- gsub("CN", "US", str_trim(test$patent_office))
+
+patents_AI_specific2 <- rbind(patents_AI_specific, test)
+
+patents_AI_specific2 %<>% 
+  group_by(appln_id) %>% 
+  mutate(DistinctpatentOffice = n_distinct(patent_office, na.rm = T)) %>%
+  ungroup()
+
+patents_AI_specific2[patents_AI_specific2$appln_id == "475222998",]
+table(patents_AI_specific2$DistinctpatentOffice)
+#thus, there is no patent with inventors from distinct patent offices in our dataset;
+
+patents_AI_specific_simplified <- patents_AI_specific[patents_AI_specific$DistinctOwnerInf == T,]
+patents_AI_specific_simplified2 <- patents_AI_specific2[patents_AI_specific2$DistinctOwnerInf == T,]
+#it works!
+patents_AI_specific_simplified_4<- patents_AI_specific_simplified[patents_AI_specific_simplified$patent_office == "CN" |
+                                                                  patents_AI_specific_simplified$patent_office == "US"|
+                                                                  patents_AI_specific_simplified$patent_office == "KR"|
+                                                                  patents_AI_specific_simplified$patent_office == "JP", ]
+
+table(patents_AI_specific_simplified_4$patent_office)
+Data <- as.data.frame(table(patents_AI_specific_simplified_4$patent_office, patents_AI_specific_simplified_4$priority_year))
+names(Data) <- c("Country", "Year", "Number_of_AI_patents")
+
+Data$Year <- as.Date(paste(Data$Year, 1, 1, sep = "-")) # beginning of year
+Data$Year <- as.Date(paste(Data$Year, 12, 31, sep = "-"))
+Data$Year <- as.numeric(format(Data$Year, "%Y"))
+
+jpeg("Data_Final_code/NewRegistersPerCountry.jpg", width = 14, height = 10, units = 'in', res = 200)
+ggplot(data=Data, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
+  geom_line(size=1.2, aes(linetype=Country)) +
+  geom_point(size=8) +
+  ggtitle("AI-patents registered per country") +
+  xlab("Year") +
+  ylab("Log10 of the number of new AI registers") + theme_classic() +
+  scale_colour_manual(values = c("grey2", "grey25", "grey50","grey78")) +
+  scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) +
+  scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1970, 2018))
+dev.off()
 
 #3. THIRD PART: Fig8 calculations----
 rm(list=ls())
