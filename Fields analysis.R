@@ -10,6 +10,12 @@ library(data.table) #for reading the big files using fread and for replacing cou
 
 library(netrankr) #library for calculating pagerank related indicators (i.e. centrality_closeness_harmonic and centrality_closeness_residual)
 
+library(dplyr)
+library(tidyr)
+library(ggrepel)
+library(scales) #for scaling without cutting data out
+library(patchwork) #for cutting out the X labs while keeping the legend
+
 #1. FIRST PART: Technological spaces -----
 #In this first part, we calculate and plot the global technological space, and the technological spaces for 
 #countries and AI;
@@ -143,7 +149,7 @@ write.csv2(mat_tech_AI_Final, file = "Data_Final_code/Matrix_IPC.csv", row.names
 
 #1.2.Technology Space ----
 #Now we will create the technology spaces, dividing them in 3 periods;
-setwd("C:/Users/mathe/OneDrive/Área de Trabalho") 
+setwd("C:/Users/mathe/OneDrive/?rea de Trabalho") 
 rm(list=ls())
 #First, we create the 2 functions we will use for every period:
 group_by_applnID <- function (data){
@@ -2635,7 +2641,7 @@ All_data_knowlComp_Morc<-All_data_knowlComp_Morc[All_data_knowlComp_Morc$Country
                                                    All_data_knowlComp_Morc$Country == "KR"|
                                                    All_data_knowlComp_Morc$Country == "JP",]
 
-write.csv2(All_data_knowlComp_Morc, file = "Data_Final_code/All_data_knowlComp_Morc.csv", row.names = F)
+#write.csv2(All_data_knowlComp_Morc, file = "Data_Final_code/All_data_knowlComp_Morc.csv", row.names = F)
 All_data_knowlComp_Morc <- read.csv("Data_Final_code/All_data_knowlComp_Morc.csv", sep = ";", header = TRUE, dec=",")
 All_data_knowlComp_Morc$Category <- factor(All_data_knowlComp_Morc$Category, levels = c("Overall Complexity", "AI-core fields",
                                                                         "AI-related fields", "Surrounding fields"))
@@ -2674,32 +2680,15 @@ dev.off()
 
 #2.4.New Figure Discussions ----
 #scatter plot using data from All_data_knowlComp_Morc and Relatedness
-Test <- left_join(All_data_knowlComp_Morc, Relatedness, by=c("Country", "Period"))
 All_data_knowlComp_Morc2 <- All_data_knowlComp_Morc[,c((1),(5),(7:8))]
 All_data_knowlComp_Morc2$Category <- gsub("Complexity", "Relatedness", str_trim(All_data_knowlComp_Morc2$Category))
 colnames(All_data_knowlComp_Morc2)[grepl("Category", colnames(All_data_knowlComp_Morc2))] <- "Indicator"
 Test2 <- left_join(All_data_knowlComp_Morc2, Relatedness, by=c("Country", "Period", "Indicator"))
 
-ggplot(Test2, aes(x=Value, y=RCA_step2)) +
-  geom_point(size=2, shape=23)
-
-ggplot(Test2, aes(x=RCA_step2, y=Value)) +
-  geom_point(size=2, shape=23)
-
-ggplot(Test2, aes(x=RCA_step2, y=Value, shape=Country, color=Period)) + #size=Period
-  geom_point() + facet_wrap(~Indicator, ncol = 4)
-
 Test3 <- Test2[Test2$Indicator == "Overall Relatedness",]
 Test4 <-Test2[Test2$Indicator == "AI-core fields",] 
 Test5 <-Test2[Test2$Indicator == "Surrounding fields",] 
 Test6 <- Test2[Test2$Indicator == "AI-related fields",] 
-
-
-ggplot(Test3, aes(x=RCA_step2, y=Value, shape=Country, color=Period)) + #size=Period
-  geom_line()  +
-  geom_point(size=8) + 
-  scale_shape_manual(values=c(16, 16, 17, 18)) #+ 
-  
 
 Test3 %>%
 #  tail(10) %>%
@@ -2707,21 +2696,7 @@ Test3 %>%
   geom_line( color="black") +
   geom_point(size=6) + 
   scale_shape_manual(values=c(16, 15, 17, 18))
- # theme_ipsum() +
-#  ggtitle("Evolution of bitcoin price")
-
-Test3$Period <- as.factor(Test3$Period)
-Test3 %>%
-  ggplot( aes(x=Value, y=RCA_step1, color=Period, shape = Country)) +
-  geom_line( color="black") +
-  geom_point(size=6) + 
-  scale_shape_manual(values=c(16, 16, 17, 18))
-
-Test3 %>%
-  ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
-  geom_point(size=8) + 
-  geom_path(color="black", arrow = arrow(angle = 15, type = "closed"), size=1) +
-  scale_shape_manual(values=c(16, 15, 17, 18)) 
+ # theme_ipsum()
 
 Test2 %>%
   ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
@@ -2730,50 +2705,51 @@ Test2 %>%
   geom_path(color="black", arrow = arrow(angle = 15, type = "closed"), size=1) +
   scale_shape_manual(values=c(16, 15, 17, 18)) 
 
-Overall <- Test3 %>%
+Overall <- 
+Test3 %>%
   ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
   geom_point(size=10) + 
-  geom_path(color="black", arrow = arrow(angle = 15, type = "closed"), size=1) +
+  geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
   scale_shape_manual(values=c(16, 15, 17, 18)) +
   xlab("Knowledge complexity (MORc)") +
   ylab("Relatedness") +
   ggtitle("Technological development of AI-leading countries - Overall") +
-  scale_color_manual(values=c("gray6", "grey50", "grey78")) + 
-  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 12, repel = TRUE)
+  scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic() +
+  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 8, repel = TRUE)
 
 Core <- Test4 %>%
   ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
   geom_point(size=10) + 
-  geom_path(color="black", arrow = arrow(angle = 15, type = "closed"), size=1) +
+  geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
   scale_shape_manual(values=c(16, 15, 17, 18)) +
   xlab("Knowledge complexity (MORc)") +
   ylab("Relatedness") +
   ggtitle("Technological development of AI-leading countries for AI-core fields") +
-  scale_color_manual(values=c("gray6", "grey50", "grey78")) + 
-  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 12, repel = TRUE)
+  scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic()+ 
+  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 8, repel = TRUE)
 
 Surrounding <- Test5 %>%
   ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
   geom_point(size=10) + 
-  geom_path(color="black", arrow = arrow(angle = 15, type = "closed"), size=1) +
+  geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
   scale_shape_manual(values=c(16, 15, 17, 18)) +
   xlab("Knowledge complexity (MORc)") +
   ylab("Relatedness") +
   ggtitle("Technological development of AI-leading countries for Surrounding fields") +
-  scale_color_manual(values=c("gray6", "grey50", "grey78")) + 
-  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 12, repel = TRUE)
+  scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic()+ 
+  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 8, repel = TRUE)
 
 Related <- 
 Test6 %>%
   ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
   geom_point(size=10) + 
-  geom_path(color="black", arrow = arrow(angle = 15, type = "closed"), size=1) +
+  geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
   scale_shape_manual(values=c(16, 15, 17, 18)) +
   xlab("Knowledge complexity (MORc)") +
   ylab("Relatedness") +
   ggtitle("Technological development of AI-leading countries for AI-related fields") +
-  scale_color_manual(values=c("gray6", "grey50", "grey78")) + 
-  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 12, repel = TRUE)
+  scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic()+
+  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 8, repel = TRUE)
 
 jpeg("Data_Final_code/Overall.jpg", width = 14, height = 10, units = 'in', res = 200)
 Overall
@@ -2789,6 +2765,32 @@ dev.off()
 
 jpeg("Data_Final_code/Related.jpg", width = 14, height = 10, units = 'in', res = 200)
 Related
+dev.off()
+
+#for AI:
+KnowledgeCompl_AI_all2 <- KnowledgeCompl_AI_all
+KnowledgeCompl_AI_all2$Indicator <- gsub("Complexity", "Relatedness", str_trim(KnowledgeCompl_AI_all2$Indicator))
+AI_data <- left_join(KnowledgeCompl_AI_all2, Relatedness_AI, by=c("Country", "Period", "Indicator"))
+AI_data$Indicator <- gsub("Relatedness", " ", str_trim(AI_data$Indicator))
+
+AI_fig<- 
+AI_data %>%
+  ggplot(aes(x=(Value.x), y=(Value.y), color=Period, shape = Indicator)) +
+  geom_point(size=10) + 
+  geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) +
+  xlab("Knowledge complexity (MORt)") +
+  ylab("Relatedness") +
+  ggtitle("Technological development of AI the considered indicators") +
+  scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic()#+
+  #geom_node_text(aes(x=(Value.x), y=(Value.y), label = Indicator), size = 4, repel = TRUE)
+
+jpeg("Data_Final_code/AI_fig.jpg", width = 14, height = 10, units = 'in', res = 200)
+AI_fig
+dev.off()
+
+jpeg("Data_Final_code/AI_And_countries3.jpg", width = 14, height = 10, units = 'in', res = 200)
+multiplot(AI_fig, Overall, cols=1) 
 dev.off()
 
 #maybe add limiters to X and Y to make the graphics look better; maybe plot them 1 by one and unify
