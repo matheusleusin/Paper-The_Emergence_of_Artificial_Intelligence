@@ -478,6 +478,18 @@ reg_RCA3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>%
   gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
   arrange(ctry_code, techn_field_nr)
 
+#save the specialisations of countries
+reg_top4countries <- merge(reg_RCA1, reg_RCA2, by = c("ctry_code", "techn_field_nr"))
+reg_top4countries2 <- merge(reg_top4countries, reg_RCA3, by = c("ctry_code", "techn_field_nr"))
+reg_top4countries3 <- reg_top4countries2[reg_top4countries2$ctry_code == "CN"|
+                                           reg_top4countries2$ctry_code == "US"|
+                                           reg_top4countries2$ctry_code == "JP"|
+                                           reg_top4countries2$ctry_code == "KR",]
+library(openxlsx)
+write.xlsx(reg_top4countries3, file = "Data_Final_code/Specialisations_4countries_3p.xlsx", row.names = F)
+rm(reg_top4countries,reg_top4countries2,reg_top4countries3)
+
+
 #1.3.2.Calculate reg_RCAs for AI ----
 #Now we read the data per period and calculate the RCAs:
 reg_tech1 <- read.csv("Data_Final_code/reg_techAI_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
@@ -2805,18 +2817,19 @@ KnowledgeCompl_AI_all2 <- KnowledgeCompl_AI_all
 KnowledgeCompl_AI_all2$Indicator <- gsub("Complexity", "Relatedness", str_trim(KnowledgeCompl_AI_all2$Indicator))
 AI_data <- left_join(KnowledgeCompl_AI_all2, Relatedness_AI, by=c("Country", "Period", "Indicator"))
 AI_data$Indicator <- gsub("Relatedness", " ", str_trim(AI_data$Indicator))
+names(AI_data) <-c("Country","Period","Value.x","Category","Value.y")
 
 AI_fig<- 
 AI_data %>%
-  ggplot(aes(x=(Value.x), y=(Value.y), color=Period, shape = Indicator)) +
+  ggplot(aes(x=(Value.x), y=(Value.y), color=Period, shape = Category)) +
   geom_point(size=10) + 
   geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
   scale_shape_manual(values=c(16, 15, 17, 18)) +
   xlab("Knowledge complexity (MORt)") +
   ylab("Relatedness") +
-  ggtitle("Technological development of AI the considered indicators") +
+  ggtitle("Technological development of AI in the considered categories") +
   scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic()#+
-  #geom_node_text(aes(x=(Value.x), y=(Value.y), label = Indicator), size = 4, repel = TRUE)
+  #geom_node_text(aes(x=(Value.x), y=(Value.y), label = Category), size = 4, repel = TRUE)
 
 jpeg("Data_Final_code/AI_fig.jpg", width = 14, height = 10, units = 'in', res = 200)
 AI_fig
