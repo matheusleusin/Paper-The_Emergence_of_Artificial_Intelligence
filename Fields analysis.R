@@ -2831,8 +2831,12 @@ AI_data %>%
   scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic()#+
   #geom_node_text(aes(x=(Value.x), y=(Value.y), label = Category), size = 4, repel = TRUE)
 
-jpeg("Data_Final_code/AI_fig.jpg", width = 14, height = 10, units = 'in', res = 200)
+jpeg("Data_Final_code/AI_fig.jpg", width = 12, height = 5, units = 'in', res = 200)
 AI_fig
+dev.off()
+
+jpeg("Data_Final_code/countries4.jpg", width = 12, height = 5, units = 'in', res = 200)
+Overall 
 dev.off()
 
 jpeg("Data_Final_code/AI_And_countries4.jpg", width = 14, height = 8, units = 'in', res = 200)
