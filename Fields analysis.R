@@ -17,6 +17,9 @@ library(scales) #for scaling without cutting data out
 library(patchwork) #for cutting out the X labs while keeping the legend
 library(RColorBrewer)
 
+shell("git remote add origin https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence.git",intern = TRUE)
+shell("git push -u origin master",intern = TRUE)
+a
 #1. FIRST PART: Technological spaces -----
 #In this first part, we calculate and plot the global technological space, and the technological spaces for 
 #countries and AI;
