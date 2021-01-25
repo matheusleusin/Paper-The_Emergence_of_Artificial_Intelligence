@@ -24,7 +24,7 @@ group_by_ctry_and_IPC <- function (data){
 #1.1.First Period ----
 #1.1.1.General Perspective ----
 #For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
-setwd("C:/Users/mathe/OneDrive/Ãrea de Trabalho")
+setwd("C:/Users/mathe/OneDrive/Área de Trabalho")
 c <- 97664418 -80000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000)
 IPC_all_patents_Part2 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
@@ -69,6 +69,9 @@ IPC_all_patents_FirstPeriod <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part
 #and exclude the 3 big ones we just used, so we have back our memory:
 rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
 
+length(unique(IPC_all_patents_FirstPeriod$appln_id))#4,820,523 unique publication numbers (i.e., unique priorities) out of
+length(IPC_all_patents_FirstPeriod$appln_id) #28,705,762 lines of data
+       
 #we pick just the subclass for analysis:
 IPC_all_patents_FirstPeriod$Subclass <- substr(IPC_all_patents_FirstPeriod$ipc_class_symbol,1,4)
 
@@ -180,6 +183,9 @@ IPC_all_patents_SecondPeriod <- rbind(IPC_all_patents_Part1, IPC_all_patents_Par
 #and exclude the 5 big ones we just used, so we have back our memory:
 rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
 
+length(unique(IPC_all_patents_SecondPeriod$appln_id))#8,852,648 unique publication numbers (i.e., unique priorities) out of
+length(IPC_all_patents_SecondPeriod$appln_id) #63,620,929 lines of data
+
 #we pick just the subclass for analysis:
 IPC_all_patents_SecondPeriod$Subclass <- substr(IPC_all_patents_SecondPeriod$ipc_class_symbol,1,4)
 
@@ -263,6 +269,13 @@ IPC_all_patents_Part1 <- IPC_all_patents_Part1[, c((-4))]
 IPC_all_patents_Part2 <- IPC_all_patents_Part2[, c((-4))]
 IPC_all_patents_Part3 <- IPC_all_patents_Part3[, c((-4))]
 
+#just check how many patents we have on this first part of the third period
+IPC_all_patents_ThirdPeriodTemporaryFirstPart <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
+#rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3)
+length(unique(IPC_all_patents_ThirdPeriodTemporaryFirstPart$appln_id))#8,131,440 unique publication numbers in the first part 
+length(IPC_all_patents_ThirdPeriodTemporaryFirstPart$appln_id) #out of 60,000,000 lines of data
+rm(IPC_all_patents_ThirdPeriodTemporaryFirstPart)
+
 IPC_all_patents_Part1$Subclass <- substr(IPC_all_patents_Part1$ipc_class_symbol,1,4)
 IPC_all_patents_Part2$Subclass <- substr(IPC_all_patents_Part2$ipc_class_symbol,1,4)
 IPC_all_patents_Part3$Subclass <- substr(IPC_all_patents_Part3$ipc_class_symbol,1,4)
@@ -296,6 +309,13 @@ names(IPC_all_patents_Part6) <- c("appln_id", "ctry_code", "ipc_class_symbol", "
 IPC_all_patents_Part4 <- IPC_all_patents_Part4[, c((-4))]
 IPC_all_patents_Part5 <- IPC_all_patents_Part5[, c((-4))]
 IPC_all_patents_Part6 <- IPC_all_patents_Part6[, c((-4))]
+
+#just check how many patents we have on this second part of the third period
+IPC_all_patents_ThirdPeriodTemporarySecondPart <- rbind(IPC_all_patents_Part4, IPC_all_patents_Part5, IPC_all_patents_Part6)
+#rm(IPC_all_patents_Part4, IPC_all_patents_Part5, IPC_all_patents_Part6)
+length(unique(IPC_all_patents_ThirdPeriodTemporarySecondPart$appln_id))#8,195,913 unique publication numbers in the first part 
+length(IPC_all_patents_ThirdPeriodTemporarySecondPart$appln_id) #out of 60,419,184 lines of data
+rm(IPC_all_patents_ThirdPeriodTemporarySecondPart)
 
 IPC_all_patents_Part4$Subclass <- substr(IPC_all_patents_Part4$ipc_class_symbol,1,4)
 IPC_all_patents_Part5$Subclass <- substr(IPC_all_patents_Part5$ipc_class_symbol,1,4)
@@ -484,6 +504,17 @@ ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period)) + geom_
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
   ylab(NULL)
 
+library(RColorBrewer)
+FigGen_Colour <- 
+  ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=1/1.4, size=4) +
+  facet_wrap(~Label, ncol = 5)  +
+   theme_classic() + scale_color_brewer(palette="YlOrRd")+
+  geom_vline(data=Gen, aes(xintercept=Value.mean,  colour=Period),
+             linetype="dashed", size=1) +  
+  ggtitle("Countries' Performance by IPC code - General Perspective") +
+  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
+  ylab(NULL)
+
 #Figure AI:
 Ais <- ddply(IPC_RCAs_Top4, c("Period", "Label"), summarise, Value.mean=log10(mean(RCA_AI)))
 FigAI <- ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=1/1.4, size=4) +
@@ -505,6 +536,16 @@ ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period)) + geom_c
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
   ylab(NULL)
 
+FigAI_Colour <- 
+  ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=1/1.4, size=4) +
+  facet_wrap(~Label, ncol = 5) +
+  theme_classic() + scale_color_brewer(palette="YlOrRd")+
+  geom_vline(data=Ais, aes(xintercept=Value.mean,  colour=Period),
+             linetype="dashed", size=1) +
+  ggtitle("Countries' Performance by IPC code - AI-specific Perspective") +
+  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
+  ylab(NULL)
+
 tiff("Data_4digits_analysis/Plot_IPC_RCA.jpg", width = 14, height = 7, units = 'in', res = 200)
 multiplot(FigGen, FigAI, cols=1)
 dev.off()
@@ -512,6 +553,21 @@ dev.off()
 #black and white:
 tiff("Data_4digits_analysis/Plot_IPC_RCABl.jpg", width = 14, height = 7, units = 'in', res = 200)
 multiplot(FigGen_Black, FigAI_Black, cols=1)
+dev.off()
+
+#colour:
+jpeg("Data_4digits_analysis/Fig6_General_versus_AI.tiff", width = 14, height = 7, units = 'in', res = 300)
+multiplot(FigGen_Colour, FigAI_Colour, cols=1)
+dev.off()
+
+#high:
+jpeg("Data_4digits_analysis/Fig6_General_versus_AIhigh.tiff", width = 14, height = 7, units = 'in', res = 800)
+multiplot(FigGen_Colour, FigAI_Colour, cols=1)
+dev.off()
+
+#colour:
+jpeg("Data_4digits_analysis/Fig6_General_versus_AILow.tiff", width = 14, height = 7, units = 'in', res = 72)
+multiplot(FigGen_Colour, FigAI_Colour, cols=1)
 dev.off()
 
 #2.SECOND PART: Variety with AI----

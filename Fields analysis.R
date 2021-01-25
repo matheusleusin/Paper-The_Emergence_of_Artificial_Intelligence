@@ -15,6 +15,7 @@ library(tidyr)
 library(ggrepel)
 library(scales) #for scaling without cutting data out
 library(patchwork) #for cutting out the X labs while keeping the legend
+library(RColorBrewer)
 
 #1. FIRST PART: Technological spaces -----
 #In this first part, we calculate and plot the global technological space, and the technological spaces for 
@@ -379,7 +380,6 @@ matrix <- matrix2[,-1]
 rownames(matrix) <- matrix2[,1]
 matrix <- as.matrix(matrix)
 mat_tech_AI_Final <- matrix
-
 mat_tech_rel_AI <- mat_tech_AI_Final %>% 
   relatedness(method = "cosine")
 write.table(mat_tech_rel_AI, file = "Data_Final_code/Relatedness_Allperiods2.csv", row.names = F, dec = ".")
@@ -546,6 +546,10 @@ reg_RCA_AI3 <- mat_reg_tech3 %>% location.quotient(binary = TRUE) %>%
 
 #1.4. IPC Visualization General-----
 #Finally, we start with the visualizations. For the Global perspective, considering the whole data, we have:
+
+coords_tech_AI <- g_tech_AI %>% igraph::layout.fruchterman.reingold() %>% as_tibble()
+colnames(coords_tech_AI) <- c("x", "y")
+
 Global_technological_space <- 
 g_tech_AI %>%
   ggraph(layout =  coords_tech_AI) + 
@@ -578,6 +582,38 @@ jpeg("Data_Final_code/Global_technological_space_blackAndWhite.jpg", width = 14,
 Global_technological_spaceGrey
 dev.off()
 
+#library(RColorBrewer)
+Figure1_Global_Technological_Space_colour <-
+  g_tech_AI %>%
+  ggraph(layout =  coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = sector, size = dgr, shape= sector))+ 
+  scale_shape_manual(values=c(16, 16, 17, 18, 17)) + scale_size(range = c(2, 10)) +
+ # scale_color_manual(values=c("grey33", "grey74", "grey58", "grey30","gray1")) +
+  geom_node_text(aes(label = field_name), size = 4, repel = TRUE) + 
+  theme_graph()+
+  ggtitle("Technology Space: IPC codes") + 
+  theme(
+    legend.title = element_text(size = 14),
+    legend.text = element_text(size = 10)
+  ) + guides(colour = guide_legend(override.aes = list(size=10))) 
+# scale_color_brewer(palette = "Paired")
+
+#regular resolution: 
+jpeg("Data_Final_code/Fig1_Global_technological_space_colour.tiff", width = 14, height = 10, units = 'in', res = 300)
+Figure1_Global_Technological_Space_colour 
+dev.off()
+  
+#low resolution:  
+jpeg("Data_Final_code/Fig1_Global_technological_space_colourLow.tiff", width = 14, height = 10, units = 'in', res = 72)
+Figure1_Global_Technological_Space_colour 
+dev.off()
+
+#high resolution: 
+jpeg("Data_Final_code/Fig1_Global_technological_space_colourHigh.tiff", width = 14, height = 10, units = 'in', res = 800)
+Figure1_Global_Technological_Space_colour 
+dev.off()
+
 #1.4.1. IPC Visualization Per country-----
 #Now we start the analysis per country:
 #1st period
@@ -600,10 +636,24 @@ g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
-  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=15) +
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=10) +
   scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
   geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "grey19"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (1974-1988)") 
+
+IPC1Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+    scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+#    scale_color_brewer(palette = "Paired")+
   theme_graph() +
   ggtitle("IPC Technology Space: China (1974-1988)") 
 
@@ -630,6 +680,19 @@ g_tech_AI %N>%
   theme_graph() +
   ggtitle("IPC Technology Space: USA (1974-1988)") 
 
+IPC2Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: USA (1974-1988)") 
+
 i = 3
 IPC3 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -653,6 +716,19 @@ IPC3Black <-
   theme_graph() +
   ggtitle("IPC Technology Space: Japan (1974-1988)")
 
+IPC3Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: Japan (1974-1988)") 
+
 i = 4
 IPC4 <- g_tech_AI %N>%
   left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -675,6 +751,55 @@ g_tech_AI %N>%
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
   ggtitle("IPC Technology Space: South Korea (1974-1988)") #+ guides(colour = guide_legend(override.aes = list(size=8)))
+
+IPC4Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: South Korea (1974-1988)") 
+
+IPC1Label <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=15) + 
+    scale_shape_manual(values=c(15, 16, 17, 18)) + 
+  labs(color   = "RCA")+ 
+  #scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  #    scale_color_brewer(palette = "Paired")+
+  theme_graph() +
+    theme(text = element_text(size = 20)) +
+  ggtitle("IPC Technology Space: China (1974-1988)") 
+
+IPC1Label <- g_tech_AI %N>%
+  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) + 
+  scale_shape_manual(values=c(15, 16, 17, 18)) + 
+  labs(color   = "RCA")+ 
+  scale_size_manual(values=c(15, 15, 15, 7))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  #    scale_color_brewer(palette = "Paired")+
+  theme_graph() +
+  theme(text = element_text(size = 20)) +
+  ggtitle("IPC Technology Space: China (1974-1988)") 
+
+#THE LABEL:
+jpeg("Data_Final_code/Fig5_Label2.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC1Label
+dev.off()
 
 #For saving the pictures:
 jpeg("Data_Final_code/IPC_all_CN_persp_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
@@ -710,19 +835,58 @@ jpeg("Data_Final_code/IPC_all_KR_persp_Period1Bl.jpg", width = 14, height = 10, 
 IPC4Black
 dev.off()
 
-jpeg("Data_Final_code/testLabel.jpg", width = 14, height = 10, units = 'in', res = 200)
-  g_tech_AI %N>%
-  left_join(reg_RCA1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
-  ggraph(layout = coords_tech_AI) + 
-  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
-  geom_node_point(aes(colour = factor(RCA), size = dgr, shape= Category), size=15) +
-  scale_shape_manual(values=c(15, 16, 17, 5)) + labs(color   = "RCA")+ 
-  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
-  scale_color_manual(values=c("gray90", "grey19"))+
-  theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)") + theme(legend.text = element_text(size = 15))
+#For saving the coloured pictures_Low resolution (72 pi):
+jpeg("Data_Final_code/Fig5_colour_China_1stLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC1Colour
 dev.off()
-  
+
+jpeg("Data_Final_code/Fig5_colour_US_1stLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_1stLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_1stLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC4Colour
+dev.off()
+
+#For saving the coloured pictures_High resolution (800 pi):
+jpeg("Data_Final_code/Fig5_colour_China_1stHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_1stHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_1stHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_1stHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC4Colour
+dev.off()
+
+#For saving the coloured picture in regular resolution (300 pi):
+jpeg("Data_Final_code/Fig5_colour_China_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC4Colour
+dev.off()
+
+
 #Per Country 2nd period
 i = 1
 IPC1 <- g_tech_AI %N>%
@@ -747,6 +911,19 @@ g_tech_AI %N>%
   theme_graph() +
   ggtitle("IPC Technology Space: China (1989-2003)")
 
+IPC1Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (1989-2003)") 
+
 i = 2
 IPC2 <- g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -769,6 +946,19 @@ IPC2Black <-
   scale_color_manual(values=c("gray90", "grey19")) +
   theme_graph() +
   ggtitle("IPC Technology Space: USA (1989-2003)")
+
+IPC2Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: USA (1989-2003)") 
 
 i = 3
 IPC3 <- g_tech_AI %N>%
@@ -793,6 +983,19 @@ IPC3Black <-
   theme_graph() +
   ggtitle("IPC Technology Space: Japan (1989-2003)")
 
+IPC3Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: Japan (1989-2003)") 
+
 i = 4
 IPC4 <- g_tech_AI %N>%
   left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -815,6 +1018,19 @@ IPC4Black <-
     scale_color_manual(values=c("gray90", "grey19")) +
   theme_graph() +
   ggtitle("IPC Technology Space: South Korea (1989-2003)")
+
+IPC4Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: South Korea (1989-2003)") 
 
 #For saving the pictures:
 jpeg("Data_Final_code/IPC_all_CN_persp_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
@@ -850,6 +1066,57 @@ jpeg("Data_Final_code/IPC_all_KR_persp_Period2Bl.jpg", width = 14, height = 10, 
 IPC4Black
 dev.off()
 
+#For saving the coloured pictures in high resol:
+jpeg("Data_Final_code/Fig5_colour_China_2ndHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_2ndHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_2ndHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_2ndHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC4Colour
+dev.off()
+
+#For saving the coloured pictures in low resol:
+jpeg("Data_Final_code/Fig5_colour_China_2ndLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_2ndLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_2ndLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_2ndLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC4Colour
+dev.off()
+
+#For saving the coloured pictures in regular resol:
+jpeg("Data_Final_code/Fig5_colour_China_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC4Colour
+dev.off()
+
 #Per Country 3rd period
 i = 1
 IPC1 <- g_tech_AI %N>%
@@ -874,6 +1141,19 @@ IPC1Black <-
   theme_graph() +
   ggtitle("IPC Technology Space: China (2004-2018)")
 
+IPC1Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (2004-2018)") 
+
 i = 2
 IPC2 <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -897,6 +1177,19 @@ IPC2Black <-
   theme_graph() +
   ggtitle("IPC Technology Space: USA (2004-2018)")
 
+IPC2Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: USA (2004-2018)") 
+
 i = 3
 IPC3 <- g_tech_AI %N>%
   left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
@@ -918,6 +1211,19 @@ IPC3Black <- g_tech_AI %N>%
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
   ggtitle("IPC Technology Space: Japan (2004-2018)")
+
+IPC3Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: Japan (2004-2018)") 
 
 i = 4
 IPC4 <- g_tech_AI %N>%
@@ -941,6 +1247,19 @@ IPC4Black <-
   scale_color_manual(values=c("gray90", "grey19"))+
   theme_graph() +
   ggtitle("IPC Technology Space: South Korea (2004-2018)")
+
+IPC4Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") +
+  geom_node_point(aes(colour = factor(RCA), size = Category, shape= Category)) +
+  scale_shape_manual(values=c(15, 16, 17, 18)) + labs(color   = "RCA")+ 
+  scale_size_manual(values=c(10, 10, 10, 4))+
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: South Korea (2004-2018)") 
 
 #For saving the pictures:
 jpeg("Data_Final_code/IPC_all_CN_persp_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
@@ -976,6 +1295,57 @@ jpeg("Data_Final_code/IPC_all_KR_persp_Period3Bl.jpg", width = 14, height = 10, 
 IPC4Black
 dev.off()
 
+#For saving the coloured pictures in high resolution:
+jpeg("Data_Final_code/Fig5_colour_China_3rdHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_3rdHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_3rdHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_3rdHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC4Colour
+dev.off()
+
+#For saving the coloured pictures in low resolution:
+jpeg("Data_Final_code/Fig5_colour_China_3rdLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_3rdLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_3rdLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_3rdLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC4Colour
+dev.off()
+
+#For saving the coloured pictures in regular resolution:
+jpeg("Data_Final_code/Fig5_colour_China_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC1Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_US_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC2Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_JP_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC3Colour
+dev.off()
+
+jpeg("Data_Final_code/Fig5_colour_KR_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC4Colour
+dev.off()
+
 #1.4.2. IPC Visualization AI-----
 
 #First period
@@ -1003,6 +1373,18 @@ g_tech_AI %N>%
   ggtitle("Technology Space: AI patents (1974-1988)") + guides(colour = guide_legend(override.aes = list(size=10)))
 #+ theme(text = element_text(size = 20))
 
+IPC_AI1Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA_AI1 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("Technology Space: AI patents (1974-1988)") + guides(colour = guide_legend(override.aes = list(size=10)))
+#+ theme(text = element_text(size = 20))
+
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period1.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI1
 dev.off()
@@ -1011,6 +1393,23 @@ dev.off()
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period1Bl.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI1Black
 dev.off()
+
+#coloured high:
+jpeg("Data_Final_code/Figure2_colour_AI_1stHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC_AI1Colour
+dev.off()
+
+#coloured low:
+jpeg("Data_Final_code/Figure2_colour_AI_1stLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC_AI1Colour
+dev.off()
+
+#coloured regular:
+jpeg("Data_Final_code/Figure2_colour_AI_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC_AI1Colour
+dev.off()
+
+#stopped here;
 
 #Second period
 IPC_AI2 <- g_tech_AI %N>%
@@ -1034,6 +1433,17 @@ g_tech_AI %N>%
   theme_graph() +
   ggtitle("Technology Space: AI patents (1989-2003)") + guides(colour = guide_legend(override.aes = list(size=10)))
 
+IPC_AI2Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA_AI2 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("Technology Space: AI patents (1989-2003)") + guides(colour = guide_legend(override.aes = list(size=10)))
+
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period2.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI2
 dev.off()
@@ -1041,6 +1451,21 @@ dev.off()
 #Black and white
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period2Bl.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI2Black
+dev.off()
+
+#coloured high:
+jpeg("Data_Final_code/Figure2_colour_AI_2ndHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC_AI2Colour
+dev.off()
+
+#coloured low:
+jpeg("Data_Final_code/Figure2_colour_AI_2ndLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC_AI2Colour
+dev.off()
+
+#coloured regular:
+jpeg("Data_Final_code/Figure2_colour_AI_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC_AI2Colour
 dev.off()
 
 #Third period
@@ -1065,12 +1490,39 @@ g_tech_AI %N>%
   theme_graph() +
   ggtitle("Technology Space: AI patents (2004-2018)") + guides(colour = guide_legend(override.aes = list(size=10))) 
 
+IPC_AI3Colour <- 
+  g_tech_AI %N>%
+  left_join(reg_RCA_AI3 %>% filter(ctry_code == country_select[i]) %>% select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "grey") + 
+  geom_node_point(aes(colour = factor(RCA), size = dgr)) + labs(color   = "RCA")+ 
+  geom_node_text(aes(filter=RCA > .9, label = field_name), size = 5, repel = TRUE) +
+  scale_color_manual(values=c("gray90", "green4"))+
+  theme_graph() +
+  ggtitle("Technology Space: AI patents (2004-2018)") + guides(colour = guide_legend(override.aes = list(size=10))) 
+
+
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period3.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI3
 dev.off()
 
 jpeg("Data_Final_code/IPC_all_AIpatents_specific_Period3Bl.jpg", width = 14, height = 10, units = 'in', res = 200)
 IPC_AI3Black
+dev.off()
+
+#coloured high:
+jpeg("Data_Final_code/Figure2_colour_AI_3rdHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+IPC_AI3Colour
+dev.off()
+
+#coloured low:
+jpeg("Data_Final_code/Figure2_colour_AI_3rdLow.jpg", width = 14, height = 10, units = 'in', res = 72)
+IPC_AI3Colour
+dev.off()
+
+#coloured regular:
+jpeg("Data_Final_code/Figure2_colour_AI_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+IPC_AI3Colour
 dev.off()
 
 #2. SECOND PART: Complexity and Relatedness ----
@@ -2569,6 +3021,24 @@ Rel_byAI_c_Black<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Period)) 
   ggtitle("AI Relatedness in the considered IPC fields")+
   scale_y_continuous(limits=c(.1,2.35),oob = rescale_none)
 
+#coloured figures
+library(RColorBrewer)
+Rel_byP_c_Colour <- 
+ggplot(Relatedness, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal()+ xlab(NULL) + ylab("Relatedness") +
+  facet_wrap(~Indicator, ncol = 4) + theme_classic() +
+  ggtitle("Countries Relatedness in the considered IPC fields") + 
+  scale_y_continuous(limits=c(.45,1.5),oob = rescale_none) + 
+  scale_fill_brewer(palette = "YlOrRd")
+
+Rel_byAI_c_Colour<- ggplot(Relatedness_AI, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge(), show.legend = F)+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Relatedness") +
+  facet_wrap(~Indicator, ncol = 4)  + theme_classic() +
+  ggtitle("AI Relatedness in the considered IPC fields")+
+  scale_y_continuous(limits=c(.1,2.35),oob = rescale_none) + 
+  scale_fill_brewer(palette = "YlOrRd")
+
 
 #2.3.2.Knowld Comp. AI -----
 KnowlComp_1st_AI <- read.csv("Data_Final_code/KnowledgeComp_PerCountry_1st_All_RCAs_AI.csv", sep = ";", header = TRUE, dec=",")
@@ -2621,6 +3091,15 @@ Comp_byAI_c_Black<-
   facet_wrap(~Indicator, ncol = 4) +
   scale_fill_grey() + theme_classic() + theme(legend.position="bottom") +
   ggtitle("AI Knowledge Complexity in the considered IPC fields")
+
+Comp_byAI_c_Colour<- 
+  ggplot(KnowledgeCompl_AI_all, aes(x=Country, y=Value, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal() + labs(x = "") +
+  scale_x_discrete(labels = NULL) + ylab("Knowledge Complexity (MORt)") +
+  facet_wrap(~Indicator, ncol = 4) +
+  theme_classic() + theme(legend.position="bottom") +
+  ggtitle("AI Knowledge Complexity in the considered IPC fields")+ 
+  scale_fill_brewer(palette = "YlOrRd")
 
 #2.3.3.Knowld Comp. Countries -----
 KnowlComp_1st <- read.csv("Data_Final_code/KnowledgeComp_1st_Morc.csv", sep = ";", header = F, dec=".")
@@ -2714,6 +3193,15 @@ Comp_byP_c_Black <-
   scale_fill_grey() + theme_classic()  + theme(legend.position="bottom") +
   ggtitle("Countries Knowledge Complexity in the considered IPC fields") 
 
+#figure colour:
+Comp_byP_c_Colour <-
+  ggplot(All_data_knowlComp_Morc, aes(x=Country, y=RCA_step1, fill=Period)) +
+  geom_bar(stat="identity", position=position_dodge())+theme_minimal()+ xlab(NULL) + ylab("Knowledge Complexity (MORc)") +
+  facet_wrap(~Category, ncol = 4) +
+  theme_classic()  + theme(legend.position="bottom") +
+  ggtitle("Countries Knowledge Complexity in the considered IPC fields") + 
+  scale_fill_brewer(palette = "YlOrRd")
+
 tiff("Data_Final_code/Relatedness_and_Complex_AI.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byAI_c, Comp_byAI_c, cols=1) 
 dev.off()
@@ -2729,6 +3217,34 @@ dev.off()
 
 tiff("Data_Final_code/Relatedness_and_Complex_Morc_countriesBl.jpg", width = 8, height = 6, units = 'in', res = 200)
 multiplot(Rel_byP_c_Black, Comp_byP_c_Black, cols=1) 
+dev.off()
+
+#colour:
+jpeg("Data_Final_code/Fig3_Relatedness_and_Complex_AICol.tiff", width = 8, height = 6, units = 'in', res = 300)
+multiplot(Rel_byAI_c_Colour, Comp_byAI_c_Colour, cols=1) 
+dev.off()
+
+#high resolution
+jpeg("Data_Final_code/Fig3_Relatedness_and_Complex_AIColHigh.tiff", width = 8, height = 6, units = 'in', res = 800)
+multiplot(Rel_byAI_c_Colour, Comp_byAI_c_Colour, cols=1) 
+dev.off()
+
+#low resolution
+jpeg("Data_Final_code/Fig3_Relatedness_and_Complex_AIColLow.tiff", width = 8, height = 6, units = 'in', res = 72)
+multiplot(Rel_byAI_c_Colour, Comp_byAI_c_Colour, cols=1) 
+dev.off()
+
+jpeg("Data_Final_code/Fig7_Relatedness_and_Complex_Morc_countriesColour.tiff", width = 8, height = 6, units = 'in', res = 300)
+multiplot(Rel_byP_c_Colour, Comp_byP_c_Colour, cols=1) 
+dev.off()
+
+#high resolution
+jpeg("Data_Final_code/Fig7_Relatedness_and_Complex_Morc_countriesColourHigh.tiff", width = 8, height = 6, units = 'in', res = 800)
+multiplot(Rel_byP_c_Colour, Comp_byP_c_Colour, cols=1) 
+dev.off()
+
+jpeg("Data_Final_code/Fig7_Relatedness_and_Complex_Morc_countriesColourLow.tiff", width = 8, height = 6, units = 'in', res = 72)
+multiplot(Rel_byP_c_Colour, Comp_byP_c_Colour, cols=1) 
 dev.off()
 
 #2.4.New Figure Discussions ----
@@ -2761,6 +3277,19 @@ Test3 %>%
   ggtitle("Technological development of AI-leading countries - Overall") +
   scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic() +
   geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 8, repel = TRUE)
+
+Overall_colour<- 
+  Test3 %>%
+  ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
+  geom_point(size=10) + 
+  geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) +
+  xlab("Knowledge complexity (MORc)") +
+  ylab("Relatedness") +
+  ggtitle("Technological development of AI-leading countries - Overall") +
+  theme_classic() + #theme(legend.position="bottom") +
+  geom_node_text(aes(x=RCA_step1,y=Value, label = Country), size = 8, repel = TRUE) + 
+  scale_color_brewer(palette = "YlOrRd")
 
 Core <- Test4 %>%
   ggplot(aes(x=RCA_step1, y=Value, color=Period, shape = Country)) +
@@ -2831,12 +3360,49 @@ AI_data %>%
   scale_color_manual(values=c("gray6", "grey50", "grey78")) + theme_classic()#+
   #geom_node_text(aes(x=(Value.x), y=(Value.y), label = Category), size = 4, repel = TRUE)
 
+AI_fig_colour<- 
+  AI_data %>%
+  ggplot(aes(x=(Value.x), y=(Value.y), color=Period, shape = Category)) +
+  geom_point(size=10) + 
+  geom_path(color="black", linetype = "dashed", arrow = arrow(angle = 15, type = "closed"), size=1) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) +
+  xlab("Knowledge complexity (MORt)") +
+  ylab("Relatedness") +
+  ggtitle("Technological development of AI in the considered categories") +
+  theme_classic() + scale_color_brewer(palette = "YlOrRd") #+ theme(legend.position="bottom")
+
 jpeg("Data_Final_code/AI_fig.jpg", width = 12, height = 5, units = 'in', res = 200)
 AI_fig
 dev.off()
 
-jpeg("Data_Final_code/countries4.jpg", width = 12, height = 5, units = 'in', res = 200)
-Overall 
+#colour
+jpeg("Data_Final_code/Fig_8_Overall_AI.tiff", width = 12, height = 5, units = 'in', res = 300)
+AI_fig_colour
+dev.off()
+
+#colour high
+jpeg("Data_Final_code/Fig_8_Overall_AIhigh.tiff", width = 12, height = 5, units = 'in', res = 800)
+AI_fig_colour
+dev.off()
+
+#colour low
+jpeg("Data_Final_code/Fig_8_Overall_AIlow.tiff", width = 12, height = 5, units = 'in', res = 72)
+AI_fig_colour
+dev.off()
+
+#colour
+jpeg("Data_Final_code/Fig_9_Overall_countries.tiff", width = 12, height = 5, units = 'in', res = 300)
+Overall_colour
+dev.off()
+
+#colour high
+jpeg("Data_Final_code/Fig_9_Overall_countriesHigh.tiff", width = 12, height = 5, units = 'in', res = 800)
+Overall_colour
+dev.off()
+
+#colour low
+jpeg("Data_Final_code/Fig_9_Overall_countriesLow.tiff", width = 12, height = 5, units = 'in', res = 72)
+Overall_colour
 dev.off()
 
 jpeg("Data_Final_code/AI_And_countries4.jpg", width = 14, height = 8, units = 'in', res = 200)
@@ -2892,6 +3458,11 @@ patents_AI_specific_simplified_4<- patents_AI_specific_simplified[patents_AI_spe
                                                                   patents_AI_specific_simplified$patent_office == "KR"|
                                                                   patents_AI_specific_simplified$patent_office == "JP", ]
 
+patents_AI_specific_simplified_4$patent_office <- gsub("US", "USA", str_trim(patents_AI_specific_simplified_4$patent_office))
+patents_AI_specific_simplified_4$patent_office <- gsub("CN", "China", str_trim(patents_AI_specific_simplified_4$patent_office))
+patents_AI_specific_simplified_4$patent_office <- gsub("JP", "Japan", str_trim(patents_AI_specific_simplified_4$patent_office))
+patents_AI_specific_simplified_4$patent_office <- gsub("KR", "South Korea", str_trim(patents_AI_specific_simplified_4$patent_office))
+
 table(patents_AI_specific_simplified_4$patent_office)
 Data <- as.data.frame(table(patents_AI_specific_simplified_4$patent_office, patents_AI_specific_simplified_4$priority_year))
 names(Data) <- c("Country", "Year", "Number_of_AI_patents")
@@ -2900,8 +3471,7 @@ Data$Year <- as.Date(paste(Data$Year, 1, 1, sep = "-")) # beginning of year
 Data$Year <- as.Date(paste(Data$Year, 12, 31, sep = "-"))
 Data$Year <- as.numeric(format(Data$Year, "%Y"))
 
-jpeg("Data_Final_code/NewRegistersPerCountry.jpg", width = 14, height = 10, units = 'in', res = 200)
-ggplot(data=Data, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
+NewPatentsAI <-ggplot(data=Data, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
   geom_line(size=1.2, aes(linetype=Country)) +
   geom_point(size=8) +
   ggtitle("AI-patents registered per country") +
@@ -2911,6 +3481,35 @@ ggplot(data=Data, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colo
   scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
   scale_shape_manual(values=c(16, 15, 17, 18)) +
   scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1970, 2018))
+
+NewPatentsAI_colour <-
+ggplot(data=Data, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
+  geom_line(size=1.2, aes(linetype=Country)) +
+  geom_point(size=8) +
+  ggtitle("AI-patents registered per country") +
+  xlab("Year") +
+  ylab("Log10 of the number of new AI registers") + theme_classic() +
+  scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) + theme(legend.position="bottom") +
+  theme(text = element_text(size = 25)) +
+  scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1970, 2018)) + scale_color_brewer(palette="Dark2")
+
+jpeg("Data_Final_code/NewRegistersPerCountry.jpg", width = 14, height = 10, units = 'in', res = 200)
+NewPatentsAI
+dev.off()
+
+jpeg("Data_Final_code/Fig4_NewRegisters_percountry.tiff", width = 14, height = 10, units = 'in', res = 300)
+NewPatentsAI_colour
+dev.off()
+
+#high resolution
+jpeg("Data_Final_code/Fig4_NewRegisters_percountryHigh.tiff", width = 14, height = 10, units = 'in', res = 800)
+NewPatentsAI_colour
+dev.off()
+
+#low resolution
+jpeg("Data_Final_code/Fig4_NewRegisters_percountryLow.tiff", width = 14, height = 10, units = 'in', res = 72)
+NewPatentsAI_colour
 dev.off()
 
 #3. THIRD PART: Fig8 calculations----
