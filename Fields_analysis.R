@@ -739,6 +739,24 @@ Figure1_Global_Technological_Space_colour <-
     legend.text = element_text(size = 10)
   ) + guides(colour = guide_legend(override.aes = list(size=10))) 
 
+#new addition:
+coords_tech_AI <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/coords_tech_AI_layout1.csv", sep = ";", header = T, dec=",")
+library(ggforce) #for using geom_mark_hull
+
+g_tech_AI %>%
+  ggraph(layout =  coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.4, colour = "grey") + 
+  geom_node_point(aes(fill = sector, size = dgr, shape= sector))+ 
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size(range = c(2, 10)) +
+  geom_node_text(aes(label = field_name), size = 4, repel = TRUE) + 
+  theme_graph()+
+  ggtitle("Technology Space: IPC codes") + 
+  theme(legend.title = element_text(size = 14),
+        legend.text = element_text(size = 10)) + 
+  guides(colour = guide_legend(override.aes = list(size=10)))+
+  geom_mark_hull(aes(x = x, y=y, colour = sector, fill= sector,
+                     linetype = sector), alpha = 0.15, expand = unit(2.5, "mm"), size = 1) 
+
 #regular resolution: 
 jpeg("Files_created_with_the_code/figures/regular_resolution_ALL_FIGURES_ARE_HERE/Fig1_Global_technological_space_colour.jpg", width = 14, height = 10, units = 'in', res = 300)
 Figure1_Global_Technological_Space_colour 
