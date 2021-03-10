@@ -742,8 +742,9 @@ Figure1_Global_Technological_Space_colour <-
 #new addition:
 coords_tech_AI <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/coords_tech_AI_layout1.csv", sep = ";", header = T, dec=",")
 library(ggforce) #for using geom_mark_hull
-
-g_tech_AI %>%
+#second option: visualization with clusters:
+Figure1_Global_Technological_Space_colour2<-
+  g_tech_AI %>%
   ggraph(layout =  coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.4, colour = "grey") + 
   geom_node_point(aes(fill = sector, size = dgr, shape= sector))+ 
@@ -770,6 +771,22 @@ dev.off()
 #high resolution: 
 jpeg("Files_created_with_the_code/figures/high_resolution/Fig1_Global_technological_space_colourHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
 Figure1_Global_Technological_Space_colour 
+dev.off()
+
+#Second option:
+#regular resolution: 
+jpeg("Files_created_with_the_code/figures/regular_resolution_ALL_FIGURES_ARE_HERE/Fig1_Global_technological_space_colour2.jpg", width = 14, height = 10, units = 'in', res = 300)
+Figure1_Global_Technological_Space_colour2
+dev.off()
+
+#low resolution:  
+jpeg("Files_created_with_the_code/figures/low_resolution/Fig1_Global_technological_space_colourLow2.jpg", width = 14, height = 10, units = 'in', res = 72)
+Figure1_Global_Technological_Space_colour2 
+dev.off()
+
+#high resolution: 
+jpeg("Files_created_with_the_code/figures/high_resolution/Fig1_Global_technological_space_colourHigh2.jpg", width = 14, height = 10, units = 'in', res = 800)
+Figure1_Global_Technological_Space_colour2 
 dev.off()
 
 #1.4.1. IPC Visualization Per country-----
