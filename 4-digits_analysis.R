@@ -358,7 +358,7 @@ reg_tech5$sum <- rowSums(reg_tech5[,c(3:4)])
 reg_tech5 <- reg_tech5[, c((-3), (-4))]
 names(reg_tech5) <- c("ctry_code", "Subclass", "n_tech_reg")
 
-mat_reg_tech3 <- reg_tech4 %>%
+mat_reg_tech3 <- reg_tech4 %>% #shouldn't be reg_tech5?-----
   arrange(Subclass, ctry_code) %>%
   pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
 

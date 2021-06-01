@@ -1302,6 +1302,7 @@ library(patchwork) #for cutting out the X labs while keeping the legend
 #2.1.1.Load the data we need and filter it -----
 #The file for the first period is composed of 45,182,803 lines which we will read in 3 parts:
 rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 setwd("large_files") #for loading the big files
 c <- 45182803 -40000000
 IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part2.csv", header = F, nrow = 20000000)[ ,c(-4)]
@@ -1448,6 +1449,116 @@ rownames(Relatedness_US) <- c("US")
 names(Relatedness_US) <- c("Association")
 Relatedness_US$Period <- "1st"
 
+#tests-----
+#testing with the formula relatedness.density.int.avg (from pg 52)
+mat_tech_1st_US_rel_standard <- relatedness(mat_tech_1st_US)
+Relatedness_US2 <- relatedness.density.int.avg(mat_tech_1st_US, mat_tech_1st_US_rel_standard)
+Relatedness_US2
+#co-occurrence (page 2)
+Relatedness_US3 <- co.occurrence(mat_tech_1st_US, diagonal = FALSE, list = FALSE)
+sum(mat_tech_1st_US[,2]) - 102371
+Sector2 <- IPC_all_patents_1st_US[IPC_all_patents_1st_US$techn_field_nr == 2,]
+Sector2_patents <- IPC_all_patents_1st_US[IPC_all_patents_1st_US$appln_id %in% Sector2$appln_id,]
+table(Sector2_patents$techn_field_nr)
+#sector 1 is the highest, followed by sector 6; so, if we would look into mat_tech_1st_US, the highest relat should be
+#btw these two sectors for techn nr 2;
+#So:
+mat_tech_1st_US[2,] #1 and 6 are the highest, which confirms what we expected;
+mat_tech_1st_US_rel_asso[2,] #which shows higher values for 8 and 6, followed then by 3 and 1;
+
+a <- mat_tech_1st_US_rel_asso/mat_tech_1st_US_rel_asso
+
+#let calculate for the whole matrix
+mat_tech_1st_WholeNet <- create_sparse_matrix(i = IPC_all_patents_1st %>% pull(appln_id),
+                                        j = IPC_all_patents_1st %>% pull(techn_field_nr))
+
+mat_tech_1st_WholeNet %<>% 
+  crossprod() %>% 
+  as.matrix() 
+
+mat_tech_1st_WholeNet_rel_asso <- relatedness(mat_tech_1st_WholeNet, method = "association")
+
+Rel_US <- mat_tech_1st_US_rel_asso/mat_tech_1st_WholeNet_rel_asso
+Relatedness_US_Option2 <- mean(Rel_US, na.rm = T)
+#or, following boschma (2014), "the density around a given technology i in the city c
+#in time t is computed from the technological relatedness of technology i to the
+#technologies in which the city c has an RCA in time t, divided by the sum of
+#technological relatedness of technology i to all the other technologies in the
+#United States in time t", so:
+sum(mat_tech_1st_US_rel_asso) #1292.297
+sum(mat_tech_1st_WholeNet_rel_asso) #1294.157
+#and therefore:
+Relatedness_US_Option3 <- sum(mat_tech_1st_US_rel_asso)/sum(mat_tech_1st_WholeNet_rel_asso)
+
+
+#OR, option 4:
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+reg_tech1_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/reg_tech_FirstPeriod.csv", sep = ";", header = TRUE, dec=",")
+#1.3.1.1. First Period Countries----
+mat_reg_tech1_countries <- reg_tech1_countries %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1_countries %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%
+  round()
+
+reg_RCA1_countries <- mat_reg_tech1_countries %>% location.quotient(binary = T) %>% 
+  as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% 
+  gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+reg_RCA1_US <- t(reg_RCA1_countries[reg_RCA1_countries$ctry_code == "US",][,c(2,3)])
+reg_RCA1_US2 <- reg_RCA1_US
+colnames(reg_RCA1_US2) <- reg_RCA1_US[1,]
+reg_RCA1_US2 <- reg_RCA1_US2[(-1),]
+#reg_RCA1_US2<-data.matrix(as.matrix(reg_RCA1_US2), rownames.force = NA)
+reg_RCA1_US2 <- as.double(reg_RCA1_US2)
+reg_RCA1_US2 <- as.matrix(reg_RCA1_US2)
+colnames(reg_RCA1_US2) <- "US"
+
+reg_RCA1_CN <- t(reg_RCA1_countries[reg_RCA1_countries$ctry_code == "CN",][,c(2,3)])
+reg_RCA1_CN2 <- reg_RCA1_CN
+colnames(reg_RCA1_CN2) <- reg_RCA1_CN[1,]
+reg_RCA1_CN2 <- reg_RCA1_CN2[(-1),]
+#reg_RCA1_CN2<-data.matrix(as.matrix(reg_RCA1_CN2), rownames.force = NA)
+reg_RCA1_CN2 <- as.double(reg_RCA1_CN2)
+reg_RCA1_CN2 <- as.matrix(reg_RCA1_CN2)
+colnames(reg_RCA1_CN2) <- "CN"
+
+reg_RCA1_JP <- t(reg_RCA1_countries[reg_RCA1_countries$ctry_code == "JP",][,c(2,3)])
+reg_RCA1_JP2 <- reg_RCA1_JP
+colnames(reg_RCA1_JP2) <- reg_RCA1_JP[1,]
+reg_RCA1_JP2 <- reg_RCA1_JP2[(-1),]
+#reg_RCA1_JP2<-data.matrix(as.matrix(reg_RCA1_JP2), rownames.force = NA)
+reg_RCA1_JP2 <- as.double(reg_RCA1_JP2)
+reg_RCA1_JP2 <- as.matrix(reg_RCA1_JP2)
+colnames(reg_RCA1_JP2) <- "JP"
+
+reg_RCA1_two <- cbind(reg_RCA1_CN2, reg_RCA1_US2, reg_RCA1_JP2)
+
+Relatedness_US_Option4 <- relatedness.density.int.avg(t(reg_RCA1_two),mat_tech_1st_US_rel_asso)
+Relatedness_US_Option4 #105 FOR CHINA AND 114 FOR US; if I change it to binary, it gets 45 for China and 53 for US;
+
+Relatedness_US_Option4 <- relatedness.density.int.avg(t(reg_RCA1_two),mat_tech_1st_WholeNet_rel_asso) #whole net
+Relatedness_US_Option4 #43 CN and 51 US;
+
+sum(reg_RCA1_US2)
+sum(reg_RCA1_CN2)
+sum(reg_RCA1_JP2)
+
+#this reg_RCA1_US2 should be equal to the mat resulting from:
+set.seed(31)
+mat <- matrix(sample(0:1,20,replace=T), ncol = 4)
+rownames(mat) <- c ("R1", "R2", "R3", "R4", "R5")
+colnames(mat) <- c ("I1", "I2", "I3", "I4")
+
+#end of tests
+
+
+
+
 #now we will select the categories; please note that, following the paper denomination, Top4 used here refers to the category
 #AI-core fields; Top3 refers to AI-related fields and Top7 refers to Surrounding fields;
 
@@ -1513,6 +1624,40 @@ Relatedness_CN <- as.data.frame(mean(mat_tech_1st_CN_rel_asso))
 rownames(Relatedness_CN) <- c("CN")
 names(Relatedness_CN) <- c("Association")
 Relatedness_CN$Period <- "1st"
+
+#tests 2. Option 2:
+Rel_CN <- mat_tech_1st_CN_rel_asso/mat_tech_1st_WholeNet_rel_asso
+#error: the matrixes don't have the same size (there is missing information for China for techn fields 7 and 22)
+#so, what we need to do is to drop the missing columns from the chinese network from the general network;
+
+#but we can try option 3:
+sum(mat_tech_1st_CN_rel_asso) #1645.698
+sum(mat_tech_1st_WholeNet_rel_asso)  #1294.157
+Relatedness_CN_Option3 <- sum(mat_tech_1st_CN_rel_asso)/sum(mat_tech_1st_WholeNet_rel_asso)
+
+
+
+#so, let's transform the mat_tech_1st_CN network, and then apply the association again
+#more formally, for the chinese case we have:
+table(IPC_all_patents_1st_CN$techn_field_nr)
+#whereas for the whole network we have:
+table(IPC_all_patents_1st$techn_field_nr)
+#or:
+length(unique(IPC_all_patents_1st_CN$techn_field_nr))
+length(unique(IPC_all_patents_1st$techn_field_nr))
+#so, we now that there are two codes missing; we just need to select these codes, and alocate them to patent with
+#appln_id X, from country code and country_code2 = CN, priority year a or b;
+mat_tech_1st_CN2 <- create_sparse_matrix(i = IPC_all_patents_1st_CN %>% pull(appln_id),
+                                        j = IPC_all_patents_1st_CN %>% pull(techn_field_nr))
+
+mat_tech_1st_CN %<>% 
+  crossprod() %>% 
+  as.matrix() 
+
+mat_tech_1st_CN_rel_asso2 <- relatedness(mat_tech_1st_CN, method = "association")
+Rel_CN <- mat_tech_1st_CN_rel_asso/mat_tech_1st_WholeNet_rel_asso2
+Relatedness_US_Option2 <- as.data.frame(mean(Rel_CN, na.rm = T))
+
 
 #then select only the top 4 areas ;
 IPC_all_patents_1st_CN_Top4 <- IPC_all_patents_1st_CN[IPC_all_patents_1st_CN$techn_field_nr == "6" | 
