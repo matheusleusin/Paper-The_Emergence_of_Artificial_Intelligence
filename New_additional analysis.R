@@ -274,6 +274,10 @@ IPC_all_patents_Part1 <- IPC_all_patents_Part1[, c((-4), (-5))]
 IPC_all_patents_Part2 <- IPC_all_patents_Part2[, c((-4), (-5))]
 IPC_all_patents_Part3 <- IPC_all_patents_Part3[, c((-4), (-5))]
 
+#the three lines below are used just to get the number of priorities from the third period:
+ThirdDataset <- rbind(IPC_all_patents_Part1, IPC_all_patents_Part2,IPC_all_patents_Part3)
+length(unique(ThirdDataset$appln_id)) #16270598 priorities
+rm(ThirdDataset)
 #here we divide our calculations of the reg_tech (which was not necessary on the 2 previous periods)
 #For countries
 reg_tech4 <- group_by_applnID(IPC_all_patents_Part1)
@@ -445,11 +449,14 @@ IPC_RCAs_Top4 <- left_join(IPC_RCAs_Top4, AI_RCA, by = c("techn_field_nr", "Peri
 #Total_RCA_2 = 3, BOTH AI AND GENERAL
 IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$Round_general + 2*IPC_RCAs_Top4$Round_AI
 
-General <- g_tech_AI %>%
+#add degree of complexity per year;
+
+General <- 
+g_tech_AI %>%
   ggraph(layout =  coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.4, colour = "grey") + 
-  geom_node_point(aes(fill = sector, size = dgr, shape= sector))+ 
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size(range = c(2, 10)) +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector))+ # labs(fill = "Dose (mg)") 
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) + 
   geom_node_text(aes(label = field_name), size = 4, repel = TRUE) + 
   theme_graph()+
   ggtitle("Technology Space: IPC Technology fields") + 
@@ -601,13 +608,16 @@ g_tech_AI %N>%
 display.brewer.pal(n = 8, name = 'Dark2')
 
 #2.1.Print figures----
-#2.1.1.First Country-----
+#The figures I'm using now are based on the general static technological space (g_tech_AI); let's see if I can get the
+#degrees of each technological space in new variables (g_tech_AI1, g_tech_AI2, g_tech_AI3)
 
+#2.1.1.First Country-----
 #i=1 (CN) and p = 1
 i=1
 p=1
 
-China_1st<-g_tech_AI %N>%
+China_1st<-
+g_tech_AI %N>%
   left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
               select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
@@ -659,6 +669,62 @@ dev.off()
 jpeg("Files_created_with_the_code/figures/new_figures/China_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
 China_3rd 
 dev.off()
+
+#2nd option (new):
+p=1
+China_1st_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (1974-1988)")
+
+p=2
+China_2nd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (1989-2003)")
+
+p=3
+China_3rd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: China (2004-2018)")
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_China_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+China_1st_2nd 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_China_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+China_2nd_2nd  
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_China_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+China_3rd_2nd  
+dev.off()
+
 
 #2.1.2.Second Country-----
 #i=2 (US) and p = 1
@@ -716,6 +782,62 @@ dev.off()
 
 jpeg("Files_created_with_the_code/figures/new_figures/USA_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
 USA_3rd 
+dev.off()
+
+#2nd option (new):
+i=2
+p=1
+USA_1st_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: USA (1974-1988)")
+
+p=2
+USA_2nd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: USA (1989-2003)")
+
+p=3
+USA_3rd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: USA (2004-2018)")
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_USA_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+USA_1st_2nd 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_USA_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+USA_2nd_2nd  
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_USA_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+USA_3rd_2nd  
 dev.off()
 
 #2.1.3.Third Country-----
@@ -776,6 +898,63 @@ jpeg("Files_created_with_the_code/figures/new_figures/Japan_3rd.jpg", width = 14
 Japan_3rd 
 dev.off()
 
+#2nd option (new):
+i=3
+p=1
+Japan_1st_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: Japan (1974-1988)")
+
+p=2
+Japan_2nd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: Japan (1989-2003)")
+
+p=3
+Japan_3rd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: Japan (2004-2018)")
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_Japan_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+Japan_1st_2nd 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_Japan_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+Japan_2nd_2nd  
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_Japan_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+Japan_3rd_2nd  
+dev.off()
+
+
 #2.1.4.Fourth Country-----
 #i=4 (KR) and p = 1
 i=4
@@ -832,6 +1011,62 @@ dev.off()
 
 jpeg("Files_created_with_the_code/figures/new_figures/South_Korea_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
 South_Korea_3rd 
+dev.off()
+
+#2nd option (new):
+i=4
+p=1
+SouthKorea_1st_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: South Korea (1974-1988)")
+
+p=2
+SouthKorea_2nd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: South Korea (1989-2003)")
+
+p=3
+SouthKorea_3rd_2nd<-
+  g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("IPC Technology Space: South Korea (2004-2018)")
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_SouthKorea_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
+SouthKorea_1st_2nd 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_SouthKorea_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
+SouthKorea_2nd_2nd  
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/new_SouthKorea_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+SouthKorea_3rd_2nd  
 dev.off()
 
 #3.AI networks ----
@@ -956,7 +1191,7 @@ g_tech_AI %N>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
   geom_node_point(aes(fill = sector, size = RCA_AI_Period, shape= sector)) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("RCA", range = c(2, 12)) +
  # scale_size_manual(values=c(3, 8))+
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
  # scale_fill_manual(values=c("#999999", "#3399FF"))+ 
@@ -968,8 +1203,8 @@ g_tech_AI %N>%
   left_join(AI_RCA1, filter=AI_RCA$Period_sim ==p, by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
-  geom_node_point(aes(fill = sector, size = dgr, shape= sector)) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(2, 10)) +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("Degree", range = c(2, 12)) +
   #scale_size_manual(values=c(3, 8))+
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   # scale_fill_manual(values=c("#999999", "#3399FF"))+ 
@@ -1151,8 +1386,8 @@ AI_dgr_2nd <-
   left_join(AI_RCA2, by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
-  geom_node_point(aes(fill = sector, size = dgr, shape= sector)) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(2, 10)) +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree",range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + 
   theme_graph() +
   ggtitle("IPC Technology Space: AI (1989-2003)") #
@@ -1305,8 +1540,8 @@ AI_dgr_3rd <-
   left_join(AI_RCA3, by = c("name" = "techn_field_nr")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
-  geom_node_point(aes(fill = sector, size = dgr, shape= sector)) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(2, 10)) +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + 
   theme_graph() +
   ggtitle("IPC Technology Space: AI (2004-2018)") #
@@ -1796,6 +2031,7 @@ write.csv2(Relatedness_Allperiods, file = "Files_created_with_the_code/data/new_
 #test1 <- read.csv("Files_created_with_the_code/data/new_analysis/Relatedness_3periods.csv", sep = ";", header = TRUE, dec=",")
 
 #5.New Figures indicators 3 (AI) and 7 (countries) ----
+#NOT USED FOR NOW
 rm(list=ls())
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
@@ -2026,3 +2262,175 @@ dev.off()
 
 rm(Option1_AI, Option2_AI, Relatedness_AI2,KnowledgeCompl_AI2)
 
+
+
+#6.Overlapping specializations ----
+#6.1.Technological fields ----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+IPC_RCAs_Top4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv", sep = ";", header = TRUE, dec=",")
+IPC_RCAs_Top4$Total_RCA <- as.factor(IPC_RCAs_Top4$Total_RCA)
+IPC_RCAs_Top4$Period_sim <- as.numeric(factor(IPC_RCAs_Top4$Period,levels=unique(IPC_RCAs_Top4$Period)))
+IPC_RCAs_Top4$techn_field_nr <- as.character(IPC_RCAs_Top4$techn_field_nr)
+
+#replace names:
+IPC_RCAs_Top4$ctry_code <- gsub("US", "USA", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("CN", "China", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("JP", "Japan", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("KR", "South Korea", str_trim(IPC_RCAs_Top4$ctry_code))
+
+AI_RCA <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE, dec=",")
+AI_RCA$Period_sim <- as.numeric(factor(AI_RCA$Period,levels=unique(AI_RCA$Period)))
+AI_RCA <- AI_RCA[,c(2,9,13)]
+AI_RCA$techn_field_nr <- as.character(AI_RCA$techn_field_nr)
+names(AI_RCA) <- c("techn_field_nr", "RCA_AI_Period", "Period_sim")
+IPC_RCAs_Top4 <- left_join(IPC_RCAs_Top4, AI_RCA, by = c("techn_field_nr", "Period_sim"))
+
+#fix Total_RCA:
+#so, if Total_RCA_2 = 0, no specialization of the country at all, Total_RCA_2 = 1, general, Total_RCA_2 = 2, ONLY AI;
+#Total_RCA_2 = 3, BOTH AI AND GENERAL
+IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$Round_general + 2*IPC_RCAs_Top4$Round_AI
+rm(AI_RCA)
+
+IPC_RCAs_Top4$Coiciding <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==3,1,0)
+IPC_RCAs_Top4$justGeneral <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==1,1,0)
+IPC_RCAs_Top4$OnlyAI <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==2,1,0)
+
+#now, create a file per country per period, where I sum over the 3 columns;
+#SummaryAllData<-distinct(SummaryData, Company, .keep_all = TRUE)
+IPC_RCAs <- IPC_RCAs_Top4
+IPC_RCAs %<>% 
+  group_by(ctry_code,Period) %>% 
+  mutate(Share_coinciding = sum(Coiciding)/(sum(Coiciding)+sum(justGeneral))) %>% 
+  mutate(Share_OnlyAI = sum(OnlyAI)/(sum(OnlyAI)+sum(Coiciding))) %>% 
+  mutate(sum_coinciding = sum(Coiciding)) %>% 
+  mutate(sum_justGeneral = sum(justGeneral)) %>%
+  mutate(sum_OnlyAI = sum(OnlyAI)) %>%
+  ungroup()
+
+SummaryAllData<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
+
+OverlapTechn<-
+ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=ctry_code, shape = ctry_code, color=ctry_code)) +
+  geom_point(aes(fill = ctry_code), size=8) + 
+  scale_shape_manual(values=c(21, 22, 23, 24)) +
+  xlab("Period") +
+  ylab("Share of coinciding specializations (%)") +
+  ggtitle("Overlapping capabilities for technological fields") +
+  theme_classic() +
+  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+
+  #geom_step(aes(color=ctry_code), linetype = "dashed")+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
+  scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
+
+OverlapAI<-
+ggplot(data=SummaryAllData, aes(x=Period, y=Share_OnlyAI, group=ctry_code, shape = ctry_code, color=ctry_code)) +
+  geom_point(aes(fill = ctry_code),size=8) + 
+  scale_shape_manual(values=c(21, 22, 23, 24)) +
+  xlab("Period") +
+  ylab("Share of non-coinciding specializations (%)") +
+  ggtitle("Non-overlapping capabilities for technological fields") +
+  theme_classic() +
+  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+ 
+  scale_y_continuous(labels = scales::percent)+
+  scale_fill_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) +
+  scale_color_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) 
+
+jpeg("Files_created_with_the_code/figures/new_figures/Fig6_OverlapTechn.jpg", width = 8, height = 6, units = 'in', res = 300)
+OverlapTechn 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/Fig6_OverlapAI.jpg", width = 8, height = 6, units = 'in', res = 300)
+OverlapAI 
+dev.off()
+
+
+#plus, convert to %
+#improve colours;
+
+#6.2.4-digits ----
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#IPC_RCAs_Top4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv", sep = ";", header = TRUE, dec=",")
+IPC_RCAs <- read.csv("Files_created_with_the_code/data/files_code_4-digits_analysis/IPC_RCAs.csv", sep = ";", header = TRUE, dec=",")
+
+#Select the 4 countries we want
+IPC_RCAs_Top4 <- IPC_RCAs[IPC_RCAs$ctry_code == "CN" | 
+                            IPC_RCAs$ctry_code == "KR"| 
+                            IPC_RCAs$ctry_code == "US"| 
+                            IPC_RCAs$ctry_code == "JP", ]
+rm(IPC_RCAs)
+
+#replace names:
+IPC_RCAs_Top4$ctry_code <- gsub("US", "USA", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("CN", "China", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("JP", "Japan", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("KR", "South Korea", str_trim(IPC_RCAs_Top4$ctry_code))
+
+IPC_RCAs_Top4$Period_sim <- as.numeric(factor(IPC_RCAs_Top4$Period,levels=unique(IPC_RCAs_Top4$Period)))
+
+#replace NAs by 0:
+#replace NAs, so we don't have problems when summing:
+IPC_RCAs_Top4[is.na(IPC_RCAs_Top4)] <- 0
+
+#make the numbers binary
+IPC_RCAs_Top4$RCA_Gen2 <- ifelse(IPC_RCAs_Top4$RCA_Gen >=1,1,0)
+IPC_RCAs_Top4$RCA_AI2 <- ifelse(IPC_RCAs_Top4$RCA_AI >=1,1,0)
+
+#fix Total_RCA:
+#so, if Total_RCA_2 = 0, no specialization of the country at all, Total_RCA_2 = 1, general, Total_RCA_2 = 2, ONLY AI;
+#Total_RCA_2 = 3, BOTH AI AND GENERAL
+IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$RCA_Gen2 + 2*IPC_RCAs_Top4$RCA_AI2
+
+IPC_RCAs_Top4$Coiciding <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==3,1,0)
+IPC_RCAs_Top4$justGeneral <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==1,1,0)
+IPC_RCAs_Top4$OnlyAI <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==2,1,0)
+
+#now, create a file per country per period, where I sum over the 3 columns;
+#SummaryAllData<-distinct(SummaryData, Company, .keep_all = TRUE)
+IPC_RCAs <- IPC_RCAs_Top4
+IPC_RCAs %<>% 
+  group_by(ctry_code,Period) %>% 
+  mutate(Share_coinciding = sum(Coiciding)/(sum(Coiciding)+sum(justGeneral))) %>% 
+  mutate(Share_OnlyAI = sum(OnlyAI)/(sum(OnlyAI)+sum(Coiciding))) %>% 
+  mutate(sum_coinciding = sum(Coiciding)) %>% 
+  mutate(sum_justGeneral = sum(justGeneral)) %>%
+  mutate(sum_OnlyAI = sum(OnlyAI)) %>%
+  ungroup()
+
+SummaryAllData4dig<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
+
+OverlapTechn<-
+  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=ctry_code, shape = ctry_code, color=ctry_code)) +
+  geom_point(aes(fill = ctry_code), size=8) + 
+  scale_shape_manual(values=c(21, 22, 23, 24)) +
+  xlab("Period") +
+  ylab("Share of coinciding specializations (%)") +
+  ggtitle("Overlapping capabilities for 4-digits IPC codes") +
+  theme_classic() +
+  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
+  scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
+
+OverlapAI<-
+  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_OnlyAI, group=ctry_code, shape = ctry_code, color=ctry_code)) +
+  geom_point(aes(fill = ctry_code),size=8) + 
+  scale_shape_manual(values=c(21, 22, 23, 24)) +
+  xlab("Period") +
+  ylab("Share of non-coinciding specializations (%)") +
+  ggtitle("Non-overlapping capabilities for 4-digits IPC codes") +
+  theme_classic() +
+  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+ 
+  scale_y_continuous(labels = scales::percent)+
+  scale_fill_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) +
+  scale_color_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) 
+
+jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapTechn.jpg", width = 8, height = 6, units = 'in', res = 300)
+OverlapTechn 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapAI.jpg", width = 8, height = 6, units = 'in', res = 300)
+OverlapAI 
+dev.off()
