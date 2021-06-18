@@ -2434,3 +2434,35 @@ dev.off()
 jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapAI.jpg", width = 8, height = 6, units = 'in', res = 300)
 OverlapAI 
 dev.off()
+
+#7.Short descriptives-----
+#Data about AI patents:
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+patents_AI_specific_1st <- read.csv("other_files/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+table(patents_AI_specific_1st$priority_year) # 2 patents in 1961 (with 2 ipc codes each), next is 1 patent 
+#in 1975, followed by 2 patents in 1977 (with 2 ipc codes each);
+patents_AI_specific_1st_CN <- patents_AI_specific_1st[patents_AI_specific_1st$ctry_code=='CN',]
+table(patents_AI_specific_1st_CN$priority_year) #1989
+patents_AI_specific_1st_KR <- patents_AI_specific_1st[patents_AI_specific_1st$ctry_code=='KR',]
+table(patents_AI_specific_1st_KR$priority_year) #1989
+
+#Data about the whole dataset 
+rm(list=ls())
+#For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd("large_files")
+IPC_all_patents_Part1 <- fread("All_patents_and_IPCs_Part1.csv", header = F)
+IPC_all_patents_Part2 <- fread("All_patents_and_IPCs_Part2.csv", header = F)
+IPC_all_patents_Part_all <- rbind(IPC_all_patents_Part2,IPC_all_patents_Part1)
+rm(IPC_all_patents_Part2,IPC_all_patents_Part1)
+names(IPC_all_patents_Part_all) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
+IPC_all_patents_Part_all <- IPC_all_patents_Part_all[IPC_all_patents_Part_all$priority_year < 2019,]
+IPC_all_patents_Part_all <- IPC_all_patents_Part_all[IPC_all_patents_Part_all$priority_year > 1973,]
+
+length(unique(IPC_all_patents_Part_all$appln_id)) #29935041
+table(is.na(IPC_all_patents_Part_all$ctry_code)) #100402741 F and 92 T
+table(IPC_all_patents_Part_all$priority_year) #yep, we have the data from 1974 to 2018 as intended;
+
+IPC_all_patents_Part_all_missing <- IPC_all_patents_Part_all[is.na(IPC_all_patents_Part_all$ctry_code) == T,]
+length(unique(IPC_all_patents_Part_all_missing$appln_id)) #72 patents;
