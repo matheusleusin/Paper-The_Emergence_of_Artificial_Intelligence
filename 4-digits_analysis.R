@@ -358,7 +358,7 @@ reg_tech5$sum <- rowSums(reg_tech5[,c(3:4)])
 reg_tech5 <- reg_tech5[, c((-3), (-4))]
 names(reg_tech5) <- c("ctry_code", "Subclass", "n_tech_reg")
 
-mat_reg_tech3 <- reg_tech4 %>% #shouldn't be reg_tech5?-----
+mat_reg_tech3 <- reg_tech5 %>% #shouldn't be reg_tech5 instead of reg_tech4?-----
   arrange(Subclass, ctry_code) %>%
   pivot_wider(names_from = Subclass, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
 
@@ -494,7 +494,7 @@ FigGen_Colour <-
    theme_classic() + scale_color_brewer(palette="YlOrRd")+
   geom_vline(data=Gen, aes(xintercept=Value.mean,  colour=Period),
              linetype="dashed", size=1) +  
-  ggtitle("Countries' Performance by IPC code - General Perspective") +
+  ggtitle("Countries' Performance by IPC code - General specialisations") +
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
   ylab(NULL)
 
@@ -506,7 +506,30 @@ FigAI_Colour <-
   theme_classic() + scale_color_brewer(palette="YlOrRd")+
   geom_vline(data=Ais, aes(xintercept=Value.mean,  colour=Period),
              linetype="dashed", size=1) +
-  ggtitle("Countries' Performance by IPC code - AI-specific Perspective") +
+  ggtitle("Countries' Performance by IPC code - AI-specific specialisations") +
+  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
+  ylab(NULL)
+
+#new figures:
+FigGen_Colour2 <- 
+  ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=0.7, size=6) +
+  facet_wrap(~Label, ncol = 5)  +
+  theme_classic() +
+    scale_color_manual(values = c("#FF9999", "#FF0000", "#660000")) +
+  geom_vline(data=Gen, aes(xintercept=0),
+             linetype="dashed", size=1) +  
+  ggtitle("Countries' Performance by IPC code - General specialisations") +
+  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
+  ylab(NULL)
+
+FigAI_Colour2 <- 
+  ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period)) + geom_count(shape=19, alpha=.7, size=6) +
+  facet_wrap(~Label, ncol = 5) +
+  theme_classic() + 
+    scale_color_manual(values = c("#66CCFF", "#0066CC", "#000033")) + 
+  geom_vline(data=Ais, aes(xintercept=0),
+             linetype="dashed", size=1) +
+  ggtitle("Countries' Performance by IPC code - AI-specific specialisations") +
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
   ylab(NULL)
 
@@ -525,3 +548,247 @@ dev.off()
 jpeg("Files_created_with_the_code/figures/low_resolution/Fig6_General_versus_AILow.jpeg", width = 14, height = 7, units = 'in', res = 72)
 multiplot(FigGen_Colour, FigAI_Colour, cols=1)
 dev.off()
+
+#new figures:
+#colour:
+jpeg("Files_created_with_the_code/figures/regular_resolution_ALL_FIGURES_ARE_HERE/Fig6_General_versus_AI2.jpeg", width = 14, height = 7, units = 'in', res = 300)
+multiplot(FigGen_Colour2, FigAI_Colour2, cols=1)
+dev.off()
+
+#high:
+jpeg("Files_created_with_the_code/figures/high_resolution/Fig6_General_versus_AIhigh2.jpeg", width = 14, height = 8, units = 'in', res = 800)
+multiplot(FigGen_Colour2, FigAI_Colour2, cols=1)
+dev.off()
+
+#colour:
+jpeg("Files_created_with_the_code/figures/low_resolution/Fig6_General_versus_AILow2.jpeg", width = 14, height = 7, units = 'in', res = 72)
+multiplot(FigGen_Colour2, FigAI_Colour2, cols=1)
+dev.off()
+
+#2.Calculate the new network-based complexity for the subclass level----
+#2.1. Create Sparse matrix for the whole period for the 4-digits IPC codes-----
+#On this first part we will create the sparse matrix, calculate the similarity matrix and save it in a csv file 
+#named "Matrix_IPC"
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+setwd("large_files")#for loading the big file
+
+#For the first period, which goes from 1974 to 1988, we need only the dataset from Part2:
+c <- 97664418 -80000000
+IPC_all_patents_Part1 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000)
+IPC_all_patents_Part2 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 20000000)
+IPC_all_patents_Part3 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 40000000)
+IPC_all_patents_Part4 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = 20000000, skip = 60000000)
+IPC_all_patents_Part5 <- fread("All_patents_and_IPC_codes_Part2.csv", header = F, nrow = c, skip = 80000000)
+
+names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part4) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part5) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+
+#we want to pick only the registers from the period we want (from 1974 to 1988, including both cited years)
+a = 1973
+b = 2004
+
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year < b,]
+IPC_all_patents_Part1 <- IPC_all_patents_Part1[IPC_all_patents_Part1$priority_year > a,]
+
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year < b,]
+IPC_all_patents_Part2 <- IPC_all_patents_Part2[IPC_all_patents_Part2$priority_year > a,]
+
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year < b,]
+IPC_all_patents_Part3 <- IPC_all_patents_Part3[IPC_all_patents_Part3$priority_year > a,]
+
+IPC_all_patents_Part4 <- IPC_all_patents_Part4[IPC_all_patents_Part4$priority_year < b,]
+IPC_all_patents_Part4 <- IPC_all_patents_Part4[IPC_all_patents_Part4$priority_year > a,]
+
+IPC_all_patents_Part5 <- IPC_all_patents_Part5[IPC_all_patents_Part5$priority_year < b,]
+IPC_all_patents_Part5 <- IPC_all_patents_Part5[IPC_all_patents_Part5$priority_year > a,]
+
+table(IPC_all_patents_Part1$priority_year)
+table(IPC_all_patents_Part2$priority_year)
+table(IPC_all_patents_Part3$priority_year)
+table(IPC_all_patents_Part4$priority_year)
+table(IPC_all_patents_Part5$priority_year)
+
+#we pick just the subclass for analysis:
+IPC_all_patents_Part1$Subclass <- substr(IPC_all_patents_Part1$ipc_class_symbol,1,4)
+IPC_all_patents_Part2$Subclass <- substr(IPC_all_patents_Part2$ipc_class_symbol,1,4)
+IPC_all_patents_Part3$Subclass <- substr(IPC_all_patents_Part3$ipc_class_symbol,1,4)
+IPC_all_patents_Part4$Subclass <- substr(IPC_all_patents_Part4$ipc_class_symbol,1,4)
+IPC_all_patents_Part5$Subclass <- substr(IPC_all_patents_Part5$ipc_class_symbol,1,4)
+
+create_sparse_matrix <- function(i.input, j.input){
+  require(Matrix)
+  mat <- spMatrix(nrow = i.input %>% n_distinct(),
+                  ncol = j.input %>% n_distinct(),
+                  i = i.input %>% factor() %>% as.numeric(),
+                  j = j.input %>% factor() %>% as.numeric(),
+                  x = rep(1, i.input %>% length() ) )
+  
+  row.names(mat) <- i.input %>% factor() %>% levels()
+  colnames(mat) <- j.input %>% factor() %>% levels()
+  return(mat)
+}
+
+mat_tech_AI1 <- create_sparse_matrix(i = IPC_all_patents_Part1 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part1 %>% pull(Subclass))
+
+mat_tech_AI1 %<>% 
+  crossprod() %>% 
+  as.matrix() 
+
+mat_tech_AI2 <- create_sparse_matrix(i = IPC_all_patents_Part2 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part2 %>% pull(Subclass))
+
+mat_tech_AI2 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+mat_tech_AI3 <- create_sparse_matrix(i = IPC_all_patents_Part3 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part3 %>% pull(Subclass))
+
+mat_tech_AI3 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+mat_tech_AI4 <- create_sparse_matrix(i = IPC_all_patents_Part4 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part4 %>% pull(Subclass))
+
+mat_tech_AI4 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+mat_tech_AI5 <- create_sparse_matrix(i = IPC_all_patents_Part5 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part5 %>% pull(Subclass))
+
+mat_tech_AI5 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+#now we create a function to put these 3 matrixes together (by summ):
+add_matrices_5 <- function(matrix1, matrix2, matrix3, matrix4, matrix5) {
+  a <- list(matrix1, matrix2, matrix3, matrix4, matrix5)
+  cols <- sort(unique(unlist(lapply(a, colnames))))
+  rows <- sort(unique(unlist(lapply(a, rownames))))
+  out <- array(0, dim = c(length(rows), length(cols)), dimnames = list(rows,cols))
+  for (m in a) out[rownames(m), colnames(m)] <- out[rownames(m), colnames(m)] + m
+  out
+}
+
+#and the newly created function:
+mat_tech_AI_Final1 <- add_matrices_5(mat_tech_AI1, mat_tech_AI2, mat_tech_AI3, mat_tech_AI4, mat_tech_AI5)
+
+#now, we drop the big files and load the remaining ones;
+rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
+rm(mat_tech_AI1, mat_tech_AI2, mat_tech_AI3, mat_tech_AI4, mat_tech_AI5)
+
+#For the third period, which goes from 2004 to 2018, we  need only the dataset from Part1. This
+#specific dataset only has patents from 2004 to 2018, so we don't have to filter it.
+c <- 120419184-96000000
+IPC_all_patents_Part1 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 24000000)
+IPC_all_patents_Part2 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 24000000, skip = 24000000)
+IPC_all_patents_Part3 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 24000000, skip = 48000000)
+IPC_all_patents_Part4 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = 24000000, skip = 72000000)
+IPC_all_patents_Part5 <- fread("All_patents_and_IPC_codes_Part1.csv", header = F, nrow = c, skip = 96000000)
+
+names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part4) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+names(IPC_all_patents_Part5) <- c("appln_id", "ctry_code", "ipc_class_symbol", "priority_year")
+
+#we pick just the subclass for analysis:
+IPC_all_patents_Part1$Subclass <- substr(IPC_all_patents_Part1$ipc_class_symbol,1,4)
+IPC_all_patents_Part2$Subclass <- substr(IPC_all_patents_Part2$ipc_class_symbol,1,4)
+IPC_all_patents_Part3$Subclass <- substr(IPC_all_patents_Part3$ipc_class_symbol,1,4)
+IPC_all_patents_Part4$Subclass <- substr(IPC_all_patents_Part4$ipc_class_symbol,1,4)
+IPC_all_patents_Part5$Subclass <- substr(IPC_all_patents_Part5$ipc_class_symbol,1,4)
+
+mat_tech_AI1 <- create_sparse_matrix(i = IPC_all_patents_Part1 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part1 %>% pull(Subclass))
+
+mat_tech_AI1 %<>% 
+  crossprod() %>% 
+  as.matrix() 
+
+mat_tech_AI2 <- create_sparse_matrix(i = IPC_all_patents_Part2 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part2 %>% pull(Subclass))
+
+mat_tech_AI2 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+mat_tech_AI3 <- create_sparse_matrix(i = IPC_all_patents_Part3 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part3 %>% pull(Subclass))
+
+mat_tech_AI3 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+mat_tech_AI4 <- create_sparse_matrix(i = IPC_all_patents_Part4 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part4 %>% pull(Subclass))
+
+mat_tech_AI4 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+mat_tech_AI5 <- create_sparse_matrix(i = IPC_all_patents_Part5 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part5 %>% pull(Subclass))
+
+mat_tech_AI5 %<>% 
+  crossprod() %>% 
+  as.matrix()
+
+#and the newly created function:
+mat_tech_AI_Final2 <- add_matrices_5(mat_tech_AI1, mat_tech_AI2, mat_tech_AI3, mat_tech_AI4, mat_tech_AI5)
+
+#now, we drop the big files and load the remaining ones;
+rm(IPC_all_patents_Part1, IPC_all_patents_Part2, IPC_all_patents_Part3, IPC_all_patents_Part4, IPC_all_patents_Part5)
+rm(mat_tech_AI1, mat_tech_AI2, mat_tech_AI3, mat_tech_AI4, mat_tech_AI5)
+
+#now we create a function similar to the previous, but for summing 2 matrices:
+add_matrices_2 <- function(matrix1, matrix2) {
+  a <- list(matrix1, matrix2)
+  cols <- sort(unique(unlist(lapply(a, colnames))))
+  rows <- sort(unique(unlist(lapply(a, rownames))))
+  out <- array(0, dim = c(length(rows), length(cols)), dimnames = list(rows,cols))
+  for (m in a) out[rownames(m), colnames(m)] <- out[rownames(m), colnames(m)] + m
+  out
+}
+
+#and summ both matrices (the one from the first big file with the one from the second big file)
+mat_tech_AI_Final <- add_matrices_2(mat_tech_AI_Final1, mat_tech_AI_Final2)
+dim(mat_tech_AI_Final) #653 x 653
+
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+#Finally, we save the file. We will use it in the section 1.3.
+write.csv2(mat_tech_AI_Final, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/Matrix_IPC_4digits.csv", row.names = TRUE)
+
+#2.2.Read the just created matrix----
+library(janitor)
+rm(list=ls())
+#now we load the similarity matrix which was saved in line 139:
+matrix <- read.csv("Files_created_with_the_code/data/files_code_4-digits_analysis/Matrix_IPC_4digits.csv", sep = ";", 
+                   header = T) #, dec = ","
+#matrix <- matrix %>%
+# row_to_names(row_number = -1)
+#matrix <- matrix[,-1]
+rownames(matrix) <- matrix[,1]
+matrix <- matrix[,-1]
+matrix <- as.matrix(matrix)
+mat_tech_rel_AI <- matrix %>% 
+  relatedness(method = "cosine")
+
+g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
+  mutate(dgr = centrality_eigen(weights = weight)) %E>%
+  filter(weight >= mean(weight))
+
+#let's take a look at the most and less complex IPC fields:
+CompleteDg <- g_tech_AI %N>% 
+  arrange(desc(dgr)) %>%
+  as_tibble() 
+
+library(openxlsx)
+write.xlsx(CompleteDg, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/DgreeComplexityAllperiods.xlsx", row.names = F)

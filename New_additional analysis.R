@@ -2309,30 +2309,31 @@ IPC_RCAs %<>%
   ungroup()
 
 SummaryAllData<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
+colnames(SummaryAllData)[1] <- "Country"
 
 OverlapTechn<-
-ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=ctry_code, shape = ctry_code, color=ctry_code)) +
-  geom_point(aes(fill = ctry_code), size=8) + 
+ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country), size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
   ylab("Share of coinciding specializations (%)") +
   ggtitle("Overlapping capabilities for technological fields") +
   theme_classic() +
-  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+
-  #geom_step(aes(color=ctry_code), linetype = "dashed")+
+  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
+  #geom_step(aes(color=Country), linetype = "dashed")+
   scale_y_continuous(labels = scales::percent) +
   scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
   scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
 
 OverlapAI<-
-ggplot(data=SummaryAllData, aes(x=Period, y=Share_OnlyAI, group=ctry_code, shape = ctry_code, color=ctry_code)) +
-  geom_point(aes(fill = ctry_code),size=8) + 
+ggplot(data=SummaryAllData, aes(x=Period, y=Share_OnlyAI, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country),size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
   ylab("Share of non-coinciding specializations (%)") +
   ggtitle("Non-overlapping capabilities for technological fields") +
   theme_classic() +
-  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+ 
+  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+ 
   scale_y_continuous(labels = scales::percent)+
   scale_fill_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) +
   scale_color_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) 
@@ -2345,6 +2346,9 @@ jpeg("Files_created_with_the_code/figures/new_figures/Fig6_OverlapAI.jpg", width
 OverlapAI 
 dev.off()
 
+jpeg("Files_created_with_the_code/figures/new_figures/Fig6_OverlapTechn2.jpg", width = 8, height = 4, units = 'in', res = 300)
+OverlapTechn 
+dev.off()
 
 #plus, convert to %
 #improve colours;
@@ -2400,29 +2404,29 @@ IPC_RCAs %<>%
   ungroup()
 
 SummaryAllData4dig<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
-
+colnames(SummaryAllData4dig)[1] <- "Country"
 OverlapTechn<-
-  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=ctry_code, shape = ctry_code, color=ctry_code)) +
-  geom_point(aes(fill = ctry_code), size=8) + 
+  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country), size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
   ylab("Share of coinciding specializations (%)") +
-  ggtitle("Overlapping capabilities for 4-digits IPC codes") +
+  ggtitle("Overlapping capabilities for all 4-digits IPC codes") +
   theme_classic() +
-  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+
+  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   scale_y_continuous(labels = scales::percent) +
   scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
   scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
 
 OverlapAI<-
-  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_OnlyAI, group=ctry_code, shape = ctry_code, color=ctry_code)) +
-  geom_point(aes(fill = ctry_code),size=8) + 
+  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_OnlyAI, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country),size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
   ylab("Share of non-coinciding specializations (%)") +
   ggtitle("Non-overlapping capabilities for 4-digits IPC codes") +
   theme_classic() +
-  geom_line(aes(color=ctry_code), linetype = "dashed", size=1.5)+ 
+  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+ 
   scale_y_continuous(labels = scales::percent)+
   scale_fill_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) +
   scale_color_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) 
@@ -2433,6 +2437,78 @@ dev.off()
 
 jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapAI.jpg", width = 8, height = 6, units = 'in', res = 300)
 OverlapAI 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapTechn2.jpg", width = 8, height = 4, units = 'in', res = 300)
+OverlapTechn 
+dev.off()
+
+#new: create same figure, but for the top10 codes:
+IPC2LabelData <- read.csv("other_files/Summary IPC labels.csv", sep = ";", header = TRUE, dec = ",")
+Top10 <- IPC_RCAs_Top4[IPC_RCAs_Top4$Subclass %in% IPC2LabelData$Subclass,]
+length(unique(IPC2LabelData$Subclass)) #10 Subclasses
+Top10 %<>% 
+  group_by(ctry_code,Period) %>% 
+  mutate(Share_coinciding = sum(Coiciding)/(sum(Coiciding)+sum(justGeneral))) %>% 
+  mutate(Share_OnlyAI = sum(OnlyAI)/(sum(OnlyAI)+sum(Coiciding))) %>% 
+  mutate(sum_coinciding = sum(Coiciding)) %>% 
+  mutate(sum_justGeneral = sum(justGeneral)) %>%
+  mutate(sum_OnlyAI = sum(OnlyAI)) %>%
+  ungroup()
+
+SummaryAllData4digTop10<-distinct(Top10, ctry_code, Period, .keep_all = TRUE) 
+colnames(SummaryAllData4digTop10)[1] <- "Country"
+OverlapTechnTop10<-
+  ggplot(data=SummaryAllData4digTop10, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country), size=8, alpha=0.6) + 
+  scale_shape_manual(values=c(21, 22, 23, 24)) +
+  xlab("Period") +
+  ylab("Share of coinciding specializations (%)") +
+  ggtitle("Overlapping capabilities for the top10 4-digits IPC codes") +
+  theme_classic() +
+  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("#660000", "#FF0000", "#FF9933", "#FFCC33")) +
+  scale_color_manual(values = c("#660000", "#FF0000", "#FF9933", "#FFCC33")) 
+
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Make a list from the ... arguments and plotlist
+  plots <- c(list(...), plotlist)
+  
+  numPlots = length(plots)
+  
+  # If layout is NULL, then use 'cols' to determine layout
+  if (is.null(layout)) {
+    # Make the panel
+    # ncol: Number of columns of plots
+    # nrow: Number of rows needed, calculated from # of cols
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  if (numPlots==1) {
+    print(plots[[1]])
+    
+  } else {
+    # Set up the page
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Make each plot, in the correct location
+    for (i in 1:numPlots) {
+      # Get the i,j matrix positions of the regions that contain this subplot
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))
+      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapTechn_combined.jpg", width = 12, height = 4, units = 'in', res = 500)
+multiplot(OverlapTechnTop10, OverlapTechn, cols=2) 
 dev.off()
 
 #7.Short descriptives-----
