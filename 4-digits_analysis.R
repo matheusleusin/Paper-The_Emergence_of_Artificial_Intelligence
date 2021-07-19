@@ -793,7 +793,8 @@ CompleteDg <- g_tech_AI %N>%
 library(openxlsx)
 write.xlsx(CompleteDg, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/DgreeComplexityAllperiods.xlsx", row.names = F)
 
-#3.AI technological space----
+#3.AI technological space based on subclasses----
+#This particular technology space is just peripherical to the analysis; this part is not quite properly organized or improved to reduce the misuse of computational power.
 library(tidyverse) # Collection of all the good stuff like dplyr, ggplot2 ect.
 library(magrittr) # For extra-piping operators (eg. %<>%)
 
@@ -1050,7 +1051,9 @@ IPC_all_patents_Part1$Subclass <- substr(IPC_all_patents_Part1$ipc_class_symbol,
 
 #drop lines that show repeated subclasses for the same patent
 IPC_all_patents_Part1 %<>% group_by(appln_id) %>% distinct(Subclass, .keep_all = TRUE) #from 120,419,184 lines to 25,538,071
-#important: check later if patstat considers the possibility of 2 countries owning the same patent (and in this case, group_by(appln_id, ctry_code)-----
+#important: I'm explicitely dropping geography here by not considering country information in the groupping (i.e., instead of group_by(appln_id, ctry_code); 
+#this is on purpose due to the aim of this visualization on the paper but, just for the sake of information: if I'd use the country code in this third period (which is by
+#far the one with more patents), there would be 26,103,624 lines of code instead of 25,538,071, which means an increase of 2,17%
 
 ###Now we read the AI data
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
