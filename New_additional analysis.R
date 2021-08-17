@@ -449,6 +449,15 @@ IPC_RCAs_Top4 <- left_join(IPC_RCAs_Top4, AI_RCA, by = c("techn_field_nr", "Peri
 #Total_RCA_2 = 3, BOTH AI AND GENERAL
 IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$Round_general + 2*IPC_RCAs_Top4$Round_AI
 
+Newtable<-as.data.frame(table(IPC_RCAs_Top4$Total_RCA_2, IPC_RCAs_Top4$ctry_code, IPC_RCAs_Top4$Period))
+Newtable$Var1 <- gsub("0", "no specialization of the country at all", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("1", "general specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("2", "only AI specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("3", "coinciding specialization", str_trim(Newtable$Var1))
+library(openxlsx) #for writing the excel file
+write.xlsx(Newtable, file = "Files_created_with_the_code/data/files_code_Fields_analysis/Newtable_Newappendix.xlsx", row.names = F)
+rm(Newtable)
+
 #add degree of complexity per year;
 
 General <- 
@@ -2579,3 +2588,49 @@ table(IPC_all_patents_Part_all$priority_year) #yep, we have the data from 1974 t
 
 IPC_all_patents_Part_all_missing <- IPC_all_patents_Part_all[is.na(IPC_all_patents_Part_all$ctry_code) == T,]
 length(unique(IPC_all_patents_Part_all_missing$appln_id)) #72 patents;
+
+#7.1.Test some correlations ------
+library(readxl)
+library(PerformanceAnalytics) #for making some quick analyses
+library(psych) #very similar to the previous package, but kind of a different view
+library(corrplot) #for the customized correlation plot
+library(GGally)
+library(ggcorrplot)
+rm(list=ls())
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+Newtable<-read_excel("Files_created_with_the_code/data/files_code_Fields_analysis/Newtable_Newappendix.xlsx")
+names(Newtable) <-c("Type of specialisation", "Country", "Interval", "No of Specialisations")
+
+#convert type to numeric:
+Newtable$TypeFactor <-as.factor(Newtable$`Type of specialisation`)
+Newtable$TypeFactor <-as.numeric(Newtable$TypeFactor)
+
+#it works, convert now country and interval
+Newtable$CountryFactor <-as.numeric(as.factor(Newtable$Country))
+Newtable$IntervalFactor <-as.numeric(as.factor(Newtable$Interval))
+
+chart.Correlation(Newtable[,c(4:7)], histogram=TRUE, pch=19)
+#from the corrplot library:
+corrplot.mixed(cor(Newtable[,c(4:7)]), order="hclust", tl.col="black")
+#from the psych library:
+pairs.panels(Newtable[,c(4:7)], scale=TRUE)
+#from the GGally library:
+ggpairs(Newtable[,c(4:7)])
+ggcorr(Newtable[,c(4:7)], nbreaks=8, palette='RdGy', label=TRUE, label_size=5, label_color='white') #if you have more variables, you can increase 
+#the nbreaks parameter to consider more breaks (i.e., more labels, as seen in the legend)
+
+#and the last correlation package, named ggcorrplot:
+ggcorrplot(cor(Newtable[,c(4:7)]), p.mat = cor_pmat(Newtable[,c(4:7)]), hc.order=TRUE, type='lower')
+
+#the problem is that I want correlation between factors
+lm(Newtable$`No of Specialisations` ~ Newtable$`Type of specialisation` + Newtable$Country + Newtable$Interval, data = Newtable)
+
+
+
+Newtable$IntervalFactor <-as.factor(Newtable$IntervalFactor)
+Newtable$TypeFactor <-as.factor(Newtable$TypeFactor)
+Newtable$CountryFactor <-as.factor(Newtable$CountryFactor)
+
+#Newtable$TypeFactor2 <-as.factor(Newtable$`Type of specialisation`)
+hetcor(Newtable[,c(4,5)])
+Newtable[,c(4,5)][Newtable$TypeFactor == "2",]
