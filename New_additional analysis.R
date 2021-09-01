@@ -450,10 +450,10 @@ IPC_RCAs_Top4 <- left_join(IPC_RCAs_Top4, AI_RCA, by = c("techn_field_nr", "Peri
 IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$Round_general + 2*IPC_RCAs_Top4$Round_AI
 
 Newtable<-as.data.frame(table(IPC_RCAs_Top4$Total_RCA_2, IPC_RCAs_Top4$ctry_code, IPC_RCAs_Top4$Period))
-Newtable$Var1 <- gsub("0", "no specialization of the country at all", str_trim(Newtable$Var1))
-Newtable$Var1 <- gsub("1", "general specialization", str_trim(Newtable$Var1))
-Newtable$Var1 <- gsub("2", "only AI specialization", str_trim(Newtable$Var1))
-Newtable$Var1 <- gsub("3", "coinciding specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("0", "No specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("1", "General specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("2", "AI-specific specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("3", "Coinciding specialization", str_trim(Newtable$Var1))
 library(openxlsx) #for writing the excel file
 write.xlsx(Newtable, file = "Files_created_with_the_code/data/files_code_Fields_analysis/Newtable_Newappendix.xlsx", row.names = F)
 rm(Newtable)
@@ -468,7 +468,7 @@ g_tech_AI %>%
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) + 
   geom_node_text(aes(label = field_name), size = 4, repel = TRUE) + 
   theme_graph()+
-  ggtitle("Technology Space: IPC Technology fields") + 
+  ggtitle("Global technological space: IPC Technological fields") + 
   theme(legend.title = element_text(size = 14),
         legend.text = element_text(size = 10)) + 
   guides(colour = guide_legend(override.aes = list(size=10)))+
@@ -496,7 +496,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Round_general > .9, label = field_name), size = 5, repel = TRUE) +
   scale_color_manual(values=c("gray90", "green4", "gray90", "blue"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("Global technological space: China (1974-1988)")
 
 #option 2: colours
 g_tech_AI %N>%
@@ -510,7 +510,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Total_RCA_2 > .9, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FFCC00", "#FF9900", "#FF3300"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("Global technological space: China (1974-1988)")
 
 #option 3: colours
 g_tech_AI %N>%
@@ -524,7 +524,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Total_RCA_2 == 1 | Total_RCA_2 == 2, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#33CCCC", "#0033ff", "#0099cc"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("Global technological space: China (1974-1988)")
 
 #option 4: colours
 g_tech_AI %N>%
@@ -538,7 +538,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Total_RCA_2 == 1 | Total_RCA_2 == 2, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#3399FF", "#0066CC", "#0000FF"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("Global technological space: China (1974-1988)")
 
 #option 5: colours
 g_tech_AI %N>%
@@ -552,7 +552,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Total_RCA_2 == 1 | Total_RCA_2 == 2, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF9966", "#FF6633", "#CC3300"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("Global technological space: China (1974-1988)")
 
 #option 6: colours
 g_tech_AI %N>%
@@ -566,7 +566,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Total_RCA_2 == 1 | Total_RCA_2 == 2, label = field_name), size = 5, repel = TRUE) +
   guides(colour = guide_legend(override.aes = list(size=10)))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("Global technological space: China (1974-1988)")
 
 #option 7: cluster
 g_tech_AI %N>%
@@ -580,7 +580,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Total_RCA_2 == 1 | Total_RCA_2 == 2, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#3399FF", "#0066CC", "#0000FF"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)") +
+  ggtitle("Global technological space: China (1974-1988)") +
   geom_mark_hull(aes(x = x, y=y, filter=RCA_AI_Period > .99), expand = unit(2.5, "mm"), color = "dodgerblue1",size = 1.5, linetype = "dashed") 
 
 #Option 8: Just AI fields highlighted
@@ -595,7 +595,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#3399FF", "#0066CC", "#0000FF"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)") #+
+  ggtitle("Global technological space: China (1974-1988)") #+
   #geom_mark_hull(aes(x = x, y=y, filter=RCA_AI_Period > .99), expand = unit(2.5, "mm"), color = "dodgerblue1",size = 1.5, linetype = "dashed") 
 
 ##Option 9: colours and period p
@@ -611,7 +611,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)") #
+  ggtitle("Global technological space: China (1974-1988)") #
 
 
 display.brewer.pal(n = 8, name = 'Dark2')
@@ -637,7 +637,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)") #
+  ggtitle("Global technological space: China (1974-1988)") #
 
 p=2
 China_2nd<-g_tech_AI %N>%
@@ -651,7 +651,7 @@ China_2nd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1989-2003)") #
+  ggtitle("Global technological space: China (1989-2003)") #
 
 p =3
 China_3rd<-g_tech_AI %N>%
@@ -665,7 +665,7 @@ China_3rd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (2004-2018)") #
+  ggtitle("Global technological space: China (2004-2018)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/China_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 China_1st 
@@ -692,7 +692,7 @@ China_1st_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)")
+  ggtitle("Global technological space: China (1974-1988)")
 
 p=2
 China_2nd_2nd<-
@@ -706,7 +706,7 @@ China_2nd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1989-2003)")
+  ggtitle("Global technological space: China (1989-2003)")
 
 p=3
 China_3rd_2nd<-
@@ -720,7 +720,7 @@ China_3rd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: China (2004-2018)")
+  ggtitle("Global technological space: China (2004-2018)")
 
 jpeg("Files_created_with_the_code/figures/new_figures/new_China_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 China_1st_2nd 
@@ -751,7 +751,7 @@ USA_1st<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (1974-1988)") #
+  ggtitle("Global technological space: USA (1974-1988)") #
 
 p=2
 USA_2nd<-g_tech_AI %N>%
@@ -765,7 +765,7 @@ USA_2nd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (1989-2003)") #
+  ggtitle("Global technological space: USA (1989-2003)") #
 
 p =3
 USA_3rd<-g_tech_AI %N>%
@@ -779,7 +779,7 @@ USA_3rd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (2004-2018)") #
+  ggtitle("Global technological space: USA (2004-2018)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/USA_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 USA_1st 
@@ -807,7 +807,7 @@ USA_1st_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (1974-1988)")
+  ggtitle("Global technological space: USA (1974-1988)")
 
 p=2
 USA_2nd_2nd<-
@@ -821,7 +821,7 @@ USA_2nd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (1989-2003)")
+  ggtitle("Global technological space: USA (1989-2003)")
 
 p=3
 USA_3rd_2nd<-
@@ -835,7 +835,7 @@ USA_3rd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: USA (2004-2018)")
+  ggtitle("Global technological space: USA (2004-2018)")
 
 jpeg("Files_created_with_the_code/figures/new_figures/new_USA_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 USA_1st_2nd 
@@ -865,7 +865,7 @@ Japan_1st<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (1974-1988)") #
+  ggtitle("Global technological space: Japan (1974-1988)") #
 
 p=2
 Japan_2nd<-g_tech_AI %N>%
@@ -879,7 +879,7 @@ Japan_2nd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (1989-2003)") #
+  ggtitle("Global technological space: Japan (1989-2003)") #
 
 p =3
 Japan_3rd<-g_tech_AI %N>%
@@ -893,7 +893,7 @@ Japan_3rd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (2004-2018)") #
+  ggtitle("Global technological space: Japan (2004-2018)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/Japan_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 Japan_1st 
@@ -921,7 +921,7 @@ Japan_1st_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (1974-1988)")
+  ggtitle("Global technological space: Japan (1974-1988)")
 
 p=2
 Japan_2nd_2nd<-
@@ -935,7 +935,7 @@ Japan_2nd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (1989-2003)")
+  ggtitle("Global technological space: Japan (1989-2003)")
 
 p=3
 Japan_3rd_2nd<-
@@ -949,7 +949,7 @@ Japan_3rd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: Japan (2004-2018)")
+  ggtitle("Global technological space: Japan (2004-2018)")
 
 jpeg("Files_created_with_the_code/figures/new_figures/new_Japan_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 Japan_1st_2nd 
@@ -980,7 +980,7 @@ South_Korea_1st<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (1974-1988)") #
+  ggtitle("Global technological space: South Korea (1974-1988)") #
 
 p=2
 South_Korea_2nd<-g_tech_AI %N>%
@@ -994,7 +994,7 @@ South_Korea_2nd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (1989-2003)") #
+  ggtitle("Global technological space: South Korea (1989-2003)") #
 
 p =3
 South_Korea_3rd<-g_tech_AI %N>%
@@ -1008,7 +1008,7 @@ South_Korea_3rd<-g_tech_AI %N>%
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (2004-2018)") #
+  ggtitle("Global technological space: South Korea (2004-2018)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/South_Korea_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 South_Korea_1st 
@@ -1036,7 +1036,7 @@ SouthKorea_1st_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (1974-1988)")
+  ggtitle("Global technological space: South Korea (1974-1988)")
 
 p=2
 SouthKorea_2nd_2nd<-
@@ -1050,7 +1050,7 @@ SouthKorea_2nd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (1989-2003)")
+  ggtitle("Global technological space: South Korea (1989-2003)")
 
 p=3
 SouthKorea_3rd_2nd<-
@@ -1064,7 +1064,7 @@ SouthKorea_3rd_2nd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph() +
-  ggtitle("IPC Technology Space: South Korea (2004-2018)")
+  ggtitle("Global technological space: South Korea (2004-2018)")
 
 jpeg("Files_created_with_the_code/figures/new_figures/new_SouthKorea_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 SouthKorea_1st_2nd 
@@ -1077,6 +1077,32 @@ dev.off()
 jpeg("Files_created_with_the_code/figures/new_figures/new_SouthKorea_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
 SouthKorea_3rd_2nd  
 dev.off()
+
+#2.1.5.Labels -----
+IPC_RCAs_Top4$Total_RCA_2 <- gsub("0", "No specialization", str_trim(IPC_RCAs_Top4$Total_RCA_2 ))
+IPC_RCAs_Top4$Total_RCA_2 <- gsub("1", "General specialization", str_trim(IPC_RCAs_Top4$Total_RCA_2 ))
+IPC_RCAs_Top4$Total_RCA_2  <- gsub("2", "AI-specific specialization", str_trim(IPC_RCAs_Top4$Total_RCA_2 ))
+IPC_RCAs_Top4$Total_RCA_2  <- gsub("3", "Coinciding specialization", str_trim(IPC_RCAs_Top4$Total_RCA_2 ))
+
+Label <-
+g_tech_AI %N>%
+  left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
+              select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = factor(Total_RCA_2), size = 1000^dgr, shape= factor(Total_RCA_2))) +
+  scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
+  geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
+  scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
+  theme_graph() +
+  ggtitle("Global technological space: South Korea (2004-2018)")# +
+  #guides(color = guide_legend(override.aes = list(size = 30)))
+  theme(text = element_text(size = 10)) 
+#legend.key.size
+jpeg("Files_created_with_the_code/figures/new_figures/new_LABEL2.jpg", width = 4, height = 4, units = 'in', res = 300)
+Label 
+dev.off()
+
 
 #3.AI networks ----
 #3.1.Get the AI matrix, based on its technological fields ----
@@ -1205,7 +1231,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
  # scale_fill_manual(values=c("#999999", "#3399FF"))+ 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space (1974-1988)") #
 
 AI_dgr_1st <- 
 g_tech_AI %N>%
@@ -1218,7 +1244,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   # scale_fill_manual(values=c("#999999", "#3399FF"))+ 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space (1974-1988)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_1st 
@@ -1237,7 +1263,7 @@ AI_com_1st <- g_tech_AI %N>%
     geom_label_repel(aes(x=x, y=y, label = ifelse(Binary >= 1,field_name,''), size = 10, colour = sector),nudge_y = -.5,fontface = 'bold') + #fill=sector, segment.color = "red"
     geom_label_repel(aes(x=x, y=y,label = ifelse((100-Complexity) >= 0,as.character(round((100-Complexity),2)),''), size = 9),nudge_y = .3) +
     theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space (1974-1988)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_comp_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_com_1st 
@@ -1278,7 +1304,7 @@ g_tech_AI %N>%
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space (1974-1988)") #
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_1st_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_1st_allnames 
 dev.off()
@@ -1295,7 +1321,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   # scale_fill_manual(values=c("#999999", "#3399FF"))+ 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space (1974-1988)") #
 
 
 g_tech_AI %N>%
@@ -1308,7 +1334,7 @@ g_tech_AI %N>%
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   scale_fill_manual(values=c("#999999", "#3399FF"))+ 
   theme_graph() +
-  ggtitle("IPC Technology Space: China (1974-1988)") #
+  ggtitle("Global technological space: China (1974-1988)") #
 
 rm(AI_dgr_1st, AI_RCA_1st, patents_AI_specific_1st, coords_tech_AI, g_tech_AI, mat_tech_AI, mat_tech_rel_AI, AI_RCA1,
    KnowlComp_1st, AI_com_1st)
@@ -1388,7 +1414,7 @@ AI_RCA_2nd <-
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) +
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1989-2003)") #
+  ggtitle("AI-specific technological space (1989-2003)") #
 
 AI_dgr_2nd <- 
   g_tech_AI %N>%
@@ -1399,7 +1425,7 @@ AI_dgr_2nd <-
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree",range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1989-2003)") #
+  ggtitle("AI-specific technological space (1989-2003)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_2nd 
@@ -1419,7 +1445,7 @@ g_tech_AI %N>%
   geom_label_repel(aes(x=x, y=y,label = ifelse((100-Complexity) >= 0,as.character(round((100-Complexity),2)),''), size = 8),nudge_x =  .7) +
   geom_label_repel(aes(x=x, y=y, label = ifelse(Binary >= 1,field_name,''), size = 10, colour = sector),fontface = 'bold', nudge_y = -5, nudge_x =  -3) + 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1989-2003)") #
+  ggtitle("AI-specific technological space (1989-2003)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_comp_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_com_2nd 
@@ -1459,7 +1485,7 @@ AI_RCA_2nd_allnames <-
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space (1974-1988)") #
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_2nd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_2nd_allnames 
 dev.off()
@@ -1542,7 +1568,7 @@ AI_RCA_3rd <-
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) +
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (2004-2018)") #
+  ggtitle("AI-specific technological space (2004-2018)") #
 
 AI_dgr_3rd <- 
   g_tech_AI %N>%
@@ -1553,7 +1579,7 @@ AI_dgr_3rd <-
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (2004-2018)") #
+  ggtitle("AI-specific technological space (2004-2018)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_3rd 
@@ -1574,7 +1600,7 @@ g_tech_AI %N>%
   geom_label_repel(aes(x=x, y=y, label = ifelse(Binary >= 1 & sector == 'Electrical engineering',field_name,''), size = 10, colour = sector),nudge_y = -4, nudge_x =  -6,fontface = 'bold') + 
   geom_label_repel(aes(x=x, y=y, label = ifelse(Binary >= 1 & sector != 'Electrical engineering',field_name,''), size = 10, colour = sector),nudge_y = 5, nudge_x =  6,fontface = 'bold') +
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (2004-2018)") #
+  ggtitle("AI-specific technological space (2004-2018)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_comp_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_com_3rd 
@@ -1614,7 +1640,7 @@ AI_RCA_3rd_allnames <-
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space (1974-1988)") #
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_3rd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_3rd_allnames 
 dev.off()
@@ -2325,8 +2351,8 @@ ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=Country, sha
   geom_point(aes(fill = Country), size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
-  ylab("Share of coinciding specializations (%)") +
-  ggtitle("Overlapping capabilities for technological fields") +
+  ylab("Share of coinciding specialisations (%)") +
+  ggtitle("Coinciding specialisations for technological fields") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   #geom_step(aes(color=Country), linetype = "dashed")+
@@ -2339,8 +2365,8 @@ ggplot(data=SummaryAllData, aes(x=Period, y=Share_OnlyAI, group=Country, shape =
   geom_point(aes(fill = Country),size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
-  ylab("Share of non-coinciding specializations (%)") +
-  ggtitle("Non-overlapping capabilities for technological fields") +
+  ylab("Share of non-coinciding specialisations (%)") +
+  ggtitle("Non-coinciding specialisations for technological fields") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+ 
   scale_y_continuous(labels = scales::percent)+
@@ -2429,8 +2455,8 @@ OverlapTechn<-
   geom_point(aes(fill = Country), size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
-  ylab("Share of coinciding specializations (%)") +
-  ggtitle("Overlapping capabilities for all 4-digits IPC codes") +
+  ylab("Share of coinciding specialisations (%)") +
+  ggtitle("Coinciding specialisations for all 4-digits IPC codes") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   scale_y_continuous(labels = scales::percent) +
@@ -2442,8 +2468,8 @@ OverlapAI<-
   geom_point(aes(fill = Country),size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
-  ylab("Share of non-coinciding specializations (%)") +
-  ggtitle("Non-overlapping capabilities for 4-digits IPC codes") +
+  ylab("Share of non-coinciding specialisations (%)") +
+  ggtitle("Non-coinciding specialisations for 4-digits IPC codes") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+ 
   scale_y_continuous(labels = scales::percent)+
@@ -2482,8 +2508,8 @@ OverlapTechnTop10<-
   geom_point(aes(fill = Country), size=8, alpha=0.6) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
-  ylab("Share of coinciding specializations (%)") +
-  ggtitle("a) Overlapping capabilities for the top10 4-digits IPC codes") +
+  ylab("Share of coinciding specialisations (%)") +
+  ggtitle("a) Coinciding specialisations for the top10 4-digits IPC codes") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   scale_y_continuous(labels = scales::percent) +
@@ -2495,8 +2521,8 @@ OverlapAITop10<-
   geom_point(aes(fill = Country),size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
-  ylab("Share of non-coinciding specializations (%)") +
-  ggtitle("Non-overlapping capabilities for 4-digits IPC codes") +
+  ylab("Share of non-coinciding specialisations (%)") +
+  ggtitle("Non-coinciding specialisations for 4-digits IPC codes") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+ 
   scale_y_continuous(labels = scales::percent)+
@@ -2509,8 +2535,8 @@ OverlapTechn2<-
   geom_point(aes(fill = Country), size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
-  ylab("Share of coinciding specializations (%)") +
-  ggtitle("b) Overlapping capabilities for all 4-digits IPC codes") +
+  ylab("Share of coinciding specialisations (%)") +
+  ggtitle("b) Overlapping specialisations for all 4-digits IPC codes") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   scale_y_continuous(labels = scales::percent) +
@@ -2634,3 +2660,72 @@ Newtable$CountryFactor <-as.factor(Newtable$CountryFactor)
 #Newtable$TypeFactor2 <-as.factor(Newtable$`Type of specialisation`)
 hetcor(Newtable[,c(4,5)])
 Newtable[,c(4,5)][Newtable$TypeFactor == "2",]
+
+#quadrant matrix
+# custom empty theme to clear the plot area
+empty_theme <- theme(                              
+  plot.background = element_blank(), 
+  panel.grid.major = element_blank(), 
+  panel.grid.minor = element_blank(), 
+  panel.border = element_blank(), 
+  panel.background = element_blank(),
+  axis.line = element_blank(),
+  axis.ticks = element_blank(),
+  axis.text.y = element_text(angle = 90)
+)
+
+plot <- ggplot(NULL, aes()) +
+  # fix the scale so it's always a square
+  coord_fixed() +
+  # set the scale to one greater than 0-10 in each direction
+  # this gives us some breating room and space to add some arrows
+  scale_x_continuous(expand = c(0, 0), limits = c(-1, 11),
+                     breaks = c(2,8), labels=c("2" = "", "8" = "")) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-1,11),
+                     breaks = c(2,8), labels=c("2" = "", "8" = "")) +
+  # apply the empty theme
+  empty_theme +
+  # labels
+  labs(title = "Types of local specialisations considered",
+       x = "Local AI-specific specialisations",
+       y = "Local General specialisations") +
+  # create the quadrants
+  geom_segment(aes(x = 10, y = 0, xend = 10, yend = 10)) +
+  geom_segment(aes(x = 0, y = 0, xend = 0, yend = 10)) +
+  geom_segment(aes(x = 0, y = 0, xend = 10, yend = 0)) +
+  geom_segment(aes(x = 0, y = 5, xend = 10, yend = 5)) +
+  geom_segment(aes(x = 5, y = 0, xend = 5, yend = 10)) +
+  geom_segment(aes(x = 0, y = 10, xend = 10, yend = 10)) +
+  # quadrant labels
+  annotate("text", x = 2.5, y = 2.5, alpha = 2, label = "No specialisation (type 1)") +
+  annotate("text", x = 2.5, y = 7.5, alpha = 2, label = "General specialisation (type 2)") +
+  annotate("text", x = 7.5, y = 2.5, alpha = 2, label = "AI-specific specialisation (type 3)") +
+  annotate("text", x = 7.5, y = 7.5, alpha = 2, label = "Coinciding specialisation (type 4)") +
+  # arrows are cut in half which conveniently matches the gartner one
+  annotate("segment", x = 0, xend = 10, y = -.9, yend = -.9,colour = "black",
+           size=2, alpha=1, arrow=arrow(type = "closed", angle = 15)) +
+  annotate("segment", x = -.9, xend = -.9, y = 0, yend = 10, colour = "black",
+           size=2, alpha=1, arrow=arrow(type = "closed", angle = 15))
+
+
+plot <- 
+plot + 
+  annotate("text", x = 7.5, y = -0.5, label = "Specialisation", color = "black") +
+  annotate("text", x = 2.5, y = -0.5, label = "No specialisation", color = "black") +
+  annotate("text", x = -.5, y = 7.5, angle = 90, label = "Specialisation", color = "black") +
+  annotate("text", x = -.5, y = 2.5, angle = 90, label = "No specialisation", color = "black") +
+  # annotate("rect", xmin = -.5, xmax = 2.5, ymin = .5, ymax = 2.5, fill= "red", alpha=.2)  + 
+  annotate("rect", xmin = 0, xmax = 5, ymin = 0, ymax = 5, fill= "#999999", alpha = .6)+
+  annotate("rect", xmin = 5, xmax = 10, ymin = 0, ymax = 5, fill= "#3399FF", alpha = .6)+
+  annotate("rect", xmin = 0, xmax = 5, ymin = 5, ymax = 10, fill= "#FF0000", alpha = .5)+
+  annotate("rect", xmin = 5, xmax = 10, ymin = 5, ymax = 10, fill= "#009900", alpha = .6)
+
+jpeg("Files_created_with_the_code/figures/new_figures/Matrix2x2.jpg", width = 7, height = 7, units = 'in', res = 500)
+plot 
+dev.off()
+
+
+#nice one in https://stackoverflow.com/questions/57923246/making-a-a-four-quadrant-proportional-area-chart-in-r
+
+
+
