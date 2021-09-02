@@ -2536,7 +2536,7 @@ OverlapTechn2<-
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
   ylab("Share of coinciding specialisations (%)") +
-  ggtitle("b) Overlapping specialisations for all 4-digits IPC codes") +
+  ggtitle("b) Coinciding specialisations for all 4-digits IPC codes") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   scale_y_continuous(labels = scales::percent) +

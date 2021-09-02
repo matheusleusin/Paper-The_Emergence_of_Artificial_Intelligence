@@ -1200,12 +1200,12 @@ AI_RCA_1st <-
   left_join(AI_RCA1, filter=AI_RCA$Period_sim ==p, by = c("name" = "Subclass")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
-  geom_node_point(aes(fill = sector, size = RCA_AI_Period, shape= sector)) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("RCA", range = c(2, 12)) +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "Degree")+ scale_size("Degree", range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   # scale_fill_manual(values=c("#999999", "#3399FF"))+ 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1974-1988)") #
+  ggtitle("AI-specific technological space: 4-digits IPC level (1974-1988)") #
 
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_4digits_1st.jpg", width = 14, height = 10, units = 'in', res = 300)
@@ -1315,11 +1315,11 @@ AI_RCA_2nd <-
   left_join(AI_RCA1, filter=AI_RCA$Period_sim ==p, by = c("name" = "Subclass")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
-  geom_node_point(aes(fill = sector, size = RCA_AI_Period, shape= sector)) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("RCA", range = c(2, 12)) +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "Degree")+ scale_size("Degree", range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (1989-2003)") #
+  ggtitle("AI-specific technological space: 4-digits IPC level (1989-2003)") #
 
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_4digits_2nd.jpg", width = 14, height = 10, units = 'in', res = 300)
@@ -1383,9 +1383,10 @@ AI_RCA_3rd <- read.csv("Files_created_with_the_code/data/files_code_4-digits_ana
 IPC_names <- left_join(IPC_names, AI_RCA_3rd, by="Subclass")
 
 g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
-  left_join(IPC_names %>% mutate(Subclass = Subclass %>% as.character()), by = c("name" = "Subclass")) %>%
+  left_join(IPC_names %>% mutate(Subclass = Subclass %>% as.character()), by = c("name" = "Subclass"), keep=T) %>%
   mutate(dgr = centrality_eigen(weights = weight)) %E>%
-  filter(weight >= mean(weight))
+  filter(weight >= mean(weight)) %E>%
+  na.omit()
 
 #Create the Coordinates
 coords_tech_AI <- g_tech_AI %>% igraph::layout.fruchterman.reingold() %>% as_tibble()
@@ -1429,12 +1430,11 @@ AI_RCA_3rd <-
   left_join(AI_RCA1, filter=AI_RCA$Period_sim ==p, by = c("name" = "Subclass")) %>%
   ggraph(layout = coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
-  geom_node_point(aes(fill = sector, size = RCA_AI_Period, shape= sector)) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("RCA", range = c(2, 12)) +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "Degree")+ scale_size("Degree", range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   theme_graph() +
-  ggtitle("IPC Technology Space: AI (2004-2018)") #
-
+  ggtitle("AI-specific technological space: 4-digits IPC level (2004-2018)") #
 
 jpeg("Files_created_with_the_code/figures/new_figures/AI_RCA_4digits_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_3rd 
