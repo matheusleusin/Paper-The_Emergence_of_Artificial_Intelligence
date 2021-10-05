@@ -2697,10 +2697,10 @@ plot <- ggplot(NULL, aes()) +
   geom_segment(aes(x = 5, y = 0, xend = 5, yend = 10)) +
   geom_segment(aes(x = 0, y = 10, xend = 10, yend = 10)) +
   # quadrant labels
-  annotate("text", x = 2.5, y = 2.5, alpha = 2, label = "No specialisation (type 1)") +
-  annotate("text", x = 2.5, y = 7.5, alpha = 2, label = "General specialisation (type 2)") +
-  annotate("text", x = 7.5, y = 2.5, alpha = 2, label = "AI-specific specialisation (type 3)") +
-  annotate("text", x = 7.5, y = 7.5, alpha = 2, label = "Coinciding specialisation (type 4)") +
+  annotate("text", x = 2.5, y = 2.5, alpha = 2, label = "No specialisation (type 3)") +
+  annotate("text", x = 2.5, y = 7.5, alpha = 2, label = "General specialisation (type 1)") +
+  annotate("text", x = 7.5, y = 2.5, alpha = 2, label = "AI-specific specialisation (type 4)") +
+  annotate("text", x = 7.5, y = 7.5, alpha = 2, label = "Coinciding specialisation (type 2)") +
   # arrows are cut in half which conveniently matches the gartner one
   annotate("segment", x = 0, xend = 10, y = -.9, yend = -.9,colour = "black",
            size=2, alpha=1, arrow=arrow(type = "closed", angle = 15)) +
@@ -2720,10 +2720,14 @@ plot +
   annotate("rect", xmin = 0, xmax = 5, ymin = 5, ymax = 10, fill= "#FF0000", alpha = .5)+
   annotate("rect", xmin = 5, xmax = 10, ymin = 5, ymax = 10, fill= "#009900", alpha = .6)
 
-jpeg("Files_created_with_the_code/figures/new_figures/Matrix2x2.jpg", width = 7, height = 7, units = 'in', res = 500)
-plot 
-dev.off()
 
+#jpeg("Files_created_with_the_code/figures/new_figures/Matrix2x2.jpg", width = 7, height = 7, units = 'in', res = 500)
+#plot 
+#dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/Matrix2x2_2ndversion.jpg", width = 7, height = 7, units = 'in', res = 500)
+plot
+dev.off()
 
 #nice one in https://stackoverflow.com/questions/57923246/making-a-a-four-quadrant-proportional-area-chart-in-r
 
