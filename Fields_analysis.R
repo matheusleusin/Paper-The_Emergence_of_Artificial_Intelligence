@@ -3208,7 +3208,7 @@ NewPatentsAI_colour <-
 ggplot(data=Data, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
   geom_line(size=1.2, aes(linetype=Country)) +
   geom_point(size=8) +
-  ggtitle("AI-patents registered per country") +
+  #ggtitle("AI-patents registered per country") +
   xlab("Year") +
   ylab("Log10 of the number of new AI registers") + theme_classic() +
   scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
@@ -3216,12 +3216,77 @@ ggplot(data=Data, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colo
   theme(text = element_text(size = 25)) +
   scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1970, 2018)) + scale_color_brewer(palette="Dark2")
 
+#library(grid)
+# Create a text
+#grob <- grobTree(textGrob("Scatter plot", x=.1,  y=-.01, hjust=0,
+#                         gp=gpar(col="red", fontsize=13, fontface="italic")))
+#text_high <- textGrob("Highest\nvalue", gp=gpar(fontsize=13, fontface="bold"))
+#text_low <- textGrob("Lowest\nvalue", gp=gpar(fontsize=13, fontface="bold"))
+
+
+Data$Period <- ifelse(Data$Year >= 1974 & Data$Year <= 1988, "First Period (1974-1988)",
+                      ifelse(Data$Year > 1988 & Data$Year <= 2003, "Second Period (1989-2003)",
+                             ifelse(Data$Year >= 2004 & Data$Year < 2019, "Third Period (2004-2018)", "No period")))
+test <- Data[Data$Period != "No period",]  
+
+#NewPatentsAI_colour2 <-
+ggplot(data=test, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
+  geom_line(size=1.2, aes(linetype=Country)) +
+  facet_wrap(~Period, ncol = 3) +
+  geom_point(size=8) +
+  ggtitle("AI-patents registered per country") +
+  xlab("Year") +
+  ylab("Log10 of the number of new AI registers") + theme_classic() +
+  scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) + theme(legend.position="bottom") +
+  theme(text = element_text(size = 25)) +
+  #  annotation_custom(grob) +
+  scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1970, 2018)) + scale_color_brewer(palette="Dark2")
+
+NewPatentsAI_colour2 <-
+ggplot(data=test, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
+  geom_line(size=1.2, aes(linetype=Country)) +
+  #facet_wrap(~Period, ncol = 3) +
+  geom_point(size=8) +
+  #ggtitle("AI-patents registered per country") +
+  xlab("Year") +
+  ylab("Number of new AI registers [Log10]") + theme_classic() +
+  scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) + theme(legend.position="bottom") +
+  theme(text = element_text(size = 25)) +
+  #  annotation_custom(grob) +
+  scale_y_continuous(limits=c(0,4)) + 
+  #geom_vline(data=test, aes(xintercept=c(1974),  colour=Period), linetype="dashed", size=1, color = "grey") +  
+  geom_vline(data=test, aes(xintercept=c(1988),  colour=Period), linetype="dashed", size=1, color = "grey") +  
+  geom_vline(data=test, aes(xintercept=c(2003),  colour=Period), linetype="dashed", size=1, color = "grey") +  
+  #geom_vline(data=test, aes(xintercept=c(2018),  colour=Period), linetype="dashed", size=1, color = "grey") +  
+  scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1974, 2018)) + scale_color_brewer(palette="Dark2") + 
+  annotate("rect", xmin = 1974, xmax=1988, ymin = 3.6, ymax = 4, alpha = .01, color = "black") +
+  annotate("text", x = 1981, y = 3.8, label = c("First Period (1974-1988)"))+
+  annotate("rect", xmin = 1988, xmax=2003, ymin = 3.6, ymax = 4, alpha = .01, color = "black") +
+  annotate("text", x = 1996, y = 3.8, label = c("Second Period (1989-2003)")) +
+  annotate("rect", xmin = 2003, xmax=2018, ymin = 3.6, ymax = 4, alpha = .01, color = "black") +
+  annotate("text", x = 2011, y = 3.8, label = c("Third Period (2004-2018)"))
+
+sum(test$Number_of_AI_patents) #39731
+log10(test$Number_of_AI_patents)
+
 jpeg("Files_created_with_the_code/figures/regular_resolution_ALL_FIGURES_ARE_HERE/Fig4_NewRegisters_percountry.jpg", width = 14, height = 10, units = 'in', res = 300)
 NewPatentsAI_colour
 dev.off()
 
 #high resolution
 jpeg("Files_created_with_the_code/figures/high_resolution/Fig4_NewRegisters_percountryHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+NewPatentsAI_colour
+dev.off()
+
+#high resolution
+jpeg("Files_created_with_the_code/figures/high_resolution/Fig4_NewRegisters_percountryHigh.jpg", width = 14, height = 10, units = 'in', res = 800)
+NewPatentsAI_colour2
+dev.off()
+
+#high resolution
+jpeg("Files_created_with_the_code/figures/high_resolution/Fig4_NewRegisters_percountryHighold.jpg", width = 14, height = 10, units = 'in', res = 800)
 NewPatentsAI_colour
 dev.off()
 

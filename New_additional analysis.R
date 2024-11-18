@@ -1589,6 +1589,37 @@ jpeg("Files_created_with_the_code/figures/new_figures/AI_dgr_3rd.jpg", width = 1
 AI_dgr_3rd 
 dev.off()
 
+#extra two examples to give an general comparative overview:
+AI_dgr_3rd_1 <- 
+  g_tech_AI %N>%
+  left_join(AI_RCA3, by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) +
+  geom_node_text(aes(filter=Binary >= 0, label = field_name), size = 5, repel = TRUE) + 
+  theme_graph() +
+  ggtitle("AI-specific technological space (2004-2018)") #
+
+AI_dgr_3rd_2 <- 
+  g_tech_AI %N>%
+  left_join(AI_RCA3, by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) +
+  geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + 
+  theme_graph() +
+  ggtitle("AI-specific technological space (2004-2018)") #
+
+jpeg("Files_created_with_the_code/figures/new_figures/Extraexample1AI_dgr_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+AI_dgr_3rd_1 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/Extraexample2AI_dgr_3rd.jpg", width = 14, height = 10, units = 'in', res = 300)
+AI_dgr_3rd_2 
+dev.off()
+
 AI_com_3rd <- 
 g_tech_AI %N>%
   left_join(AI_RCA3, filter=AI_RCA$Period_sim ==p, by = c("name" = "techn_field_nr")) %>%
@@ -2352,7 +2383,7 @@ ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=Country, sha
   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +
   ylab("Share of coinciding specialisations (%)") +
-  ggtitle("Coinciding specialisations for technological fields") +
+  #ggtitle("Coinciding specialisations for technological fields") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   #geom_step(aes(color=Country), linetype = "dashed")+
@@ -2463,6 +2494,19 @@ OverlapTechn<-
   scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
   scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
 
+OverlapTechn2<-
+  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country), size=8) + 
+  scale_shape_manual(values=c(21, 22, 23, 24)) +
+  xlab("Period") +
+  ylab("Share of coinciding specialisations (%)") +
+ # ggtitle("Coinciding specialisations for all 4-digits IPC codes") +
+  theme_classic() +
+  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
+  scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
+
 OverlapAI<-
   ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_OnlyAI, group=Country, shape = Country, color=Country)) +
   geom_point(aes(fill = Country),size=8) + 
@@ -2475,7 +2519,7 @@ OverlapAI<-
   scale_y_continuous(labels = scales::percent)+
   scale_fill_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) +
   scale_color_manual(values = c("#0066CC", "#006699", "#003366", "#3399FF")) 
-
+log10(0.6)
 jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapTechn.jpg", width = 8, height = 6, units = 'in', res = 300)
 OverlapTechn 
 dev.off()
@@ -2486,6 +2530,10 @@ dev.off()
 
 jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapTechn2.jpg", width = 8, height = 4, units = 'in', res = 300)
 OverlapTechn 
+dev.off()
+
+jpeg("Files_created_with_the_code/figures/new_figures/Fig7_OverlapTechn3.jpg", width = 8, height = 4, units = 'in', res = 300)
+OverlapTechn2
 dev.off()
 
 #new: create same figure, but for the top10 codes:
@@ -2686,7 +2734,7 @@ plot <- ggplot(NULL, aes()) +
   # apply the empty theme
   empty_theme +
   # labels
-  labs(title = "Types of local specialisations considered",
+  labs(title = NULL,
        x = "Local AI-specific specialisations",
        y = "Local General specialisations") +
   # create the quadrants
@@ -2697,9 +2745,9 @@ plot <- ggplot(NULL, aes()) +
   geom_segment(aes(x = 5, y = 0, xend = 5, yend = 10)) +
   geom_segment(aes(x = 0, y = 10, xend = 10, yend = 10)) +
   # quadrant labels
-  annotate("text", x = 2.5, y = 2.5, alpha = 2, label = "No specialisation (type 3)") +
+  annotate("text", x = 2.5, y = 2.5, alpha = 2, label = "No specialisation (type 0)") +
   annotate("text", x = 2.5, y = 7.5, alpha = 2, label = "General specialisation (type 1)") +
-  annotate("text", x = 7.5, y = 2.5, alpha = 2, label = "AI-specific specialisation (type 4)") +
+  annotate("text", x = 7.5, y = 2.5, alpha = 2, label = "AI-specific specialisation (type 3)") +
   annotate("text", x = 7.5, y = 7.5, alpha = 2, label = "Coinciding specialisation (type 2)") +
   # arrows are cut in half which conveniently matches the gartner one
   annotate("segment", x = 0, xend = 10, y = -.9, yend = -.9,colour = "black",
@@ -2719,15 +2767,16 @@ plot +
   annotate("rect", xmin = 5, xmax = 10, ymin = 0, ymax = 5, fill= "#3399FF", alpha = .6)+
   annotate("rect", xmin = 0, xmax = 5, ymin = 5, ymax = 10, fill= "#FF0000", alpha = .5)+
   annotate("rect", xmin = 5, xmax = 10, ymin = 5, ymax = 10, fill= "#009900", alpha = .6)
-
+plot
 
 #jpeg("Files_created_with_the_code/figures/new_figures/Matrix2x2.jpg", width = 7, height = 7, units = 'in', res = 500)
 #plot 
 #dev.off()
 
-jpeg("Files_created_with_the_code/figures/new_figures/Matrix2x2_2ndversion.jpg", width = 7, height = 7, units = 'in', res = 500)
+jpeg("Files_created_with_the_code/figures/new_figures/Matrix2x2_3RDversion.jpg", width = 7, height = 7, units = 'in', res = 500)
 plot
 dev.off()
+
 
 #nice one in https://stackoverflow.com/questions/57923246/making-a-a-four-quadrant-proportional-area-chart-in-r
 
