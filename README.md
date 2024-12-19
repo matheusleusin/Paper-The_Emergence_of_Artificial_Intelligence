@@ -13,30 +13,30 @@ The data subfolder contains two other subfolders: one that saves files linked to
 In short, the data files saved in the **"files_code_Fields_analysis"** folder are:
 
  * AI_ALL_patents.csv: Contains detailed information on all patents identified as AI-related across the dataset. It serves as the primary dataset for analyzing AI technological development.
- * Data1period_RCA_techn_field.csv:  Captures RCA (Revealed Technological Advantage) values for technological fields linked to countries during the first period (1974–1988). It highlights country-level specializations in each technological field during this interval.
- * Data2period_RCA_techn_field.csv: Documents RCA values for technological fields linked to countries during the second period (1989–2003). It reflects changes in specialization dynamics compared to the first period.
- * Data3period_RCA_techn_field.csv: Records RCA values for technological fields linked to countries during the third period (2004–2018). It is used to analyze specialization trends in the most recent timeframe.
- * IPC_RCAs.csv: Contains RCA values specifically calculated for IPC (International Patent Classification) classes. This file enables a deeper understanding of country-level specializations at the IPC class level.
+ * Data1period_RTA_techn_field.csv:  Captures RTA (Revealed Technological Advantage) values for technological fields linked to countries during the first period (1974–1988). It highlights country-level specializations in each technological field during this interval.
+ * Data2period_RTA_techn_field.csv: Documents RTA values for technological fields linked to countries during the second period (1989–2003). It reflects changes in specialization dynamics compared to the first period.
+ * Data3period_RTA_techn_field.csv: Records RTA values for technological fields linked to countries during the third period (2004–2018). It is used to analyze specialization trends in the most recent timeframe.
+ * IPC_RTAs.csv: Contains RTA values specifically calculated for IPC (International Patent Classification) classes. This file enables a deeper understanding of country-level specializations at the IPC class level.
  * Matrix_IPC.csv: Presents a matrix of IPC codes showing their co-occurrence or linkages in the dataset. It is used to identify technological clusters or relationships between IPC codes.
  * Metrics_First_period.csv: Includes various calculated metrics (e.g., diversification, specialization) for the first period (1974–1988). It provides quantitative insights into innovation patterns during this timeframe.
  * Metrics_Second_period.csv: Contains calculated metrics for the second period (1989–2003). It allows comparison with the metrics from the first period to analyze temporal changes.
  * Metrics_Third_period.csv: Stores calculated metrics for the third period (2004–2018). It helps track innovation trends and specializations in the most recent phase.
- * RCA_4countries_detailed.csv: Provides detailed RCA values for four leading AI countries (China, Japan, South Korea, and the USA) across all periods. It focuses on country-level specializations and their evolution over time.
- * reg_techAI_FirstPeriod.csv: Contains RCA values for AI-specific technological fields linked to countries during the first period (1974–1988). It highlights AI-related specializations at the country level in this interval.
- * reg_techAI_SecondPeriod.csv: Includes RCA values for AI-specific technological fields linked to countries during the second period (1989–2003). It tracks changes in AI-related specializations compared to the first period.
- * reg_techAI_ThirdPeriod.csv: Documents RCA values for AI-specific technological fields linked to countries during the third period (2004–2018). It focuses on AI-related specializations in the most recent timeframe.
- * reg_tech_FirstPeriod.csv: Contains RCA values for general technological fields (not limited to AI) linked to countries during the first period (1974–1988). It captures country-level specializations in each technology field during this interval.
- * reg_tech_SecondPeriod.csv: Includes RCA values for general technological fields linked to countries during the second period (1989–2003). It reflects changes in country-level specializations compared to the first period.
- * reg_tech_ThirdPeriod.csv: Documents RCA values for general technological fields linked to countries during the third period (2004–2018). It provides insights into the most recent technological specializations.
+ * RTA_4countries_detailed.csv: Provides detailed RTA values for four leading AI countries (China, Japan, South Korea, and the USA) across all periods. It focuses on country-level specializations and their evolution over time.
+ * reg_techAI_FirstPeriod.csv: Contains RTA values for AI-specific technological fields linked to countries during the first period (1974–1988). It highlights AI-related specializations at the country level in this interval.
+ * reg_techAI_SecondPeriod.csv: Includes RTA values for AI-specific technological fields linked to countries during the second period (1989–2003). It tracks changes in AI-related specializations compared to the first period.
+ * reg_techAI_ThirdPeriod.csv: Documents RTA values for AI-specific technological fields linked to countries during the third period (2004–2018). It focuses on AI-related specializations in the most recent timeframe.
+ * reg_tech_FirstPeriod.csv: Contains RTA values for general technological fields (not limited to AI) linked to countries during the first period (1974–1988). It captures country-level specializations in each technology field during this interval.
+ * reg_tech_SecondPeriod.csv: Includes RTA values for general technological fields linked to countries during the second period (1989–2003). It reflects changes in country-level specializations compared to the first period.
+ * reg_tech_ThirdPeriod.csv: Documents RTA values for general technological fields linked to countries during the third period (2004–2018). It provides insights into the most recent technological specializations.
  * Specializations_All_periods_IPC.csv: Summarizes specialization metrics across all periods (1974–2018) at the IPC class level. It highlights which IPC classes countries specialized in and how these changed over time.
  * Table_appendix.xlsx: Contains supplementary tables used for the paper's appendices. It includes data supporting additional analyses or robustness checks not directly included in the main results.
 
 The data files saved in the **"files_code_Fields_analysis"** folder are:
 
- * Data1period_RCA_subclass.csv: Contains RCA (Revealed Comparative Advantage) values calculated for specific IPC subclasses during the first period (1974–1988). This file helps analyze specialization patterns at a more granular level for the initial timeframe.
- * Data2period_RCA.csv: Documents RCA values for IPC classes during the second period (1989–2003). It reflects how specialization patterns evolved compared to the first period.
- * Data3period_RCA.csv: Captures RCA values for IPC classes during the third period (2004–2018). It highlights trends in specialization in the most recent timeframe.
- * IPC_RCAs_subclass.csv: Summarizes RCA values across all periods (1974–2018) for IPC subclasses. It offers detailed insights into specialization trends at the subclass level.
- * RCA_1st_AI.csv: Contains RCA values specifically for AI-related IPC subclasses during the first period (1974–1988). It identifies AI-related specialization trends during this early timeframe.
- * RCA_2nd_AI.csv: Includes RCA values for AI-related IPC subclasses during the second period (1989–2003). It tracks changes in specialization compared to the first period.
- * RCA_3rd_AI.csv: Documents RCA values for AI-related IPC subclasses during the third period (2004–2018). It highlights AI-related specialization trends in the most recent timeframe.
+ * Data1period_RTA_subclass.csv: Contains RTA values calculated for specific IPC subclasses during the first period (1974–1988). This file helps analyze specialization patterns at a more granular level for the initial timeframe.
+ * Data2period_RTA.csv: Documents RTA values for IPC classes during the second period (1989–2003). It reflects how specialization patterns evolved compared to the first period.
+ * Data3period_RTA.csv: Captures RTA values for IPC classes during the third period (2004–2018). It highlights trends in specialization in the most recent timeframe.
+ * IPC_RTAs_subclass.csv: Summarizes RTA values across all periods (1974–2018) for IPC subclasses. It offers detailed insights into specialization trends at the subclass level.
+ * RTA_1st_AI.csv: Contains RTA values specifically for AI-related IPC subclasses during the first period (1974–1988). It identifies AI-related specialization trends during this early timeframe.
+ * RTA_2nd_AI.csv: Includes RTA values for AI-related IPC subclasses during the second period (1989–2003). It tracks changes in specialization compared to the first period.
+ * RTA_3rd_AI.csv: Documents RTA values for AI-related IPC subclasses during the third period (2004–2018). It highlights AI-related specialization trends in the most recent timeframe.
