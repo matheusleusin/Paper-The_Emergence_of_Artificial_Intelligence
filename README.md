@@ -1,12 +1,76 @@
 # Paper-The_Emergence_of_Artificial_Intelligence
 
-This repository relates to the **working paper** entitled *"An evolutionary view on the emergence of Artificial Intelligence"*, available in http://arxiv.org/abs/2102.00233. 
-The current repository is based on two codes, described below:
+This repository relates to the **working paper** entitled *"Breaking In, Breaking Through, or Just Breaking the Cycle? How Local Specialisations Steer Global AI Leadership"*, which was submitted to Technological Forecasting and Social Change. 
+The repository contains files that can be used to reproduce and to check all of the calculations and figures presented in the paper. It includes two R codes (one that reproduces the main figures, named *"1.Main_code.R"*, and one that reproduces the figures presented in the appendix, named *"2.Appendix_Figures.R"*). There is also a markdown implementation file (named *"1.Main_code_markdown.Rmd"*) that explain step-by-step all of the analyses included in the main R code. This markdown also generates an [html file](https://matheusleusin.github.io/Paper-The_Emergence_of_Artificial_Intelligence/1.Main_code_markdown.html) that allows visualizing its step-by-step reproduction.
 
-- The code "*Fields_analysis*" is used for analysing patents using the technological fields' classification, which is also the one used for calculating the measures of complexity and relatedness presented in the paper; this code generates Figures 1, 2, 3, 4, 5, 7, 8, and 9, presented in the paper; 
-- The code "*4-digits_analysis*" is used for analysing patents using the 4-digits IPC classification, a.k.a. subclass codes; this code generates Figure 6, presented in the paper;
+The folders named **"large_files"** and **"other_files"** are used as input to run all codes. The first folder, **"large_files"**, contains data about patent and inventors' location information for all priority patents available in PATSTAT 2019 (spring edition) for the period from 1974 to 2018. Due to Intellectual Property rights of patstat (and size), these files are not made available here (the whole repository is set to be ignored via .gitignore). They are divided into two different files (one used for technological fields analysis, and one for subclasses analysis), and each of these in two parts (due to size). One part (always named Part1) contains data for the period from 1974 to 2003 (both years included), and one contains data for the period from 2004 to 2018 (also both years included). A small sample of these files is available in the folder "**other files**". The file "All_patents_and_IPCs_Part1_SmallSampleWithHeader" contains a sample of the files used to build the technological fields-based analysis, whereas the file "All_patents_and_IPC_codes_Part1_SmallSampleWithHeader" contains a sample of the files used to build the subclass-based analysis. If you want to run the code completely, you must generate the complete files by applying the strategy presented in De Rassenfosse et al., 2019 (https://doi.org/10.1038/s41597-019-0264-6) for identifying first filings and the geolocation of their respective inventors to Patstat 2019 spring version. These files must be saved in the aforementioned **"large_files"** folder. An overlook of these files in the respective folder is shown below:
 
-Moreover, there are three folders in this repository:
-- a folder named "Files_created_with_the_code", which contains all data ("*Files_created_with_the_code/data*") and figures ("*Files_created_with_the_code/figures*") generated through the codes;
-- a folder named "other_files", which contains additional information needed for running the codes. This information includes a file ("ipc_technology.csv") used to translate 4 digits IPC codes into IPC technological fields (used in the code "*Fields_analysis*"); a file with all AI patents identifying through our keyword-based search ("IPCs_AI"), and a file containing labels used for defining the labels used in Figure 6 of the paper ("Summary IPC labels"). 
-- a hidden folder named "large_files", which contains the large files with all priority patents used in the analysis, and is defined through a ".gitignore" file to not be updated. These big files (i.e. *All_patents_and_IPCs_Part1, All_patents_and_IPCs_Part2, All_patents_and_IPC_codes_Part1,* and *All_patents_and_IPC_codes_Part2*) are not made publicly available because they comprise a significant share of data owned by Patstat 2019. A small sample of them is available in the folder "*other files*". The file "All_patents_and_IPCs_Part1_SmallSampleWithHeader" contains a sample of the files used in the code "*Fields_analysis*", whereas the file "All_patents_and_IPC_codes_Part1_SmallSampleWithHeader" contains a sample of the files used in the code "*4-digits_analysis*". You can build these datasets by applying the strategy presented in De Rassenfosse et al., 2019 (https://doi.org/10.1038/s41597-019-0264-6) for identifying first filings and the geolocation of their respective inventors to Patstat 2019 spring version.
+![image](https://github.com/user-attachments/assets/70388ae2-e728-40f0-b586-4fbada2a2351)
+
+Conversely, all files from the other folder, **"other_files"**, are made completely available.
+All files generated by the codes are saved within the folder **"Files_created_with_the_code"**. This folder contains a subfolder named **"data"** and a subfolder named **"figures"**, on which the generated files are saved accordingly.
+
+In short, the .csv files generated by the code are:
+
+*reg_tech_FirstPeriod.csv
+Contains RCA (Revealed Comparative Advantage) values for general technological fields during the first period (1974-1988).
+Captures country-level specializations in each technology in this interval.
+
+reg_tech_SecondPeriod.csv
+Similar to reg_tech_FirstPeriod.csv, but for the second period (1989-2003).
+Tracks changes in general technological specialization between the first and second periods.
+Highlights evolving technological strengths and weaknesses over time.
+reg_tech_ThirdPeriod.csv
+Contains RCA values for the third period (2004-2018).
+Shows technological specialization patterns in the most recent time frame analyzed.
+Useful for assessing the current technological strengths of the leading economies.
+reg_techAI_FirstPeriod.csv
+Contains RCA values specific to AI-related technological fields during the first period (1974-1988).
+Indicates the initial phases of AI development and which countries showed early specialization in AI.
+Provides a baseline for AI-specific technological trajectories.
+reg_techAI_SecondPeriod.csv
+Similar to reg_techAI_FirstPeriod.csv, but for the second period (1989-2003).
+Tracks the growth and spread of AI-related specializations over time.
+Highlights the shifts in AI specialization patterns globally.
+reg_techAI_ThirdPeriod.csv
+Contains AI-specific RCA values for the third period (2004-2018).
+Represents the most recent advancements in AI-related specializations.
+Helps understand how countries have integrated AI into their innovation systems.
+IPC_RCAs.csv
+Combines RCA values across all three periods for both general and AI-specific technologies.
+Facilitates comparisons of specialization trends over time and between technological domains.
+Essential for identifying long-term shifts in innovation patterns.
+Data1period_RCA_techn_field.csv
+Contains RCA values for individual technological fields during the first period (1974-1988).
+Focuses on granular-level insights into technological specializations.
+Useful for sector-specific analysis within the first time frame.
+Data2period_RCA_techn_field.csv
+Similar to Data1period_RCA_techn_field.csv, but for the second period (1989-2003).
+Captures intermediate changes in technological fields.
+Provides a detailed view of sectoral evolution during the second period.
+Data3period_RCA_techn_field.csv
+Contains RCA values for the third period (2004-2018) at the technological field level.
+Highlights recent specialization patterns within individual sectors.
+Enables detailed exploration of technological dynamics in the latest period.
+Metrics_First_period.csv
+Includes summary metrics for technological specializations in the first period.
+Aggregates data to provide an overview of country-level and global trends.
+Serves as a foundation for comparison with later periods.
+Metrics_Second_period.csv
+Provides summary metrics for the second period.
+Captures changes in technological dominance and emerging trends between the first and second periods.
+Useful for understanding mid-period innovation shifts.
+Metrics_Third_period.csv
+Contains summary metrics for the third period.
+Summarizes the latest trends and patterns in technological specializations.
+Helps identify convergences or divergences in global technological development.
+Specializations_All_periods_IPC.csv
+Aggregates RCA data for all three periods into a single file.
+Combines both general and AI-specific technological specializations.
+Enables comprehensive analysis of how technological trajectories evolved globally and locally.
+RCA_4countries_detailed.csv
+Provides detailed RCA values for the four leading AI countries (China, Japan, South Korea, USA).
+Covers both general and AI-specific technological specializations.
+Useful for country-level case studies and policy analysis.
+
+
