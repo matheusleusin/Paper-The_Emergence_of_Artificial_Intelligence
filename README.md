@@ -1,4 +1,4 @@
-# Paper-The_Emergence_of_Artificial_Intelligence
+# Paper: Breaking In, Breaking Through, or Just Breaking the Cycle? How Local Specialisations Steer Global AI Leadership
 
 This repository relates to the **working paper** entitled *"Breaking In, Breaking Through, or Just Breaking the Cycle? How Local Specialisations Steer Global AI Leadership"*, which was submitted to Technological Forecasting and Social Change. 
 The repository contains files that can be used to reproduce and to check all of the calculations and figures presented in the paper. It includes two R codes (one that reproduces the main figures, named *"1.Main_code.R"*, and one that reproduces the figures presented in the appendix, named *"2.Appendix_Figures.R"*). There is also a markdown implementation file (named *"1.Main_code_markdown.Rmd"*) that explain step-by-step all of the analyses included in the main R code. This markdown also generates an [html file](https://matheusleusin.github.io/Paper-The_Emergence_of_Artificial_Intelligence/1.Main_code_markdown.html) that allows visualizing its step-by-step reproduction.
