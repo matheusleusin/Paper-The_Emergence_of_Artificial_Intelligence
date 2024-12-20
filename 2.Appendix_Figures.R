@@ -342,6 +342,9 @@ IPC_names<-distinct(IPC_names, Subclass, .keep_all = TRUE)
 AI_RCA_1st <- read.csv("Files_created_with_the_code/data/files_code_4-digits_analysis/RCA_1st_AI.csv", sep = ";", header = TRUE, dec=",")#[,c(1,2,3)]
 IPC_names <- left_join(IPC_names, AI_RCA_1st, by="Subclass")
 
+#Set a random seed for reproducibility
+set.seed(123) #it doesn't work very well, sometimes the layout changes anyway
+
 g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
   left_join(IPC_names %>% mutate(Subclass = Subclass %>% as.character()), by = c("name" = "Subclass")) %>%
   mutate(dgr = centrality_eigen(weights = weight)) %E>%

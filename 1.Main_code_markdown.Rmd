@@ -3,6 +3,7 @@ title: "Markdown Main code"
 output:
   html_document:
     df_print: paged
+  word_document: default
   pdf_document: default
 ---
 
@@ -444,7 +445,6 @@ Newtable$Var1 <- gsub("0", "No specialization", str_trim(Newtable$Var1))
 Newtable$Var1 <- gsub("1", "General specialization", str_trim(Newtable$Var1))
 Newtable$Var1 <- gsub("2", "AI-specific specialization", str_trim(Newtable$Var1))
 Newtable$Var1 <- gsub("3", "Coinciding specialization", str_trim(Newtable$Var1))
-
 ```
 ```{r}
 Newtable[1:10,]
@@ -455,14 +455,15 @@ Next, we use the loaded information to plot technological spaces. For now, we ha
 ### 1.3.1. Global technological space (GTS)
 
 The first figure from the GTS doesn't have any information linked to specialisations. The command below uses the general network created before to plot this geography-agnostic GTS. The figure produced is saved at "Files_created_with_the_code/figures/Figure_3_GTS_for_IPC_fields.jpg" 
-```{r}
+```{r, fig.width=14, fig.height=10}
 g_tech_AI %>%  ggraph(layout =  coords_tech_AI) + 
   geom_edge_link(aes(width = weight), alpha = 0.4, colour = "grey") + 
   geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector))+ 
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) + 
-  geom_node_text(aes(label = field_name), size = 3, repel = TRUE) + 
-  theme_graph()+  ggtitle("Global technological space: IPC Technological fields") + 
-  theme(legend.title = element_text(size = 6), legend.text = element_text(size = 6)) + 
+  geom_node_text(aes(label = field_name), size = 6, repel = TRUE) + 
+  theme_graph(base_family = "sans")+  
+  ggtitle("Global technological space: IPC Technological fields") + 
+  theme(legend.title = element_text(size = 10), legend.text = element_text(size = 10)) + 
   guides(colour = guide_legend(override.aes = list(size=4)))+
   geom_mark_hull(aes(x = x, y=y, colour = sector, fill= sector,
                      linetype = sector), alpha = 0.15, expand = unit(2.5, "mm"), size = .8) 
@@ -471,7 +472,7 @@ g_tech_AI %>%  ggraph(layout =  coords_tech_AI) +
 
 
 Next, this very same technological space is used to plot the technological trajectories of the selected countries, through plotting their specialisations information. Thus, the commands for color and size of the nodes are adapted to reflected the previously calculated 3 types of specialisations. Three technological spaces are plotted for each country (one for each interval). Using again the case of Japan as an example, in the first interval:
-```{r, include=FALSE}
+```{r, fig.width=14, fig.height=10}
 #GTS with specialisations per country
 country_select <- c("CN", "US", "JP", "KR")
 ### 1.2.3.3. Third Country
@@ -485,7 +486,7 @@ p=1
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + theme(legend.position = "none")+
+  theme_graph(base_family = "sans") + theme(legend.position = "none")+
   ggtitle("Global technological space: Japan (1974-1988)")
 ```
 The code is the basically the same for the remaining countries in interval. The countries and intervals are selected by varying the variables i (for countries), and p (for intervals). The figures are generated and combined by country using the custom function "multiplot". The files are saved at "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_d_China.jpg", "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_b_USA.jpg", "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_a_Japan.jpg", and "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_c_SouthKorea.jpg".
@@ -542,7 +543,7 @@ AI_RCA$Binary <- ifelse(AI_RCA$RCA_AI_Period < 1, 0,1)
 head(AI_RCA)
 ```
 Where "RCA_AI_Period" refers to the specific RTA of each code for each interval (which in turn is shown in the column Period_sim). We then plot the ATS for the first interval:
-```{r}
+```{r, fig.width=14, fig.height=10}
 AI_RCA1 <- AI_RCA[AI_RCA$Period_sim == 1,]
 p=1
   g_tech_AI %N>%
@@ -551,8 +552,8 @@ p=1
   geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
   geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("Degree", range = c(2, 12)) +
-  geom_node_text(aes(filter=Binary > .99, label = field_name), size = 3, repel = TRUE) +
-  theme_graph() + guides(colour = guide_legend(override.aes = list(size=1)))+
+  geom_node_text(aes(filter=Binary > .99, label = field_name), size = 6, repel = TRUE) +
+  theme_graph(base_family = "sans") + guides(colour = guide_legend(override.aes = list(size=5)))+
   ggtitle("AI-specific technological space (1974-1988)") #
 ```
 
@@ -620,7 +621,7 @@ colnames(SummaryAllData)[1] <- "Country"
 head(SummaryAllData)
 ```
 This file is all we need to create Figure 6, shown below (and saved in file "Files_created_with_the_code/figures/Figure_6_Share_coinciding_specialisations_techn_field.jpg")
-```{r}
+```{r, fig.width=12, fig.height=4}
   ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
   geom_point(aes(fill = Country), size=8) +   scale_shape_manual(values=c(21, 22, 23, 24)) +
   xlab("Period") +  ylab("Share of coinciding specialisations (%)") +
@@ -675,7 +676,7 @@ IPC_RCAs %<>%
 SummaryAllData4dig<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
 colnames(SummaryAllData4dig)[1] <- "Country"
 ```
-```{r}
+```{r, fig.width=12, fig.height=4}
   ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
   geom_point(aes(fill = Country), size=8) + 
   scale_shape_manual(values=c(21, 22, 23, 24)) +
@@ -734,7 +735,7 @@ Ais <- ddply(IPC_RCAs_Top4, c("Period", "Label"), summarise, Value.mean=log10(me
 head(Ais)
 ```
 These two datasets are used to create two distinct figures, which are combined to produce Figure 7. The firt figure is produced through:
-```{r}
+```{r, fig.width=17, fig.height=7}
 ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period, shape =`Type of specialization`, fill = Period)) + geom_count(alpha=0.7, size=6) +
   facet_wrap(~Label, ncol = 5)  +  theme_classic() +
   scale_fill_manual(values = c("#FF9999", "#FF0000", "#660000")) +
@@ -743,12 +744,12 @@ ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period, shape =`
   geom_vline(data=Gen, aes(xintercept=0), linetype="dashed", size=1) +  
   ggtitle("Countries' Performance by IPC code - General specialisations") +
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
-  ylab(NULL) #+ theme(text = element_text(size = 9))
+  ylab(NULL) + theme(text = element_text(size = 13))
 ```
 
 
 The second figure is:
-```{r}
+```{r, fig.width=17, fig.height=7}
   ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period, shape =`Type of specialization`, fill = Period)) + geom_count(alpha=0.7, size=6) +
   facet_wrap(~Label, ncol = 5)  +  theme_classic() +
   scale_fill_manual(values = c("#66CCFF", "#0066CC", "#000033")) + 
@@ -757,7 +758,7 @@ The second figure is:
   geom_vline(data=Ais, aes(xintercept=0), linetype="dashed", size=1) +
   ggtitle("Countries' Performance by IPC code - AI-specific specialisations") +
   xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
-  ylab(NULL) #+ theme(text = element_text(size = 9)) 
+  ylab(NULL) + theme(text = element_text(size = 13)) 
 ```
 
 
@@ -854,13 +855,13 @@ Data$Period <- ifelse(Data$Year >= 1974 & Data$Year <= 1988, "First Period (1974
                              ifelse(Data$Year >= 2004 & Data$Year < 2019, "Third Period (2004-2018)", "No period")))
 test <- Data[Data$Period != "No period",]  
 ```
-```{r}
+```{r, fig.width=12, fig.height=8}
   ggplot(data=test, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
   geom_line(size=1.2, aes(linetype=Country)) +
   geom_point(size=4) +  xlab("Year") +  ylab("Number of new AI registers [Log10]") + theme_classic() +
   scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
   scale_shape_manual(values=c(16, 15, 17, 18)) + theme(legend.position="bottom") +
-  theme(text = element_text(size = 9)) +  scale_y_continuous(limits=c(0,4)) + 
+  theme(text = element_text(size = 15)) +  scale_y_continuous(limits=c(0,4)) + 
   geom_vline(data=test, aes(xintercept=c(1988),  colour=Period), linetype="dashed", size=1, color = "grey") +  
   geom_vline(data=test, aes(xintercept=c(2003),  colour=Period), linetype="dashed", size=1, color = "grey") +  
   scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1974, 2018)) + scale_color_brewer(palette="Dark2") + 

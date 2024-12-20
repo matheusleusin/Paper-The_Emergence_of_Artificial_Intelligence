@@ -771,7 +771,7 @@ General <-
   geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector))+ # 
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) + 
   geom_node_text(aes(label = field_name), size = 4, repel = TRUE) + 
-  theme_graph()+  ggtitle("Global technological space: IPC Technological fields") + 
+  theme_graph(base_family = "sans")+  ggtitle("Global technological space: IPC Technological fields") + 
   theme(legend.title = element_text(size = 14), legend.text = element_text(size = 10)) + 
   guides(colour = guide_legend(override.aes = list(size=10)))+
   geom_mark_hull(aes(x = x, y=y, colour = sector, fill= sector,
@@ -797,7 +797,7 @@ China_1st<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 4, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + theme(legend.position = "none")+
+  theme_graph(base_family = "sans") + theme(legend.position = "none")+
   ggtitle("Global technological space: China (1974-1988)")
 
 p=2
@@ -810,7 +810,7 @@ China_2nd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 4, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() +theme(legend.position = "none")+
+  theme_graph(base_family = "sans") +theme(legend.position = "none")+
   ggtitle("Global technological space: China (1989-2003)")
 
 p=3
@@ -823,7 +823,7 @@ China_3rd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 4, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() +guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
+  theme_graph(base_family = "sans") +guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
                         shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
@@ -845,7 +845,7 @@ USA_1st<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + theme(legend.position = "none")+
+  theme_graph(base_family = "sans") + theme(legend.position = "none")+
   ggtitle("Global technological space: USA (1974-1988)")
 
 p=2
@@ -858,7 +858,7 @@ USA_2nd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + theme(legend.position = "none")+
+  theme_graph(base_family = "sans") + theme(legend.position = "none")+
   ggtitle("Global technological space: USA (1989-2003)")
 
 p=3
@@ -872,7 +872,7 @@ USA_3rd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
+  theme_graph(base_family = "sans") + guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
                          shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
@@ -890,7 +890,7 @@ Japan_1st<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + theme(legend.position = "none")+
+  theme_graph(base_family = "sans") + theme(legend.position = "none")+
   ggtitle("Global technological space: Japan (1974-1988)")
 
 p=2
@@ -903,7 +903,7 @@ Japan_2nd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + theme(legend.position = "none")+
+  theme_graph(base_family = "sans") + theme(legend.position = "none")+
   ggtitle("Global technological space: Japan (1989-2003)")
 
 p=3
@@ -916,7 +916,7 @@ Japan_3rd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() + guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
+  theme_graph(base_family = "sans") + guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
                          shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
@@ -934,7 +934,7 @@ SouthKorea_1st<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() +theme(legend.position = "none")+
+  theme_graph(base_family = "sans") +theme(legend.position = "none")+
   ggtitle("Global technological space: South Korea (1974-1988)")
 
 p=2
@@ -947,7 +947,7 @@ SouthKorea_2nd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() +theme(legend.position = "none")+
+  theme_graph(base_family = "sans") +theme(legend.position = "none")+
   ggtitle("Global technological space: South Korea (1989-2003)")
 
 p=3
@@ -961,7 +961,7 @@ SouthKorea_3rd<-
   scale_shape_manual(values=c(21, 22, 23, 24)) + labs(color   = "RCA") + scale_size("Degree", range = c(2, 12))+ 
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
-  theme_graph() +guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
+  theme_graph(base_family = "sans") +guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
                         shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
@@ -1058,7 +1058,7 @@ g_tech_AI %>%  ggraph(layout =  coords_tech_AI) +
   geom_node_point(aes(fill = sector, size = dgr, shape= sector))+ 
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size(range = c(2, 10)) +
   geom_node_text(aes(label = field_name), size = 4, repel = TRUE) + 
-  theme_graph()+  ggtitle("Technology Space: IPC codes") + 
+  theme_graph(base_family = "sans")+  ggtitle("Technology Space: IPC codes") + 
   theme(legend.title = element_text(size = 14),legend.text = element_text(size = 10)) + 
   guides(colour = guide_legend(override.aes = list(size=10)))+
   geom_mark_hull(aes(x = x, y=y, colour = sector, fill= sector,
@@ -1076,7 +1076,7 @@ AI_dgr_1st <-
   geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("Degree", range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
-  theme_graph() +
+  theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
 
 jpeg("Files_created_with_the_code/figures/Extra/Figure_2_Example_ATS_and_AI_core_technologies_1stInterval.jpg", width = 14, height = 10, units = 'in', res = 300)
@@ -1092,7 +1092,7 @@ AI_RCA_1st_allnames <-
   geom_node_point(aes(fill = sector, size = RCA_AI_Period, shape= sector)) +
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
-  theme_graph() +
+  theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
 
 jpeg("Files_created_with_the_code/figures/Extra/AI_RCA_1st_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
@@ -1139,7 +1139,7 @@ AI_dgr_2nd <-
   geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree",range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + 
-  theme_graph() +
+  theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1989-2003)") #
 
 #save a new network just to check all the names later:
@@ -1151,7 +1151,7 @@ AI_RCA_2nd_allnames <-
   geom_node_point(aes(fill = sector, size = RCA_AI_Period, shape= sector)) +
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
-  theme_graph() +
+  theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
 jpeg("Files_created_with_the_code/figures/Extra/AI_RCA_2nd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_2nd_allnames 
@@ -1197,7 +1197,7 @@ AI_dgr_3rd <-
   geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) +
   geom_node_text(aes(filter=Binary > .99, label = field_name), size = 5, repel = TRUE) + 
-  theme_graph() + 
+  theme_graph(base_family = "sans") + 
   ggtitle("AI-specific technological space (2004-2018)") #
 
 #save a new network just to check all the names later:
@@ -1209,7 +1209,7 @@ AI_RCA_3rd_allnames <-
   geom_node_point(aes(fill = sector, size = RCA_AI_Period, shape= sector)) +
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size(range = c(1, 12)) +
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
-  theme_graph() +
+  theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
 jpeg("Files_created_with_the_code/figures/Extra/AI_RCA_3rd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_3rd_allnames 
@@ -1428,7 +1428,7 @@ reg_RCA2_AIspecific <- mat_reg_tech2 %>% location_quotient(binary = F) %>%
 Data2period <- merge(reg_RCA2, reg_RCA2_AIspecific, all=T, by=c("ctry_code", "Subclass"))
 Data2period$Period <- "1989-2003"
 names(Data2period) <- c("ctry_code", "Subclass", "RCA_Gen", "RCA_AI", "Period")
-write.csv2(Data2period, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/Data2period_RCA.csv", row.names = F)
+write.csv2(Data2period, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/Data2period_RCA_subclass.csv", row.names = F)
 rm(mat_reg_tech2)
 
 ###2.1.3. Subclasses Third interval (2004-2018) ----
@@ -1577,7 +1577,7 @@ reg_RCA3_AIspecific <- mat_reg_tech3 %>% location_quotient(binary = F) %>%
 Data3period <- merge(reg_RCA3, reg_RCA3_AIspecific, all=T, by=c("ctry_code", "Subclass"))
 Data3period$Period <- "2004-2018"
 names(Data3period) <- c("ctry_code", "Subclass", "RCA_Gen", "RCA_AI", "Period")
-write.csv2(Data3period, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/Data3period_RCA.csv", row.names = F)
+write.csv2(Data3period, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/Data3period_RCA_subclass.csv", row.names = F)
 
 IPC_RCAs <- rbind(Data1period, Data2period, Data3period)
 write.csv2(IPC_RCAs, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/IPC_RCAs_subclass.csv", row.names = F)
