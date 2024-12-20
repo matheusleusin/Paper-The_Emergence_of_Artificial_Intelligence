@@ -42,4 +42,4 @@ The data files saved in the **"files_code_4-digits_analysis"** folder are:
 * **RTA_1st_AI.csv**: Contains RTA values for subclasses specifically calculated based on *AI PATENTS* registered during the first interval (1974–1988).
 * **RTA_2nd_AI.csv**: Similar to the file above, but for the second interval (1989–2003).
 * **RTA_3rd_AI.csv**: Similar to the file above, but for the third interval (2004–2018). 
-* * **IPC_RTAs_subclass.csv**: It combines the 6 files presented above to summarize in one table all general and AI-specific specialisations per interval for the whole period (1974–2018) for IPC subclasses.
+* **IPC_RTAs_subclass.csv**: It combines the 6 files presented above to summarize in one table all general and AI-specific specialisations per interval for the whole period (1974–2018) for IPC subclasses.
