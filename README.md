@@ -29,7 +29,7 @@ In short, the data files saved in the **"files_code_Fields_analysis"** folder ar
 * **reg_techAI_SecondPeriod.csv**: Similar to the file above, but for the second interval (1989–2003).
 * **reg_techAI_ThirdPeriod.csv**: Similar to the file above, but for the third interval (2004–2018). 
 * **reg_tech_FirstPeriod.csv**: Contains a list of the number of registers per technological field for ALL considered countries regarding *ALL PATENTS* (i.e., not only AI) registered in the first interval (1974–1988).
-* **reg_tech_SecondPeriod.csv**:Similar to the file above, but for the second interval (1989–2003).
+* **reg_tech_SecondPeriod.csv**: Similar to the file above, but for the second interval (1989–2003).
 * **reg_tech_ThirdPeriod.csv**: Similar to the file above, but for the third interval (2004–2018). 
 * **Specializations_All_periods_IPC.csv**: Combines the files Metrics_First_period, Metrics_Second_period, and Metrics_Third_period to produce interval-specific specialisation-metrics for the whole period (1974–1988) at the technological field level.
 * **Table_appendix.xlsx**: Contains supplementary tables used for the paper's appendices. It includes data supporting additional analyses presented for the four countries and types of specialisations considered.
