@@ -1,4 +1,5 @@
 #### Main Code
+#This is the first code to be executed. It generates the main data and figures used in the analysis.
 # Load required libraries
 library(tidyverse)
 library(magrittr)
@@ -22,7 +23,24 @@ rm(list=ls())
 #set the working directory to where you saved the R code:
 setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
 
-#1.First part: Technological Spaces based on Technological field -----
+#create important folders
+# Helper function to create the folders only if they don't exist yet
+safe_dir_create <- function(path) {
+  if (!dir.exists(path)) dir.create(path, recursive = TRUE)
+}
+
+# Create all needed folders
+safe_dir_create("Files_created_with_the_code/data")
+safe_dir_create("Files_created_with_the_code/data/files_code_4-digits_analysis")
+safe_dir_create("Files_created_with_the_code/data/files_code_4-digits_analysis/robustness")
+safe_dir_create("Files_created_with_the_code/data/files_code_Fields_analysis")
+safe_dir_create("Files_created_with_the_code/data/files_code_Fields_analysis/robustness")
+
+safe_dir_create("Files_created_with_the_code/figures")
+safe_dir_create("Files_created_with_the_code/figures/robustness")
+safe_dir_create("Files_created_with_the_code/figures/extra")
+
+#1.FIRST PART: Technological Spaces based on Technological field -----
 #Create important functions 
 # This function groups data by application ID, and within each group, it calculates
 # a field-specific weight equal to 1 divided by the number of records in that group.
@@ -172,14 +190,31 @@ mat_reg_tech1_AI <- region_tech_fields_1_ai_df %>%
 
 mat_reg_tech1_AI %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>% as.matrix() %>%  round()
 
-reg_RCA1_AI_df <- mat_reg_tech1_AI %>% location_quotient(binary = FALSE) %>% 
+reg_RCA1_AI_df <- mat_reg_tech1_AI %>% location_quotient(binary = F) %>% 
   as.data.frame() %>% rownames_to_column("ctry_code") %>%   
   as_tibble() %>%   gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%  arrange(ctry_code, techn_field_nr)
+
+#mat_reg_tech1_AI has the numbers I need for AI; mat_reg_tech1 has the numbers for general;
+#test1 <- mat_reg_tech1[,c("1", "2", "3")]
+
+#library(tibble)
+General_raw <- rownames_to_column(as.data.frame(mat_reg_tech1), var = "country_code")
+General_raw$info <- "general"
+AI_raw <- rownames_to_column(as.data.frame(mat_reg_tech1_AI), var = "country_code")
+AI_raw$info <- "AI"
+Raw_Info <- full_join(General_raw, AI_raw)
+write.csv2(Raw_Info, 
+           file = "Files_created_with_the_code/data/files_code_Fields_analysis/Data1period_Raw_Info.csv", 
+           row.names = FALSE)
+rm(General_raw, AI_raw)
 
 # Merge general and AI-specific RCA data for Interval 1
 rca_data_period_1_df <- merge(reg_RCA1_df, reg_RCA1_AI_df, all = TRUE, by = c("ctry_code", "techn_field_nr"))
 rca_data_period_1_df$Period <- "1974-1988"
 names(rca_data_period_1_df) <- c("ctry_code", "techn_field_nr", "RCA_Gen", "RCA_AI", "Period")
+
+#test <- rca_data_period_1_df[rca_data_period_1_df$ctry_code == "JP",]
+
 write.csv2(rca_data_period_1_df, 
            file = "Files_created_with_the_code/data/files_code_Fields_analysis/Data1period_RCA_techn_field.csv", 
            row.names = FALSE)
@@ -189,7 +224,9 @@ setDT(ai_patents_df)
 setDT(ipc_all_patents_first_period_df)
 ipc_all_patents_first_period_df[ai_patents_df, on = "appln_id", ctry_code := i.ctry_code]
 region_tech_ai_1_df <- group_by_applnID(ipc_all_patents_first_period_df)
-region_tech_ai_1_df <- group_by_ctry_and_techn_field(region_tech_ai_1_df)
+region_tech_ai_1_df <- group_by_ctry_and_techn_field(region_tech_ai_1_df) #this part has the country information on number of
+#patents per field per country (first term); the previous region_tech_fields_1_ai_df has the number of AI patents per field,
+#whereas mat_reg_tech1 refers to the general
 
 write.csv2(region_tech_ai_1_df, 
            file = "Files_created_with_the_code/data/files_code_Fields_analysis/reg_techAI_FirstPeriod.csv", 
@@ -241,6 +278,16 @@ mat_reg_tech2_AI %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>
 reg_RCA2_AI_df <- mat_reg_tech2_AI %>% location_quotient(binary = FALSE) %>% 
   as.data.frame() %>% rownames_to_column("ctry_code") %>% as_tibble() %>%   
   gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%   arrange(ctry_code, techn_field_nr)
+
+General_raw <- rownames_to_column(as.data.frame(mat_reg_tech2), var = "country_code")
+General_raw$info <- "general"
+AI_raw <- rownames_to_column(as.data.frame(mat_reg_tech2_AI), var = "country_code")
+AI_raw$info <- "AI"
+Raw_Info <- full_join(General_raw, AI_raw)
+write.csv2(Raw_Info, 
+           file = "Files_created_with_the_code/data/files_code_Fields_analysis/Data2period_Raw_Info.csv", 
+           row.names = FALSE)
+rm(General_raw, AI_raw)
 
 # Merge general and AI-specific RCA data for Interval 2
 rca_data_period_2_df <- merge(reg_RCA2_df, reg_RCA2_AI_df, all = TRUE, by = c("ctry_code","techn_field_nr"))
@@ -337,6 +384,16 @@ mat_reg_tech3_AI %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>
 reg_RCA3_AI_df <- mat_reg_tech3_AI %>% location_quotient(binary = FALSE) %>% 
   as.data.frame() %>%   rownames_to_column("ctry_code") %>%   
   as_tibble() %>%   gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%  arrange(ctry_code, techn_field_nr)
+
+General_raw <- rownames_to_column(as.data.frame(mat_reg_tech3), var = "country_code")
+General_raw$info <- "general"
+AI_raw <- rownames_to_column(as.data.frame(mat_reg_tech3_AI), var = "country_code")
+AI_raw$info <- "AI"
+Raw_Info <- full_join(General_raw, AI_raw)
+write.csv2(Raw_Info, 
+           file = "Files_created_with_the_code/data/files_code_Fields_analysis/Data3period_Raw_Info.csv", 
+           row.names = FALSE)
+rm(General_raw, AI_raw)
 
 # Merge general and AI-specific RCA data for Interval 3
 rca_data_period_3_df <- merge(reg_RCA3_df, reg_RCA3_AI_df, all=TRUE, by=c("ctry_code","techn_field_nr"))
@@ -770,7 +827,7 @@ General <-
   geom_edge_link(aes(width = weight), alpha = 0.4, colour = "grey") + 
   geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector))+ # 
   scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) + 
-  geom_node_text(aes(label = field_name), size = 4, repel = TRUE) + 
+  geom_node_text(aes(label = paste0(field_name, "\n(", name, ")")), size = 4, repel = TRUE) +  #field_name or name
   theme_graph(base_family = "sans")+  ggtitle("Global technological space: IPC Technological fields") + 
   theme(legend.title = element_text(size = 14), legend.text = element_text(size = 10)) + 
   guides(colour = guide_legend(override.aes = list(size=10)))+
@@ -784,10 +841,417 @@ rm(General)
 
 #GTS with specialisations per country
 country_select <- c("CN", "US", "JP", "KR")
-### 1.2.3.1. First Country
-i=1
-p=1
 
+#### 1.2.3.1. First Country------
+i=1
+IPC_RCAs_wide_simplified <- IPC_RCAs_Top4 %>% pivot_wider(id_cols = c(ctry_code, techn_field_nr, Label), 
+    names_from = Period_sim,
+    values_from = c(RCA_AI_Period, Total_RCA_2, RCA_Gen, RCA_AI, Round_general, Round_AI, Total_RCA), 
+    names_glue = "{.value}_Period_{Period_sim}" )
+
+China_1stFig <- 
+  g_tech_AI %N>% left_join(IPC_RCAs_wide_simplified %>%
+                             filter(ctry_code == country_select[i]) %>%
+                             select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  mutate(Shape_Group_P1_Factor = factor(
+    ifelse(is.na(Total_RCA_2_Period_1), "NA_Value", as.character(Total_RCA_2_Period_1)),
+    levels = c("0", "1", "2", "3", "NA_Value"))) %>% ggraph(layout = coords_tech_AI) +
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC", show.legend = FALSE) + 
+  geom_node_point(aes(shape = Shape_Group_P1_Factor, 
+                      size = 5, stroke = ifelse(Total_RCA_2_Period_1 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#FF3300", show.legend = c(shape=TRUE, size=FALSE, stroke=FALSE, alpha=FALSE, color=FALSE)) + 
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_2),
+                      size = 5.5, stroke = ifelse(Total_RCA_2_Period_2 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#3399FF", show.legend = FALSE) +
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_3), 
+                      size = 6.5,stroke = ifelse(Total_RCA_2_Period_3 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#009900", show.legend = FALSE) +
+  scale_shape_manual(name = "Type of specialisation",
+                     values = c("0" = 4, "1" = 1, "2" = 5, "3" = 2, "NA_Value" = 16), breaks = c("0", "1", "2", "3"),                                
+                     labels = c("0" = "No specialisation", "1" = "General specialisation", 
+                                "2" = "Break-through specialisation", "3" = "Break-in specialisation"), 
+                     na.translate = FALSE, drop = FALSE) + scale_size("Degree", range = c(7, 18))+ 
+  scale_alpha(guide = "none") + 
+  #geom_node_label(aes(label = name), size = 2, repel = F) + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_1 > .99, x = x, y = y, fill = "Period 1", group = "Period 1"), 
+                 concavity = .1, alpha = .11, linetype = "dotted",expand = unit(2, "mm"), size = .5, color = "#FF3300") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_2 > .99, x = x, y = y, fill = "Period 2", group = "Period 2"),
+                 concavity = .1, alpha = .11, linetype = "longdash",expand = unit(2, "mm"), size = .5, color = "#3399FF") +
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_3 > .99, x = x, y = y, fill = "Period 3", group = "Period 3"),
+                 concavity = .1, alpha = .02, expand = unit(2, "mm"), size = 1, color = "#009900") +
+  scale_fill_manual(name = "Interval colour (same for \nboth nodes and cluster)", # New legend for fill
+                    values = c("Period 1" = "#FF3300", "Period 2" = "#3399FF", "Period 3" = "#009900"),
+                    labels = c("Interval 1 (1974-1988)", "Interval 2 (1989-2003)", "Interval 3 (2004-2018)")) +
+  theme_graph(base_family = "sans") +  theme(legend.position = "bottom", #right
+                                             legend.box = "vertical", legend.title = element_text(size = 12, face = "bold"), 
+                                             legend.text = element_text(size = 10), legend.key.size = unit(0.7, "cm") ) +
+  ggtitle("d) Global technological space: China (1974-2018)") +
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +  #field_name or name
+  guides(shape = guide_legend(title.position = "top", 
+                              override.aes = list(size = 5, stroke = 1.5, color = "black") ),
+         colour = guide_legend(title.position = "top", 
+                               override.aes = list(linetype = c("solid", "longdash", "dotted"), 
+                                                   alpha = 1, size = 1, shape = NA) ))
+
+#China_1stFig
+#2nd figure
+bar_plot_China <- bar_plot_China <- IPC_RCAs_Top4[IPC_RCAs_Top4$ctry_code == country_select[i],] %>%                                   
+  arrange(Label, Period) %>%  group_by(Label) %>%                          
+  mutate( general = Total_RCA_2 == 1,    
+          break_in              = Total_RCA_2 == 2,            
+          break_through         = Total_RCA_2 == 3,            
+          sustained_general    = general  & lag(general, 1, default = FALSE),
+          sustained_break_in    = break_in  & lag(break_in, 1, default = FALSE),
+          sustained_break_through    = break_through & lag(break_through, 1, default = FALSE)) %>% 
+  ungroup()
+
+bar_plot_China <- bar_plot_China %>% 
+  group_by(Period) %>% summarise(`General case`                 = sum(general,           na.rm = TRUE),
+                                 `Break-through case`                 = sum(break_in,           na.rm = TRUE),
+                                 `Break-in case`            = sum(break_through,      na.rm = TRUE),
+                                 `Sustained General case`       = sum(sustained_general, na.rm = TRUE),
+                                 `Sustained break-through case`       = sum(sustained_break_in, na.rm = TRUE),
+                                 `Sustained break-in case`  = sum(sustained_break_through, na.rm = TRUE),
+                                 .groups = "drop") %>% arrange(Period)
+
+plot_long_China <- bar_plot_China |>  rename(Period = Period) |>
+  pivot_longer(cols= -Period,names_to= "Indicator",values_to = "Count")
+
+#order labels
+plot_long_China$Indicator <- factor(plot_long_China$Indicator, levels = rev(c("General case", "Break-through case",  "Break-in case", 
+                                                              "Sustained General case", "Sustained break-through case", "Sustained break-in case")))
+plot_long_China$Period <- factor(plot_long_China$Period, levels = c("2004-2018", "1989-2003", "1974-1988"))
+
+legend_order <- c(
+  "General case", "Break-through case", "Break-in case",
+  "Sustained General case", "Sustained break-through case", "Sustained break-in case"
+)
+
+China_2ndFig <- 
+  ggplot(plot_long_China, aes(x = factor(Period),y = Count, fill = Indicator)) +
+  geom_col(position = position_dodge(width = .8), width = .7) +
+  scale_fill_manual(values = c("General case"  = "#FF3300",
+    "Sustained General case"  = "#993333",
+    "Break-in case"                 = "#009900", #3399FF
+    "Sustained break-in case"       = "#006633", #3333CC
+    "Break-through case"            = "#3399FF",  #009900
+    "Sustained break-through case"  = "#3333CC"),
+    breaks = legend_order) + #006633
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(x = "Interval",y = "Number of cases", fill = NULL, title = NULL)+
+  ggtitle("Summary of specialisations China") +
+  theme_classic(base_size = 11) + theme(legend.position = "bottom")+ coord_flip()
+China_2ndFig
+
+combined_plot_ggplot_only <- China_1stFig + China_2ndFig +
+  plot_layout(widths = c(0.7, 0.3)) 
+
+ggsave("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_d_China.jpg",
+       plot = combined_plot_ggplot_only,
+       width = 20, height = 12, dpi = 300, units = "in", bg = "white") #changed height from 10 to 12, position bottom, \n from type 3
+
+#### 1.2.3.2. Second Country------
+i=2
+country_select[i]
+IPC_RCAs_wide_simplified <- IPC_RCAs_Top4 %>% pivot_wider(id_cols = c(ctry_code, techn_field_nr, Label), 
+                                                          names_from = Period_sim,
+                                                          values_from = c(RCA_AI_Period, Total_RCA_2, RCA_Gen, RCA_AI, Round_general, Round_AI, Total_RCA), 
+                                                          names_glue = "{.value}_Period_{Period_sim}" )
+
+USA_1stFig <- g_tech_AI %N>% left_join(IPC_RCAs_wide_simplified %>%
+                                           filter(ctry_code == country_select[i]) %>%
+                                           select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  mutate(Shape_Group_P1_Factor = factor(
+    ifelse(is.na(Total_RCA_2_Period_1), "NA_Value", as.character(Total_RCA_2_Period_1)),
+    levels = c("0", "1", "2", "3", "NA_Value"))) %>% ggraph(layout = coords_tech_AI) +
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC", show.legend = FALSE) + 
+  geom_node_point(aes(shape = Shape_Group_P1_Factor, 
+                      size = 5, stroke = ifelse(Total_RCA_2_Period_1 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#FF3300", show.legend = c(shape=TRUE, size=FALSE, stroke=FALSE, alpha=FALSE, color=FALSE)) + 
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_2),
+                      size = 5.5, stroke = ifelse(Total_RCA_2_Period_2 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#3399FF", show.legend = FALSE) +
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_3), 
+                      size = 6.5,stroke = ifelse(Total_RCA_2_Period_3 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#009900", show.legend = FALSE) +
+  scale_shape_manual(name = "Type of specialisation",
+                     values = c("0" = 4, "1" = 1, "2" = 5, "3" = 2, "NA_Value" = 16), breaks = c("0", "1", "2", "3"),                                
+                     labels = c("0" = "No specialisation", "1" = "General specialisation", 
+                                "2" = "Break-through specialisation", "3" = "Break-in specialisation"), 
+                     na.translate = FALSE, drop = FALSE) + scale_size("Degree", range = c(7, 18))+ 
+  scale_alpha(guide = "none") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_1 > .99, x = x, y = y, fill = "Period 1", group = "Period 1"), 
+                 concavity = .1, alpha = .11, linetype = "dotted",expand = unit(2, "mm"), size = .5, color = "#FF3300") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_2 > .99, x = x, y = y, fill = "Period 2", group = "Period 2"),
+                 concavity = .1, alpha = .11, linetype = "longdash",expand = unit(2, "mm"), size = .5, color = "#3399FF") +
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_3 > .99, x = x, y = y, fill = "Period 3", group = "Period 3"),
+                 concavity = .1, alpha = .02, expand = unit(2, "mm"), size = 1, color = "#009900") +
+  scale_fill_manual(name = "Interval colour (same for \nboth nodes and cluster)", # New legend for fill
+                    values = c("Period 1" = "#FF3300", "Period 2" = "#3399FF", "Period 3" = "#009900"),
+                    labels = c("Interval 1 (1974-1988)", "Interval 2 (1989-2003)", "Interval 3 (2004-2018)")) +
+  theme_graph(base_family = "sans") +  theme(legend.position = "bottom",
+                                             legend.box = "vertical", legend.title = element_text(size = 12, face = "bold"), 
+                                             legend.text = element_text(size = 10), legend.key.size = unit(0.7, "cm") ) +
+  ggtitle("b) Global technological space: USA (1974-2018)") +
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +  #field_name or name
+  guides(shape = guide_legend(title.position = "top", 
+                              override.aes = list(size = 5, stroke = 1.5, color = "black") ),
+         colour = guide_legend(title.position = "top", 
+                               override.aes = list(linetype = c("solid", "longdash", "dotted"), 
+                                                   alpha = 1, size = 1, shape = NA) ))
+
+#2nd figure
+bar_plot_USA <- IPC_RCAs_Top4[IPC_RCAs_Top4$ctry_code == country_select[i],] %>%                                   
+  arrange(Label, Period) %>%  group_by(Label) %>%                          
+  mutate( general = Total_RCA_2 == 1,    
+          break_in              = Total_RCA_2 == 2,            
+          break_through         = Total_RCA_2 == 3,            
+          sustained_general    = general  & lag(general, 1, default = FALSE),
+          sustained_break_in    = break_in  & lag(break_in, 1, default = FALSE),
+          sustained_break_through    = break_through & lag(break_through, 1, default = FALSE)) %>% 
+  ungroup()
+
+bar_plot_USA <- bar_plot_USA %>% 
+  group_by(Period) %>% summarise(`General case`                 = sum(general,           na.rm = TRUE),
+                                 `Break-through case`                 = sum(break_in,           na.rm = TRUE),
+                                 `Break-in case`            = sum(break_through,      na.rm = TRUE),
+                                 `Sustained General case`       = sum(sustained_general, na.rm = TRUE),
+                                 `Sustained break-through case`       = sum(sustained_break_in, na.rm = TRUE),
+                                 `Sustained break-in case`  = sum(sustained_break_through, na.rm = TRUE),
+                                 .groups = "drop") %>% arrange(Period)
+
+plot_long_USA <- bar_plot_USA |>  rename(Period = Period) |>
+  pivot_longer(cols= -Period,names_to= "Indicator",values_to = "Count")
+
+#order labels
+plot_long_USA$Indicator <- factor(plot_long_USA$Indicator, levels = rev(c("General case", "Break-through case",  "Break-in case", 
+                                                                          "Sustained General case", "Sustained break-through case", "Sustained break-in case")))
+plot_long_USA$Period <- factor(plot_long_USA$Period, levels = c("2004-2018", "1989-2003", "1974-1988"))
+
+USA_2ndFig <- 
+  ggplot(plot_long_USA, aes(x = factor(Period),y = Count, fill = Indicator)) +
+  geom_col(position = position_dodge(width = .8), width = .7) +
+  scale_fill_manual(values = c("General case"  = "#FF3300",
+                               "Sustained General case"  = "#993333",
+                               "Break-in case"                 = "#009900", #3399FF
+                               "Sustained break-in case"       = "#006633", #3333CC
+                               "Break-through case"            = "#3399FF",  #009900
+                               "Sustained break-through case"  = "#3333CC"),
+                    breaks = legend_order) + #006633
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(x = "Interval",y = "Number of cases", fill = NULL, title = NULL)+
+  ggtitle("Summary of specialisations USA") +
+  theme_classic(base_size = 11) + theme(legend.position = "bottom")+ coord_flip()
+
+combined_plot_ggplot_only <- USA_1stFig + USA_2ndFig +
+  plot_layout(widths = c(0.7, 0.3)) 
+
+ggsave("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_b_USA.jpg",
+       plot = combined_plot_ggplot_only,
+       width = 20, height = 12, dpi = 300, units = "in", bg = "white") 
+
+#### 1.2.3.3. Third Country------
+i=3
+country_select[i]
+IPC_RCAs_wide_simplified <- IPC_RCAs_Top4 %>% pivot_wider(id_cols = c(ctry_code, techn_field_nr, Label), 
+                                                          names_from = Period_sim,
+                                                          values_from = c(RCA_AI_Period, Total_RCA_2, RCA_Gen, RCA_AI, Round_general, Round_AI, Total_RCA), 
+                                                          names_glue = "{.value}_Period_{Period_sim}" )
+
+Japan_1stFig <- g_tech_AI %N>% left_join(IPC_RCAs_wide_simplified %>%
+                                           filter(ctry_code == country_select[i]) %>%
+                                           select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  mutate(Shape_Group_P1_Factor = factor(
+    ifelse(is.na(Total_RCA_2_Period_1), "NA_Value", as.character(Total_RCA_2_Period_1)),
+    levels = c("0", "1", "2", "3", "NA_Value"))) %>% ggraph(layout = coords_tech_AI) +
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC", show.legend = FALSE) + 
+  geom_node_point(aes(shape = Shape_Group_P1_Factor, 
+                      size = 5, stroke = ifelse(Total_RCA_2_Period_1 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#FF3300", show.legend = c(shape=TRUE, size=FALSE, stroke=FALSE, alpha=FALSE, color=FALSE)) + 
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_2),
+                      size = 5.5, stroke = ifelse(Total_RCA_2_Period_2 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#3399FF", show.legend = FALSE) +
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_3), 
+                      size = 6.5,stroke = ifelse(Total_RCA_2_Period_3 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#009900", show.legend = FALSE) +
+  scale_shape_manual(name = "Type of specialisation",
+                     values = c("0" = 4, "1" = 1, "2" = 5, "3" = 2, "NA_Value" = 16), breaks = c("0", "1", "2", "3"),                                
+                     labels = c("0" = "No specialisation", "1" = "General specialisation", 
+                                "2" = "Break-through specialisation", "3" = "Break-in specialisation"), 
+                     na.translate = FALSE, drop = FALSE) + scale_size("Degree", range = c(7, 18))+ 
+  scale_alpha(guide = "none") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_1 > .99, x = x, y = y, fill = "Period 1", group = "Period 1"), 
+                 concavity = .1, alpha = .11, linetype = "dotted",expand = unit(2, "mm"), size = .5, color = "#FF3300") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_2 > .99, x = x, y = y, fill = "Period 2", group = "Period 2"),
+                 concavity = .1, alpha = .11, linetype = "longdash",expand = unit(2, "mm"), size = .5, color = "#3399FF") +
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_3 > .99, x = x, y = y, fill = "Period 3", group = "Period 3"),
+                 concavity = .1, alpha = .02, expand = unit(2, "mm"), size = 1, color = "#009900") +
+  scale_fill_manual(name = "Interval colour (same for \nboth nodes and cluster)", # New legend for fill
+                    values = c("Period 1" = "#FF3300", "Period 2" = "#3399FF", "Period 3" = "#009900"),
+                    labels = c("Interval 1 (1974-1988)", "Interval 2 (1989-2003)", "Interval 3 (2004-2018)")) +
+  theme_graph(base_family = "sans") +  theme(legend.position = "bottom",
+                                             legend.box = "vertical", legend.title = element_text(size = 12, face = "bold"), 
+                                             legend.text = element_text(size = 10), legend.key.size = unit(0.7, "cm") ) +
+  ggtitle("a) Global technological space: Japan (1974-2018)") +
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +  #field_name or name
+  guides(shape = guide_legend(title.position = "top", 
+                              override.aes = list(size = 5, stroke = 1.5, color = "black") ),
+         colour = guide_legend(title.position = "top", 
+                               override.aes = list(linetype = c("solid", "longdash", "dotted"), 
+                                                   alpha = 1, size = 1, shape = NA) ))
+
+#2nd figure
+bar_plot_Japan <- IPC_RCAs_Top4[IPC_RCAs_Top4$ctry_code == country_select[i],] %>%                                   
+  arrange(Label, Period) %>%  group_by(Label) %>%                          
+  mutate( general = Total_RCA_2 == 1,    
+          break_in              = Total_RCA_2 == 2,            
+          break_through         = Total_RCA_2 == 3,            
+          sustained_general    = general  & lag(general, 1, default = FALSE),
+          sustained_break_in    = break_in  & lag(break_in, 1, default = FALSE),
+          sustained_break_through    = break_through & lag(break_through, 1, default = FALSE)) %>% 
+  ungroup()
+
+bar_plot_Japan <- bar_plot_Japan %>% 
+  group_by(Period) %>% summarise(`General case`                 = sum(general,           na.rm = TRUE),
+                                 `Break-through case`                 = sum(break_in,           na.rm = TRUE),
+                                 `Break-in case`            = sum(break_through,      na.rm = TRUE),
+                                 `Sustained General case`       = sum(sustained_general, na.rm = TRUE),
+                                 `Sustained break-through case`       = sum(sustained_break_in, na.rm = TRUE),
+                                 `Sustained break-in case`  = sum(sustained_break_through, na.rm = TRUE),
+                                 .groups = "drop") %>% arrange(Period)
+
+plot_long_Japan <- bar_plot_Japan |>  rename(Period = Period) |>
+  pivot_longer(cols= -Period,names_to= "Indicator",values_to = "Count")
+
+#order labels
+plot_long_Japan$Indicator <- factor(plot_long_Japan$Indicator, levels = rev(c("General case", "Break-through case",  "Break-in case", 
+                                                                              "Sustained General case", "Sustained break-through case", "Sustained break-in case")))
+plot_long_Japan$Period <- factor(plot_long_Japan$Period, levels = c("2004-2018", "1989-2003", "1974-1988"))
+
+Japan_2ndFig <- 
+  ggplot(plot_long_Japan, aes(x = factor(Period),y = Count, fill = Indicator)) +
+  geom_col(position = position_dodge(width = .8), width = .7) +
+  scale_fill_manual(values = c("General case"  = "#FF3300",
+                               "Sustained General case"  = "#993333",
+                               "Break-in case"                 = "#009900", #3399FF
+                               "Sustained break-in case"       = "#006633", #3333CC
+                               "Break-through case"            = "#3399FF",  #009900
+                               "Sustained break-through case"  = "#3333CC"),
+                    breaks = legend_order) + #006633
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(x = "Interval",y = "Number of cases", fill = NULL, title = NULL)+
+  ggtitle("Summary of specialisations Japan") +
+  scale_y_continuous(breaks = breaks_pretty(n = 5))+
+  theme_classic(base_size = 11) + theme(legend.position = "bottom")+ coord_flip()
+#Japan_2ndFig
+combined_plot_ggplot_only <- Japan_1stFig + Japan_2ndFig +
+  plot_layout(widths = c(0.7, 0.3)) 
+
+ggsave("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_a_Japan.jpg",
+       plot = combined_plot_ggplot_only,
+       width = 20, height = 12, dpi = 300, units = "in", bg = "white") 
+
+#### 1.2.3.4. Fourth Country------
+i=4
+IPC_RCAs_wide_simplified <- IPC_RCAs_Top4 %>% pivot_wider(id_cols = c(ctry_code, techn_field_nr, Label), 
+                                                          names_from = Period_sim,
+                                                          values_from = c(RCA_AI_Period, Total_RCA_2, RCA_Gen, RCA_AI, Round_general, Round_AI, Total_RCA), 
+                                                          names_glue = "{.value}_Period_{Period_sim}" )
+
+SouthKorea_1stFig <- g_tech_AI %N>% left_join(IPC_RCAs_wide_simplified %>%
+                                           filter(ctry_code == country_select[i]) %>%
+                                           select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  mutate(Shape_Group_P1_Factor = factor(
+    ifelse(is.na(Total_RCA_2_Period_1), "NA_Value", as.character(Total_RCA_2_Period_1)),
+    levels = c("0", "1", "2", "3", "NA_Value"))) %>% ggraph(layout = coords_tech_AI) +
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC", show.legend = FALSE) + 
+  geom_node_point(aes(shape = Shape_Group_P1_Factor, 
+                      size = 5, stroke = ifelse(Total_RCA_2_Period_1 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#FF3300", show.legend = c(shape=TRUE, size=FALSE, stroke=FALSE, alpha=FALSE, color=FALSE)) + 
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_2),
+                      size = 5.5, stroke = ifelse(Total_RCA_2_Period_2 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#3399FF", show.legend = FALSE) +
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_3), 
+                      size = 6.5,stroke = ifelse(Total_RCA_2_Period_3 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#009900", show.legend = FALSE) +
+  scale_shape_manual(name = "Type of specialisation",
+                     values = c("0" = 4, "1" = 1, "2" = 5, "3" = 2, "NA_Value" = 16), breaks = c("0", "1", "2", "3"),                                
+                     labels = c("0" = "No specialisation", "1" = "General specialisation", 
+                                "2" = "Break-through specialisation", "3" = "Break-in specialisation"), 
+                     na.translate = FALSE, drop = FALSE) + scale_size("Degree", range = c(7, 18))+ 
+  scale_alpha(guide = "none") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_1 > .99, x = x, y = y, fill = "Period 1", group = "Period 1"), 
+                 concavity = .1, alpha = .11, linetype = "dotted",expand = unit(2, "mm"), size = .5, color = "#FF3300") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_2 > .99, x = x, y = y, fill = "Period 2", group = "Period 2"),
+                 concavity = .1, alpha = .11, linetype = "longdash",expand = unit(2, "mm"), size = .5, color = "#3399FF") +
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_3 > .99, x = x, y = y, fill = "Period 3", group = "Period 3"),
+                 concavity = .1, alpha = .02, expand = unit(2, "mm"), size = 1, color = "#009900") +
+  scale_fill_manual(name = "Interval colour (same for \nboth nodes and cluster)", # New legend for fill
+                    values = c("Period 1" = "#FF3300", "Period 2" = "#3399FF", "Period 3" = "#009900"),
+                    labels = c("Interval 1 (1974-1988)", "Interval 2 (1989-2003)", "Interval 3 (2004-2018)")) +
+  theme_graph(base_family = "sans") +  theme(legend.position = "bottom",
+                                             legend.box = "vertical", legend.title = element_text(size = 12, face = "bold"), 
+                                             legend.text = element_text(size = 10), legend.key.size = unit(0.7, "cm") ) +
+  ggtitle("c) Global technological space: South Korea (1974-2018)") +
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +  #field_name or name
+  guides(shape = guide_legend(title.position = "top", 
+                              override.aes = list(size = 5, stroke = 1.5, color = "black") ),
+         colour = guide_legend(title.position = "top", 
+                               override.aes = list(linetype = c("solid", "longdash", "dotted"), 
+                                                   alpha = 1, size = 1, shape = NA) ))
+
+#2nd figure
+bar_plot_SouthKorea <- IPC_RCAs_Top4[IPC_RCAs_Top4$ctry_code == country_select[i],] %>%                                   
+  arrange(Label, Period) %>%  group_by(Label) %>%                          
+  mutate( general = Total_RCA_2 == 1,    
+          break_in              = Total_RCA_2 == 2,            
+          break_through         = Total_RCA_2 == 3,            
+          sustained_general    = general  & lag(general, 1, default = FALSE),
+          sustained_break_in    = break_in  & lag(break_in, 1, default = FALSE),
+          sustained_break_through    = break_through & lag(break_through, 1, default = FALSE)) %>% 
+  ungroup()
+
+bar_plot_SouthKorea <- bar_plot_SouthKorea %>% 
+  group_by(Period) %>% summarise(`General case`                 = sum(general,           na.rm = TRUE),
+                                 `Break-through case`                 = sum(break_in,           na.rm = TRUE),
+                                 `Break-in case`            = sum(break_through,      na.rm = TRUE),
+                                 `Sustained General case`       = sum(sustained_general, na.rm = TRUE),
+                                 `Sustained break-through case`       = sum(sustained_break_in, na.rm = TRUE),
+                                 `Sustained break-in case`  = sum(sustained_break_through, na.rm = TRUE),
+                                 .groups = "drop") %>% arrange(Period)
+
+plot_long_SouthKorea <- bar_plot_SouthKorea |>  rename(Period = Period) |>
+  pivot_longer(cols= -Period,names_to= "Indicator",values_to = "Count")
+
+#order labels
+plot_long_SouthKorea$Indicator <- factor(plot_long_SouthKorea$Indicator, levels = rev(c("General case", "Break-through case",  "Break-in case", 
+                                                                                        "Sustained General case", "Sustained break-through case", "Sustained break-in case")))
+plot_long_SouthKorea$Period <- factor(plot_long_SouthKorea$Period, levels = c("2004-2018", "1989-2003", "1974-1988"))
+
+SouthKorea_2ndFig <- 
+  ggplot(plot_long_SouthKorea, aes(x = factor(Period),y = Count, fill = Indicator)) +
+  geom_col(position = position_dodge(width = .8), width = .7) +
+  scale_fill_manual(values = c("General case"  = "#FF3300",
+                               "Sustained General case"  = "#993333",
+                               "Break-in case"                 = "#009900", #3399FF
+                               "Sustained break-in case"       = "#006633", #3333CC
+                               "Break-through case"            = "#3399FF",  #009900
+                               "Sustained break-through case"  = "#3333CC"),
+                    breaks = legend_order) + #006633
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(x = "Interval",y = "Number of cases", fill = NULL, title = NULL)+
+  ggtitle("Summary of specialisations South Korea") +
+  theme_classic(base_size = 11) + theme(legend.position = "bottom")+ coord_flip()
+#SouthKorea_2ndFig
+combined_plot_ggplot_only <- SouthKorea_1stFig + SouthKorea_2ndFig +
+  plot_layout(widths = c(0.7, 0.3)) 
+
+ggsave("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_c_SouthKorea.jpg",
+       plot = combined_plot_ggplot_only,
+       width = 20, height = 12, dpi = 300, units = "in", bg = "white") 
+
+####1.2.3.5.Extra figures Appendix C-----
+p=1
 China_1st<-
   g_tech_AI %N>%
   left_join(IPC_RCAs_Top4 %>% filter(ctry_code == country_select[i] & IPC_RCAs_Top4$Period_sim == p) %>% 
@@ -824,12 +1288,12 @@ China_3rd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 4, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph(base_family = "sans") +guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
-                        shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
+                                            shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
   ggtitle("Global technological space: China (2004-2018)")
 
-jpeg("Files_created_with_the_code/figures/Extra/Example_Figure_5_Specialisations_techn_space_4_countries_d_China_1stInterval.jpg", width = 14, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/Example_Figure_5_Specialisations_techn_space_4_countries_d_China_1stInterval.jpg", width = 14, height = 10, units = 'in', res = 300)
 China_1st 
 dev.off()
 
@@ -873,7 +1337,7 @@ USA_3rd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph(base_family = "sans") + guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
-                         shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
+                                             shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
   ggtitle("Global technological space: USA (2004-2018)")
@@ -917,7 +1381,7 @@ Japan_3rd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph(base_family = "sans") + guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
-                         shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
+                                             shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
   ggtitle("Global technological space: Japan (2004-2018)")
@@ -962,25 +1426,25 @@ SouthKorea_3rd<-
   geom_node_text(aes(filter=RCA_AI_Period > .99, label = field_name), size = 5, repel = TRUE) +
   scale_fill_manual(values=c("#999999", "#FF3300", "#3399FF", "#009900"))+
   theme_graph(base_family = "sans") +guides(size = "none",  fill = guide_legend(order = 1, override.aes = list(size = 5)), 
-                        shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
+                                            shape = guide_legend(order = 1, override.aes = list(size = 10)) )+
   theme(legend.title = element_text(size = 14, face = "bold"), legend.text = element_text(size = 12),  
         legend.key.size = unit(1.2, "cm")) +  labs( fill = "Type of \nspecialisation", shape = "Type of \nspecialisation") +
   ggtitle("Global technological space: South Korea (2004-2018)")
 
 #Now we'll plot the three intervals at once per country:
-jpeg("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_d_China.jpg", width = 38, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/Appendix_C_d_China.jpg", width = 38, height = 10, units = 'in', res = 300)
 multiplot(China_1st, China_2nd, China_3rd, cols=3) 
 dev.off()
 
-jpeg("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_b_USA.jpg", width = 38, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/Appendix_C_b_USA.jpg", width = 38, height = 10, units = 'in', res = 300)
 multiplot(USA_1st, USA_2nd, USA_3rd, cols=3) 
 dev.off()
 
-jpeg("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_a_Japan.jpg", width = 38, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/Appendix_C_a_Japan.jpg", width = 38, height = 10, units = 'in', res = 300)
 multiplot(Japan_1st, Japan_2nd, Japan_3rd, cols=3) 
 dev.off()
 
-jpeg("Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_4_countries_c_SouthKorea.jpg", width = 38, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/Appendix_C_c_SouthKorea.jpg", width = 38, height = 10, units = 'in', res = 300)
 multiplot(SouthKorea_1st, SouthKorea_2nd, SouthKorea_3rd, cols=3) 
 dev.off()
 
@@ -1079,7 +1543,7 @@ AI_dgr_1st <-
   theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
 
-jpeg("Files_created_with_the_code/figures/Extra/Figure_2_Example_ATS_and_AI_core_technologies_1stInterval.jpg", width = 14, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/Figure_2_Example_ATS_and_AI_core_technologies_1stInterval.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_dgr_1st 
 dev.off()
 
@@ -1095,7 +1559,7 @@ AI_RCA_1st_allnames <-
   theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
 
-jpeg("Files_created_with_the_code/figures/Extra/AI_RCA_1st_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/AI_RCA_1st_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_1st_allnames 
 dev.off()
 rm(AI_RCA_1st_allnames, patents_AI_specific_1st, IPC_all_patents_Part1, IPC_all_patents_complete, AI_RCA1, coords_tech_AI, mat_tech_AI, mat_tech_rel_AI, g_tech_AI)
@@ -1153,7 +1617,7 @@ AI_RCA_2nd_allnames <-
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
-jpeg("Files_created_with_the_code/figures/Extra/AI_RCA_2nd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/AI_RCA_2nd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_2nd_allnames 
 dev.off()
 rm(AI_RCA_2nd_allnames, patents_AI_specific_2nd, AI_RCA2, coords_tech_AI, mat_tech_AI, mat_tech_rel_AI, g_tech_AI)
@@ -1211,7 +1675,7 @@ AI_RCA_3rd_allnames <-
   geom_node_text(aes(label = field_name), size = 5, repel = TRUE) + #filter=Binary > .99, 
   theme_graph(base_family = "sans") +
   ggtitle("AI-specific technological space (1974-1988)") #
-jpeg("Files_created_with_the_code/figures/Extra/AI_RCA_3rd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/extra/AI_RCA_3rd_allnames.jpg", width = 14, height = 10, units = 'in', res = 300)
 AI_RCA_3rd_allnames 
 dev.off()
 
@@ -1583,7 +2047,7 @@ IPC_RCAs <- rbind(Data1period, Data2period, Data3period)
 write.csv2(IPC_RCAs, file = "Files_created_with_the_code/data/files_code_4-digits_analysis/IPC_RCAs_subclass.csv", row.names = F)
 
 #3.THIRD PART: Remaining figures ------
-##3.1. Overlapping specializations (Fig 6 and 8)----
+##3.1. Overlapping specializations (Fig 6 and 7)----
 ##3.1.1. Technological fields 
 # Remove all non-function objects in the global environment and clean memory
 rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
@@ -1628,19 +2092,19 @@ colnames(SummaryAllData)[1] <- "Country"
 
 OverlapTechn<-
   ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
-  geom_point(aes(fill = Country), size=8) +   scale_shape_manual(values=c(21, 22, 23, 24)) +
-  xlab("Period") +  ylab("Share of coinciding specialisations (%)") +
+  geom_point(aes(fill = Country), size=8) +   scale_shape_manual(values=c(21, 22, 24, 23)) +
+  xlab("Interval") +  ylab("Share of break-in specialisations (%)") +
   theme_classic() +  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
-  scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
+  scale_fill_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) +
+  scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A"))  #"#99CC00", "#66CC33", "#336600", "#66FF66"
 
-jpeg("Files_created_with_the_code/figures/Figure_6_Share_coinciding_specialisations_techn_field.jpg", width = 8, height = 6, units = 'in', res = 300)
+
+jpeg("Files_created_with_the_code/figures/Figure_6_Share_coinciding_specialisations_techn_field.jpg", width = 7, height = 4, units = 'in', res = 300)
 OverlapTechn 
 dev.off()
-rm(SummaryAllData)
 
-#3.1.2. Subclasses (4-digits)
+#Subclasses (4-digits)
 IPC_RCAs <- read.csv("Files_created_with_the_code/data/files_code_4-digits_analysis/IPC_RCAs_subclass.csv", sep = ";", header = TRUE, dec=",")
 #Select the 4 countries we want
 IPC_RCAs_Top4 <- IPC_RCAs[IPC_RCAs$ctry_code == "CN" | IPC_RCAs$ctry_code == "KR"| 
@@ -1687,130 +2151,20 @@ colnames(SummaryAllData4dig)[1] <- "Country"
 OverlapTechn2<-
   ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
   geom_point(aes(fill = Country), size=8) + 
-  scale_shape_manual(values=c(21, 22, 23, 24)) +
-  xlab("Period") +
-  ylab("Share of coinciding specialisations (%)") +
+  scale_shape_manual(values=c(21, 22, 24, 23)) +
+  xlab("Interval") +
+  ylab("Share of break-in specialisations (%)") +
   theme_classic() +
   geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
   scale_y_continuous(labels = scales::percent) +
-  scale_fill_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) +
-  scale_color_manual(values = c("#99CC00", "#66CC33", "#336600", "#66FF66")) 
+  scale_fill_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) +
+  scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) 
 
-jpeg("Files_created_with_the_code/figures/Figure_8_Share_coinciding_specialisations_subclass.jpg", width = 8, height = 4, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/Figure_7_Share_coinciding_specialisations_subclass.jpg", width = 8, height = 4, units = 'in', res = 300)
 OverlapTechn2
 dev.off()
 
-##3.2. Visualisation RCAs subclasses (Figure 7)----
-# Remove all non-function objects in the global environment and clean memory
-rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
-gc()
-
-IPC_RCAs <- read.csv("Files_created_with_the_code/data/files_code_4-digits_analysis/IPC_RCAs_subclass.csv", sep = ";", header = TRUE, dec=",")
-
-#Select the 4 countries we want
-IPC_RCAs_Top4 <- IPC_RCAs[IPC_RCAs$ctry_code == "CN" | IPC_RCAs$ctry_code == "KR"| 
-                            IPC_RCAs$ctry_code == "US"| IPC_RCAs$ctry_code == "JP", ]
-
-IPC_RCAs_Top4$ctry_code <- as.vector(IPC_RCAs_Top4$ctry_code)
-
-#add new label data:
-IPC2LabelData <- read.csv("other_files/Summary IPC labels.csv", sep = ";", header = TRUE, dec = ",")
-IPC_RCAs_Top4$Label <- IPC2LabelData$Summary[match(IPC_RCAs_Top4$Subclass, IPC2LabelData$Subclass)]
-
-#select only the top10 labels
-IPC_RCAs_Top5 <- IPC_RCAs_Top4
-IPC_RCAs_Top4<- IPC_RCAs_Top4[rowSums(is.na(IPC_RCAs_Top4)) == 0,]
-
-#replace names:
-IPC_RCAs_Top4$ctry_code <- gsub("US", "USA", str_trim(IPC_RCAs_Top4$ctry_code))
-IPC_RCAs_Top4$ctry_code <- gsub("CN", "China", str_trim(IPC_RCAs_Top4$ctry_code))
-IPC_RCAs_Top4$ctry_code <- gsub("JP", "Japan", str_trim(IPC_RCAs_Top4$ctry_code))
-IPC_RCAs_Top4$ctry_code <- gsub("KR", "South Korea", str_trim(IPC_RCAs_Top4$ctry_code))
-
-IPC_RCAs_Top4$bin_Gen <- ifelse(IPC_RCAs_Top4$RCA_Gen<1,0,1)
-IPC_RCAs_Top4$bin_AI <- ifelse(IPC_RCAs_Top4$RCA_AI<1,0,2)
-IPC_RCAs_Top4$Type <- IPC_RCAs_Top4$bin_Gen+IPC_RCAs_Top4$bin_AI
-
-#so, Type = 0, no specialization of the country at all, Type = 1, general, Type = 2, ONLY AI; Type = 3, BOTH AI AND GENERAL
-IPC_RCAs_Top4$'Type of specialization' <- ifelse(IPC_RCAs_Top4$Type ==0,"No specialization", ifelse(IPC_RCAs_Top4$Type ==1, "General specialization",
-                                                                                                    ifelse(IPC_RCAs_Top4$Type ==2,"AI-specific specialization",
-                                                                                                           "Coinciding specialization")))
-
-IPC_RCAs_Top4$'Type of specialization' <- factor(IPC_RCAs_Top4$'Type of specialization', levels=c("No specialization", 'General specialization', "AI-specific specialization",
-                                                                                                  "Coinciding specialization"))
-
-#Figure General:
-library(plyr)
-Gen <- ddply(IPC_RCAs_Top4, c("Period", "Label"), summarise, Value.mean=log10(mean(RCA_Gen)))
-#Figure AI:
-Ais <- ddply(IPC_RCAs_Top4, c("Period", "Label"), summarise, Value.mean=log10(mean(RCA_AI)))
-
-#new figures:
-FigGen_Colour2 <- 
-  ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_Gen), y=ctry_code, color=Period, shape =`Type of specialization`, fill = Period)) + geom_count(alpha=0.7, size=6) +
-  facet_wrap(~Label, ncol = 5)  +  theme_classic() +
-  scale_fill_manual(values = c("#FF9999", "#FF0000", "#660000")) +
-  scale_color_manual(values = c("#FF9999", "#FF0000", "#660000")) +
-  scale_shape_manual(values=c(21, 22, 23, 24, 25))+ 
-  geom_vline(data=Gen, aes(xintercept=0), linetype="dashed", size=1) +  
-  ggtitle("Countries' Performance by IPC code - General specialisations") +
-  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
-  ylab(NULL) + theme(text = element_text(size = 14)) 
-
-FigAI_Colour2 <- 
-  ggplot(IPC_RCAs_Top4,aes(x = log10(RCA_AI), y=ctry_code, color=Period, shape =`Type of specialization`, fill = Period)) + geom_count(alpha=0.7, size=6) +
-  facet_wrap(~Label, ncol = 5)  +  theme_classic() +
-  scale_fill_manual(values = c("#66CCFF", "#0066CC", "#000033")) + 
-  scale_color_manual(values = c("#66CCFF", "#0066CC", "#000033")) + 
-  scale_shape_manual(values=c(21, 22, 23, 24, 25))+ 
-  geom_vline(data=Ais, aes(xintercept=0), linetype="dashed", size=1) +
-  ggtitle("Countries' Performance by IPC code - AI-specific specialisations") +
-  xlab("LOG10 of the Country' Revealed Comparative Advantage (RCA) index") +
-  ylab(NULL) + theme(text = element_text(size = 14)) 
-
-jpeg("Files_created_with_the_code/figures/Figure_7_General_and_AI-specific_specialisations_subclass_by_country.jpeg", width = 19, height = 11, units = 'in', res = 300)
-multiplot(FigGen_Colour2, FigAI_Colour2, cols=1)
-dev.off()
-
-##3.3. Figure Types of specialisations (Figure 4) ------
-# custom empty theme to clear the plot area
-empty_theme <- theme(plot.background = element_blank(), panel.grid.major = element_blank(), 
-                     panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank(),
-                     axis.line = element_blank(),  axis.ticks = element_blank(),  axis.text.y = element_text(angle = 90))
-
-plot <- ggplot(NULL, aes()) +  coord_fixed() +  
-  scale_x_continuous(expand = c(0, 0), limits = c(-1, 11), breaks = c(2,8), labels=c("2" = "", "8" = "")) +
-  scale_y_continuous(expand = c(0, 0), limits = c(-1,11), breaks = c(2,8), labels=c("2" = "", "8" = "")) +
-  empty_theme +  labs(title = NULL,x = "Local AI-specific specialisations", y = "Local General specialisations") +
-  geom_segment(aes(x = 10, y = 0, xend = 10, yend = 10)) +  geom_segment(aes(x = 0, y = 0, xend = 0, yend = 10)) +
-  geom_segment(aes(x = 0, y = 0, xend = 10, yend = 0)) +  geom_segment(aes(x = 0, y = 5, xend = 10, yend = 5)) +
-  geom_segment(aes(x = 5, y = 0, xend = 5, yend = 10)) +  geom_segment(aes(x = 0, y = 10, xend = 10, yend = 10)) +
-  annotate("text", x = 2.5, y = 2.5, alpha = 2, label = "No specialisation (type 0)") +
-  annotate("text", x = 2.5, y = 7.5, alpha = 2, label = "General specialisation (type 1)") +
-  annotate("text", x = 7.5, y = 2.5, alpha = 2, label = "AI-specific specialisation (type 2)") +
-  annotate("text", x = 7.5, y = 7.5, alpha = 2, label = "Coinciding specialisation (type 3)") +
-  annotate("segment", x = 0, xend = 10, y = -.9, yend = -.9,colour = "black",
-           size=2, alpha=1, arrow=arrow(type = "closed", angle = 15)) +
-  annotate("segment", x = -.9, xend = -.9, y = 0, yend = 10, colour = "black",
-           size=2, alpha=1, arrow=arrow(type = "closed", angle = 15))
-
-plot <- 
-  plot + 
-  annotate("text", x = 7.5, y = -0.5, label = "Specialisation", color = "black") +
-  annotate("text", x = 2.5, y = -0.5, label = "No specialisation", color = "black") +
-  annotate("text", x = -.5, y = 7.5, angle = 90, label = "Specialisation", color = "black") +
-  annotate("text", x = -.5, y = 2.5, angle = 90, label = "No specialisation", color = "black") +
-  annotate("rect", xmin = 0, xmax = 5, ymin = 0, ymax = 5, fill= "#999999", alpha = .6)+
-  annotate("rect", xmin = 5, xmax = 10, ymin = 0, ymax = 5, fill= "#3399FF", alpha = .6)+
-  annotate("rect", xmin = 0, xmax = 5, ymin = 5, ymax = 10, fill= "#FF0000", alpha = .5)+
-  annotate("rect", xmin = 5, xmax = 10, ymin = 5, ymax = 10, fill= "#009900", alpha = .6)
-plot
-
-jpeg("Files_created_with_the_code/figures/Figure_4_Three_types_of_country_specialisations.jpg", width = 7, height = 7, units = 'in', res = 500)
-plot
-dev.off()
-
-##3.4. Figure number of AI patents per country (Figure 1) ------
+##3.2. Figure number of AI patents per country (Figure 1) ------
 patents_AI_specific <- read.csv("other_files/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
 patents_AI_specific <- patents_AI_specific[,c((1), (3:4))]
 
@@ -1883,5 +2237,52 @@ jpeg("Files_created_with_the_code/figures/Figure_1_Log_10_AI_patents_per_country
 Log_10_AI_patents_per_country
 dev.off()
 
-#END -------
+##3.3.Figure 13------
+rm(list=ls())
 
+empty_theme <- theme(plot.background = element_blank(), panel.grid.major = element_blank(), 
+                     panel.grid.minor = element_blank(), panel.border = element_blank(), panel.background = element_blank(),
+                     axis.line = element_blank(),  axis.ticks = element_blank(),  axis.text.y = element_text(angle = 90))
+
+plot <- ggplot(NULL, aes()) +  coord_fixed() +  
+  scale_x_continuous(expand = c(0, 0), limits = c(-1, 11), breaks = c(2,8), labels=c("2" = "", "8" = "")) +
+  scale_y_continuous(expand = c(0, 0), limits = c(-1,11), breaks = c(2,8), labels=c("2" = "", "8" = "")) +
+  empty_theme +  labs(title = NULL,x = "National Capability in AI-core Technologies", y = "Strength/Connectedness of Existing Industrial Sectors") +
+  geom_segment(aes(x = 10, y = 0, xend = 10, yend = 10)) +  geom_segment(aes(x = 0, y = 0, xend = 0, yend = 10)) +
+  geom_segment(aes(x = 0, y = 0, xend = 10, yend = 0)) +  geom_segment(aes(x = 0, y = 5, xend = 10, yend = 5)) +
+  geom_segment(aes(x = 5, y = 0, xend = 5, yend = 10)) +  geom_segment(aes(x = 0, y = 10, xend = 10, yend = 10)) +
+  annotate("text", x = 2.5, y = 4.5, alpha = 2, label = "Foundational Buildup", fontface = "bold") +
+  annotate("text", x = 2.5, y = 9.5, alpha = 2, label = "Further Digitalization/Laggard's Opportunity", fontface = "bold") +
+  annotate("text", x = 7.5, y = 4.5, alpha = 2, label = "Technology Push/'Break-through' Risk", fontface = "bold") +
+  annotate("text", x = 7.5, y = 9.5, alpha = 2, label = "Synergistic Leadership", fontface = "bold") +
+  
+  annotate("text", x = 2.5, y = 3.5, alpha = 2, label = "\n \nCountries:\nDeveloping nations") +
+  annotate("text", x = 7.5, y = 3.5, alpha = 2, label = "\n \nCountries:\nE.g., Strong in AI research,\nweaker industrial base") +
+  annotate("text", x = 2.5, y = 8.5, alpha = 2, label = "\n \nCountries:\nE.g., European industrial leaders") +
+  annotate("text", x = 7.5, y = 8.5, alpha = 2, label = "\n \nCountries:\nUSA, Japan, South Korea") +
+  
+  annotate("text", x = 2.5, y = 2.0, alpha = 2, label = "\n \nStrategy:\nFocus on foundational education, \ndigital infrastructure, and developing niche strengths.") +
+  annotate("text", x = 7.5, y = 2.0, alpha = 2, label = "\n \nStrategy:\nBuild industrial absorptive capacity. Create \nnew markets to commercialize research.") +
+  annotate("text", x = 2.5, y = 7.0, alpha = 2, label = "\n \nStrategy:\n1. Digitize hub industries.\n2. Foster targeted AI 'break-ins' to build capabilities.") +
+  annotate("text", x = 7.5, y = 7.0, alpha = 2, label = "\n \nStrategy:\nStrategic Anchoring. Focus on 'break-in' \nopportunities in highly connected hub sectors.") +
+  
+  annotate("segment", x = 0, xend = 10, y = -.9, yend = -.9,colour = "black",
+           size=2, alpha=1, arrow=arrow(type = "closed", angle = 15)) +
+  annotate("segment", x = -.9, xend = -.9, y = 0, yend = 10, colour = "black",
+           size=2, alpha=1, arrow=arrow(type = "closed", angle = 15))
+
+plot <- 
+  plot + 
+  annotate("text", x = 7.5, y = -0.5, label = "High", color = "black") +
+  annotate("text", x = 2.5, y = -0.5, label = "Low", color = "black") +
+  annotate("text", x = -.5, y = 7.5, angle = 90, label = "High", color = "black") +
+  annotate("text", x = -.5, y = 2.5, angle = 90, label = "Low", color = "black") +
+  annotate("rect", xmin = 0, xmax = 5, ymin = 0, ymax = 5, fill= "#999999", alpha = .6)+
+  annotate("rect", xmin = 5, xmax = 10, ymin = 0, ymax = 5, fill= "#3399FF", alpha = .6)+
+  annotate("rect", xmin = 0, xmax = 5, ymin = 5, ymax = 10, fill= "#FF0000", alpha = .5)+
+  annotate("rect", xmin = 5, xmax = 10, ymin = 5, ymax = 10, fill= "#009900", alpha = .6)
+plot
+
+jpeg("Files_created_with_the_code/figures/Figure_13a.jpg", width = 9.5, height = 9.5, units = 'in', res = 500)
+plot
+dev.off()

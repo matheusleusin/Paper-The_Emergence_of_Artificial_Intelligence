@@ -1,0 +1,1311 @@
+---
+title: "Markdown - Breaking in or Breaking Through? How Local Specialisations Shape the Integration  of AI Technologies"
+output:
+  html_document:
+    toc: true
+    toc_float: true # This makes it a floating sidebar in HTML
+    theme: united
+    df_print: paged
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
+knitr::opts_chunk$set()
+```
+
+# 1. Technological Spaces based on Technological field
+
+## 1.1. Calculate Specializations for Different Time intervals
+
+In this first part, we load the very large datasets containing patent data and inventor's location, and use them to calculate specialisations and ultimately create the Global technological space (GTS) and the AI-specific technological space (ATS). We calculate specialisations per interval.
+
+We start by defining custom functions and loading the first part of the large patent dataset with inventors' location.
+```{r, include=FALSE}
+#### Main Code
+# Load required libraries
+library(tidyverse)
+library(magrittr)
+library(tidygraph)
+library(ggraph)
+library(EconGeo)
+library(data.table)
+library(netrankr)
+library(dplyr)
+library(tidyr)
+library(ggrepel)
+library(scales)
+library(patchwork)
+library(RColorBrewer)
+library(janitor)
+library(ggforce)
+library(stringr)
+library(openxlsx)
+
+rm(list=ls())
+#set the working directory to where you saved the R code:
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+#1.First part: Technological Spaces based on Technological field -----
+#Create important functions 
+# This function groups data by application ID, and within each group, it calculates
+# a field-specific weight equal to 1 divided by the number of records in that group.
+group_by_applnID <- function(data){
+  data %>%
+    group_by(appln_id) %>%
+    mutate(field_weight = 1 / n()) %>%
+    ungroup()
+}
+
+# This function aggregates the weighted fields at the country-technology field level.
+group_by_ctry_and_techn_field <- function(data){
+  data %<>%
+    group_by(ctry_code, techn_field_nr) %>%
+    summarise(n_tech_reg = sum(field_weight)) %>%
+    ungroup() %>%
+    drop_na() 
+}
+
+# This function aggregates the weighted fields at the country-subclass level.
+group_by_ctry_and_subclass <- function(data){
+  data %<>%
+    group_by(ctry_code, Subclass) %>%
+    summarise(n_tech_reg = sum(field_weight)) %>%
+    ungroup() %>%
+    drop_na() 
+}
+
+# This function arranges multiple ggplots into one figure.
+multiplot <- function(..., plotlist=NULL, file, cols=1, layout=NULL) {
+  library(grid)
+  
+  # Combine all plots into a single list
+  plots <- c(list(...), plotlist)
+  numPlots = length(plots)
+  
+  # If no layout is provided, define one based on the specified number of columns
+  if (is.null(layout)) {
+    layout <- matrix(seq(1, cols * ceiling(numPlots/cols)),
+                     ncol = cols, nrow = ceiling(numPlots/cols))
+  }
+  
+  # If only one plot, just print it
+  if (numPlots==1) {
+    print(plots[[1]])
+  } else {
+    # Set up a new page for the layout
+    grid.newpage()
+    pushViewport(viewport(layout = grid.layout(nrow(layout), ncol(layout))))
+    
+    # Print each plot in the correct layout position
+    for (i in 1:numPlots) {
+      matchidx <- as.data.frame(which(layout == i, arr.ind = TRUE))      
+      print(plots[[i]], vp = viewport(layout.pos.row = matchidx$row,
+                                      layout.pos.col = matchidx$col))
+    }
+  }
+}
+
+# This function creates a sparse matrix from the given inputs.
+# i.input and j.input represent row and column indices, respectively.
+create_sparse_matrix <- function(i.input, j.input){
+  require(Matrix)
+  mat <- spMatrix(
+    nrow = i.input %>% n_distinct(),
+    ncol = j.input %>% n_distinct(),
+    i    = i.input %>% factor() %>% as.numeric(),
+    j    = j.input %>% factor() %>% as.numeric(),
+    x    = rep(1, i.input %>% length())
+  )
+  
+  row.names(mat) <- i.input %>% factor() %>% levels()
+  colnames(mat)  <- j.input %>% factor() %>% levels()
+  return(mat)
+}
+
+rows_part2 <- 45182803 - 40000000
+ipc_all_patents_part2_chunk1_df <- fread("large_files/All_patents_and_IPCs_Part2.csv", 
+                                         header = FALSE, nrow = 20000000)
+ipc_all_patents_part2_chunk2_df <- fread("large_files/All_patents_and_IPCs_Part2.csv", 
+                                         header = FALSE, nrow = 20000000, skip = 20000000)
+ipc_all_patents_part2_chunk3_df <- fread("large_files/All_patents_and_IPCs_Part2.csv", 
+                                         header = FALSE, nrow = rows_part2, skip = 40000000)
+
+ipc_all_patents_part2_df <- rbind(ipc_all_patents_part2_chunk1_df, 
+                                  ipc_all_patents_part2_chunk2_df, ipc_all_patents_part2_chunk3_df)
+
+rm(ipc_all_patents_part2_chunk1_df, ipc_all_patents_part2_chunk2_df, ipc_all_patents_part2_chunk3_df)
+
+setnames(ipc_all_patents_part2_df, c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year"))
+
+ai_patents_df <- fread("other_files/IPCs_AI.csv", sep=";", dec=",", header=TRUE)
+ai_patents_df$ctry_code <- "AI_pat"
+
+# Load IPC technology names for labeling
+ipc_names_df <- read.csv("other_files/ipc_technology.csv", sep = ";", header = TRUE) %>%
+  select(field_nr, sector, field_name) %>% distinct(field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = field_nr) %>% arrange(techn_field_nr)
+```
+
+The patent file with inventors' location looks like this:
+```{r}
+head(ipc_all_patents_part2_df)
+```
+The weight column was downloaded from patstat, but it it's totally irrelevant and it will be calculated again later. We load next the data on AI patents (file "other_files/IPCs_AI.csv"). It looks like this:
+```{r}
+head(ai_patents_df)
+```
+We also load the IPC file with information about technological fields (file "other_files/ipc_technology.csv"), which after processing looks like this:
+```{r}
+head(ipc_names_df)
+```
+Now we'll start calculating the specialisations of countries and AI technologies per interval. We have three intervals, the first being from 1974 to 1988, the second from 1989 to 2003, and the third from 2004 to 2018. We start by breaking the large patent file into it's corresponding interval, and applying the two custom functions over it (group_by_applnID and group_by_ctry_and_techn_field).
+```{r, include=FALSE}
+####1.1.2.1. Interval 1 (1974 - 1988)
+# Define Time Interval
+start_year <- 1973
+end_year   <- 1989
+
+###Filter Data for Interval 1 
+ipc_all_patents_first_period_df <- ipc_all_patents_part2_df[priority_year > start_year & priority_year < end_year]
+ipc_all_patents_first_period_df <- ipc_all_patents_first_period_df[, .(appln_id, ctry_code, techn_field_nr)]
+
+# Calculate General RCA for Interval 1
+# Compute weighted values at country-technology field level
+region_tech_fields_1_df <- group_by_applnID(ipc_all_patents_first_period_df)
+```
+The first function (group_by_applnID) groups data by application ID, and within each group, calculates a field-specific weight equal to 1 divided by the number of technological fields in that group. After applying this function over our interval-specific patent data, it looks like this:
+```{r}
+head(region_tech_fields_1_df)
+```
+Next we apply the second function (group_by_ctry_and_techn_field), which aggregates the weighted fields at the country-technology field level. After applying it, the data looks like this:
+```{r, include=FALSE}
+region_tech_fields_1_df <- group_by_ctry_and_techn_field(region_tech_fields_1_df)
+```
+```{r}
+head(region_tech_fields_1_df)
+```
+This file is saved as a csv for being used later (for this first interval, the name and location of the file is "Files_created_with_the_code/data/files_code_Fields_analysis/reg_tech_FirstPeriod.csv"). 
+We use this file in the next calculation, in which we create a matrix from this aggregated data. The matrix counts the name of registers of each country in which possible technological field. It looks like this:
+```{r, include=FALSE}
+mat_reg_tech1 <- region_tech_fields_1_df %>% arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = 0)
+mat_reg_tech1 %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>% round()
+```
+```{r}
+print(as.matrix(mat_reg_tech1[1:20, 1:12]))
+```
+We finally use this matrix to calculate the general specialisations (RTA indexes, which stands for Revealed Technological Advantage) of countries in this first interval. The RTA is set to be non-binary, and the data looks like this after this calculation:
+```{r, include=FALSE}
+## Calculate RCA (relative comparative advantage) for general technologies
+reg_RCA1_df <- mat_reg_tech1 %>% location_quotient(binary = FALSE) %>% as.data.frame() %>% 
+  rownames_to_column("ctry_code") %>% as_tibble() %>% gather("techn_field_nr", "RCA", -ctry_code)
+```
+```{r}
+head(reg_RCA1_df)
+```
+We do the same for the specialisations of countries in AI considering the AI patents in this interval. The steps are pretty much the same: we separate the AI data into this specific interval (ai_patents_df), apply the two custom functions (group_by_applnID and group_by_ctry_and_techn_field), save the file ("Files_created_with_the_code/data/files_code_Fields_analysis/Data1period_RCA_techn_field.csv"), create a matrix, and use it to calculate countries' specialisations in AI for this period. The AI-related specialisations data looks like this:
+```{r, include=FALSE}
+# Calculate AI-Specific RCA for Interval 1
+ai_patents_period_1_df <- ai_patents_df[ai_patents_df$priority_year > start_year & ai_patents_df$priority_year < end_year,]
+
+# Join technological fields info to AI patents
+ai_patents_period_1_df <- distinct(ai_patents_period_1_df, appln_id, .keep_all = TRUE)[, c(1,3)]
+ai_patents_period_1_df <- left_join(ai_patents_period_1_df, ipc_all_patents_first_period_df, by = "appln_id")
+
+# Compute weighted fields for AI patents
+region_tech_fields_1_ai_df <- group_by_applnID(ai_patents_period_1_df)
+rm(ai_patents_period_1_df)
+region_tech_fields_1_ai_df <- group_by_ctry_and_techn_field(region_tech_fields_1_ai_df)
+
+mat_reg_tech1_AI <- region_tech_fields_1_ai_df %>%
+  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1_AI %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>% as.matrix() %>%  round()
+
+reg_RCA1_AI_df <- mat_reg_tech1_AI %>% location_quotient(binary = FALSE) %>% 
+  as.data.frame() %>% rownames_to_column("ctry_code") %>%   
+  as_tibble() %>%   gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%  arrange(ctry_code, techn_field_nr)
+```
+```{r}
+head(reg_RCA1_AI_df)
+```
+We merge this data with the "general" specialisations calculated earlier. The resulting file and an additional example for the case of Japan look like this:
+```{r, include=FALSE}
+# Merge general and AI-specific RCA data for Interval 1
+rca_data_period_1_df <- merge(reg_RCA1_df, reg_RCA1_AI_df, all = TRUE, by = c("ctry_code", "techn_field_nr"))
+rca_data_period_1_df$Period <- "1974-1988"
+names(rca_data_period_1_df) <- c("ctry_code", "techn_field_nr", "RCA_Gen", "RCA_AI", "Period")
+```  
+```{r}
+#Resulting file:
+head(rca_data_period_1_df)
+#Example Japan:
+head(rca_data_period_1_df[rca_data_period_1_df$ctry_code == "JP",])
+```
+We save this data for later usage ("Files_created_with_the_code/data/files_code_Fields_analysis/Data1period_RCA_techn_field.csv").
+Next, we turn to the AI-specific specialisations of this interval. We pick our AI data for this interval and replace their country codes by a new "AI-specific" fake code named AI_pat. This allows us to calculate specialisations for AI as it were a country exploring distinct technologies. We apply the same two custom functions over it (group_by_applnID and group_by_ctry_and_techn_field), and get the following resulting file with the AI specialisations:
+```{r, include=FALSE}
+# Regional Tech for AI - Interval 1
+setDT(ai_patents_df)
+setDT(ipc_all_patents_first_period_df)
+ipc_all_patents_first_period_df[ai_patents_df, on = "appln_id", ctry_code := i.ctry_code]
+region_tech_ai_1_df <- group_by_applnID(ipc_all_patents_first_period_df)
+region_tech_ai_1_df <- group_by_ctry_and_techn_field(region_tech_ai_1_df)
+```
+```{r}
+head(region_tech_ai_1_df[region_tech_ai_1_df$ctry_code == "AI_pat",])
+```
+We also save this file for later usage ("Files_created_with_the_code/data/files_code_Fields_analysis/reg_techAI_FirstPeriod.csv"). We do the exact same thing for the two remaining intervals (namely Interval 2 [1989-2003], and Interval 3 [2004-2018]), saving corresponding interval-specific files throughout the process. At the end, we combine the three interval-specific files with countries' general and AI-specific specialisations (namely rca_data_period_1_df, rca_data_period_2_df, rca_data_period_3_df) into a single file named ipc_rcas_df, which we also save ("Files_created_with_the_code/data/files_code_Fields_analysis/IPC_RCAs.csv"). Using again the case of Japan as an example and considering each of the three intervals, the combined and saved ipc_rcas_df file looks like this:
+```{r, include=FALSE}
+# Clean up
+IPC_RCAs <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/IPC_RCAs.csv", 
+                     sep = ";", header = TRUE, dec=",")
+```
+```{r}
+head(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "1974-1988",])
+head(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "1989-2003",])
+head(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "2004-2018",])
+```
+Next, we create additional interval-specific files that combine the specialisations of the four considered countries with the specialisations of AI in a more user-friendly format. One file is created and saved per interval. For the first interval, the file created is named "First_period", and it is saved as "Files_created_with_the_code/data/files_code_Fields_analysis/Metrics_First_period.csv". The file looks like this:
+```{r, include=FALSE}
+###1.1.2.4.  Create a Specializations Summary
+# First Interval Countries 
+# Load first interval data for countries
+reg_tech1_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/reg_tech_FirstPeriod.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech1_countries <- reg_tech1_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+reg_RCA1_countries <- mat_reg_tech1_countries %>%   location_quotient(binary = FALSE) %>% 
+  as.data.frame() %>% rownames_to_column("ctry_code") %>% 
+  as_tibble() %>% gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>% arrange(ctry_code, techn_field_nr)
+
+# First Interval AI 
+# Load first interval data for AI-specific patents
+reg_tech1_AI <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/reg_techAI_FirstPeriod.csv", 
+                         sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for AI patents in the first interval
+mat_reg_tech1_AI <- reg_tech1_AI %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1_AI %<>%   remove_rownames %>%   column_to_rownames(var="ctry_code") %>%
+  as.matrix() %>%  round()
+
+# Compute RCA for the first interval (AI-specific)
+reg_RCA1_AI <- mat_reg_tech1_AI %>%   location_quotient(binary = FALSE) %>% 
+  as.data.frame() %>%   rownames_to_column("ctry_code") %>% 
+  as_tibble() %>%   gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+  arrange(ctry_code, techn_field_nr)
+
+# Load IPC names and metadata
+IPC_names <- read.csv("other_files/ipc_technology.csv", sep = ";", header = TRUE)%>%
+  select(field_nr, sector, field_name) %>%  distinct(field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = field_nr) %>%  arrange(techn_field_nr)
+IPC_names <- IPC_names[, -1]
+
+# Extract top countries and AI data for first interval
+US_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "US",]
+CN_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "CN",]
+KR_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "KR",]
+JP_first_period <- reg_RCA1_countries[,2:3][reg_RCA1_countries$ctry_code == "JP",]
+AI_first_period <- reg_RCA1_AI[,2:3][reg_RCA1_AI$ctry_code == "AI_pat",]
+
+# Merge IPC names with the countries and AI RCAs for the first interval
+First_period <- merge(merge(merge(merge(merge(IPC_names, US_first_period), CN_first_period, by = "techn_field_nr"), 
+  KR_first_period, by = "techn_field_nr"), JP_first_period, by = "techn_field_nr"), 
+  AI_first_period, by = "techn_field_nr")
+
+names(First_period) <- c("techn_field_nr", "sector", "field_name", "RCA_US", "RCA_CN","RCA_KR","RCA_JP", "RCA_AI")
+```
+```{r}
+head(First_period)
+```
+The same is done for the remaining two intervals. Finally, we combine these 3 interval-specific files into a single file, adding some additional labels to the technological fields considering their visual location around the GTS. These additional labels are just information for analysis, which is not really used or mentioned in the paper. The file is named "All_periods" and saved at "Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv". It looks like this:
+```{r, include=FALSE}
+IPC_names <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", 
+                      sep = ";", header = TRUE)[,c(-1)]
+```
+```{r}
+head(IPC_names)
+```
+In the last step, we use the previously saved file named "Files_created_with_the_code/data/files_code_Fields_analysis/IPC_RCAs.csv" to create a file summarizing the number of general (column Round_general), AI-specific (column Round_AI), and coinciding specialisations (column Total_RCA) of each country over each interval. The previously calculated general and AI-specific specialisations are made binary, and their sum composes the number of coinciding specialisations. The resulting file IPC_RCAs_Top4 is saved at "Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv" and looks like this:
+```{r, include=FALSE}
+IPC_RCAs_Top4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv", 
+                          sep = ";", header = TRUE, dec=",")
+```
+```{r}
+head(IPC_RCAs_Top4)
+```
+## 1.2. Create Sparse Matrix of relatedness between technological fields
+
+This section creates a large sparse matrix from patent-techn_field data and computes their co-occurrence (cross-product). Finally, it saves the resulting technology-relatedness matrix.
+We start again by reading the very large files containing patent and inventors' location data. But this time, we apply the function "create_sparse_matrix", which creates a sparse matrix of co-occurences of technological fields in patents. The result of applying the function is a matrix that shows in lines each unique application id of patents, and in columns all of the 35 possible technological fields containing information about the respective technological field being used in the respective patent or not (0s for not, above this value for the number of times that the code appears in each individual patent). Because the files are too big and a bit problematic computational-wise, they are split into smaller files that are summed up after everything is calculated. The first file resulting from applying the create_sparse_matrix function, named mat_tech_AI1, looks like this:
+```{r, include=FALSE}
+c <- 58841893 - 40000000
+IPC_all_patents_Part1 <- fread("large_files/All_patents_and_IPCs_Part1.csv", header = FALSE, nrow = 20000000)
+IPC_all_patents_Part2 <- fread("large_files/All_patents_and_IPCs_Part1.csv", header = FALSE, nrow = 20000000, skip = 20000000)
+IPC_all_patents_Part3 <- fread("large_files/All_patents_and_IPCs_Part1.csv", header = FALSE, nrow = c, skip = 40000000)
+
+names(IPC_all_patents_Part1) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
+names(IPC_all_patents_Part2) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
+names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year")
+
+# Create sparse matrices and compute cross-products for the first big file
+mat_tech_AI1 <- create_sparse_matrix(i = IPC_all_patents_Part1 %>% pull(appln_id),
+                                     j = IPC_all_patents_Part1 %>% pull(techn_field_nr)) #
+```
+```{r}
+print(as.matrix(mat_tech_AI1[1:20, 1:12]))
+```
+This file is transformed in a square matrix of co-occurrences, which captures all possible combinations between two distinct technological fields. This square matrix looks like this:
+```{r, include=FALSE}
+mat_tech_AI1 %<>%   crossprod() %>%  as.matrix() 
+```
+```{r}
+print(as.matrix(mat_tech_AI1[1:35, 1:35]))
+```
+Six small co-occurrence matrices are calculated, and then they are summed up in a file named mat_tech_AI_Final, which is saved at "Files_created_with_the_code/data/files_code_Fields_analysis/Matrix_IPC.csv". This final file of co-occurrences between technological fields looks like this:
+```{r, include=FALSE}
+matrix2 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Matrix_IPC.csv", 
+                    sep = ";", header = FALSE)
+
+matrix2 <- matrix2 %>%  row_to_names(row_number = 1)
+matrix <- matrix2[,-1]
+rownames(matrix) <- matrix2[,1]
+matrix <- as.matrix(matrix)
+mat_tech_AI_Final <- matrix
+```
+```{r}
+print(mat_tech_AI_Final[1:35, 1:35])
+```
+This matrix is used for calculating the relatedness between all technological fields, which is at the core of the GTS. The matrix is normalised to prevent overestimating knowledge links associated with ubiquitously used technological fields through the cosine index. This normalised matrix is then used as an input for calculating relatedness. Both relatedness and the normalisation are made using the function "relatedness" provided by the EconGeo package. The resulting matrix of relatedness looks like this: 
+```{r, include=FALSE}
+# Calculate relatedness using cosine similarity
+mat_tech_rel_AI <- mat_tech_AI_Final %>% relatedness(method = "cosine")
+```
+```{r}
+print(mat_tech_rel_AI[1:35, 1:35])
+```
+Next, the matrix is turned into a network (file g_tech_AI). The degree of centrality of nodes is calculated using the Eigenvector centrality of vertices (centrality_eigen), which also calculates the width of the links between nodes (i.e., technological fields). Links that have below average width are excluded for better visualisation. Then, a network layout is calculated based on this network (coords_tech_AI). The resulting coordinates look like this for the top 10 technological fields:
+```{r, include=FALSE}
+# Load IPC names and categories
+IPC_names <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", 
+                      sep = ";", header = TRUE)%>%
+  select(techn_field_nr, sector, field_name, Category) %>%  distinct(techn_field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = techn_field_nr) %>%  arrange(techn_field_nr)
+
+# Build a graph from the relatedness matrix
+g_tech_AI <- mat_tech_rel_AI %>%   as_tbl_graph(directed = FALSE) %N>%
+  left_join(IPC_names %>% mutate(techn_field_nr = as.character(techn_field_nr)), 
+            by = c("name" = "techn_field_nr")) %>%  mutate(dgr = centrality_eigen(weights = weight)) %E>%
+  filter(weight >= mean(weight))
+
+# Layout for visualization (Fruchterman-Reingold)
+coords_tech_AI <- g_tech_AI %>%   igraph::layout.fruchterman.reingold() %>% as_tibble()
+colnames(coords_tech_AI) <- c("x", "y")
+# Alternatively, load predefined coordinates
+coords_tech_AI <- read.csv("other_files/coords_tech_AI_layout1.csv", sep = ";", header = TRUE, dec=",")
+```
+```{r}
+coords_tech_AI[1:10,]
+```
+Then, the previously file with general, AI-specific and coinciding country specialisations (from the file "RCA_4countries_detailed.csv") and the file with AI-specific specialisations (file "Specializations_All_periods_IPC.csv") are loaded. The resulting file is processed for facilitating the plotting later. A new category is created, reflecting the types of specialisations used in the paper (Var1, which goes from 0 to 3; 0 stands for no specialisation, 1 for general specialisation, 2 for AI-specific specialization, and 3 for coinciding specialization). This new dataset named Newtable is saved at "Files_created_with_the_code/data/files_code_Fields_analysis/Table_appendix.xlsx" and looks like this:
+```{r, include=FALSE}
+# Load top 4 countries RCA details
+IPC_RCAs_Top4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv", 
+                          sep = ";", header = TRUE, dec=",")
+IPC_RCAs_Top4$Total_RCA <- as.factor(IPC_RCAs_Top4$Total_RCA)
+IPC_RCAs_Top4$Period_sim <- as.numeric(factor(IPC_RCAs_Top4$Period, levels=unique(IPC_RCAs_Top4$Period)))
+IPC_RCAs_Top4$techn_field_nr <- as.character(IPC_RCAs_Top4$techn_field_nr)
+
+# Load AI RCA data and merge with IPC_RCAs_Top4
+AI_RCA <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", 
+                   sep = ";", header = TRUE, dec=",")
+AI_RCA$Period_sim <- as.numeric(factor(AI_RCA$Period, levels=unique(AI_RCA$Period)))
+AI_RCA <- AI_RCA[, c(2,9,13)]
+AI_RCA$techn_field_nr <- as.character(AI_RCA$techn_field_nr)
+names(AI_RCA) <- c("techn_field_nr", "RCA_AI_Period", "Period_sim")
+
+IPC_RCAs_Top4 <- left_join(IPC_RCAs_Top4, AI_RCA, by = c("techn_field_nr", "Period_sim"))
+
+# Adjust Total_RCA_2 to differentiate between general and AI specialization
+IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$Round_general + 2*IPC_RCAs_Top4$Round_AI
+
+# Summarize data by category of specialization
+Newtable <- as.data.frame(table(IPC_RCAs_Top4$Total_RCA_2, IPC_RCAs_Top4$ctry_code, IPC_RCAs_Top4$Period))
+Newtable$Var1 <- gsub("0", "No specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("1", "General specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("2", "AI-specific specialization", str_trim(Newtable$Var1))
+Newtable$Var1 <- gsub("3", "Coinciding specialization", str_trim(Newtable$Var1))
+```
+```{r}
+Newtable[1:10,]
+```
+## 1.3. Plotting technological spaces
+Next, we use the loaded information to plot technological spaces. For now, we have only calculated the coordinates and network for the GTS and not yet for the ATS, so we'll start with this one.
+
+### 1.3.1. Global technological space (GTS)
+
+The first figure from the GTS doesn't have any information linked to specialisations. The command below uses the general network created before to plot this geography-agnostic GTS. The figure produced is saved at "Files_created_with_the_code/figures/Figure_3_GTS_for_IPC_fields.jpg" 
+```{r, fig.width=14, fig.height=10}
+  g_tech_AI %>%  ggraph(layout =  coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.4, colour = "grey") + 
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector))+ # 
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + scale_size("Degree", range = c(2, 12)) + 
+  geom_node_text(aes(label = paste0(field_name, "\n(", name, ")")), size = 4, repel = TRUE) +  #field_name or name
+  theme_graph(base_family = "sans")+  ggtitle("Global technological space: IPC Technological fields") + 
+  theme(legend.title = element_text(size = 14), legend.text = element_text(size = 10)) + 
+  guides(colour = guide_legend(override.aes = list(size=10)))+
+  geom_mark_hull(aes(x = x, y=y, colour = sector, fill= sector,
+                     linetype = sector), alpha = 0.15, expand = unit(2.5, "mm"), size = 1) 
+
+```
+
+
+Next, this very same technological space is used to plot the technological trajectories of the selected countries, through plotting their specialisations information. Thus, the commands for color and size of the nodes are adapted to reflected the previously calculated 3 types of specialisations. Three technological spaces are plotted for each country (one for each interval). Using again the case of Japan as an example, in the first interval:
+```{r, fig.width=14, fig.height=10}
+#GTS with specialisations per country
+country_select <- c("CN", "US", "JP", "KR")
+### 1.2.3.3. Third Country
+i=1
+IPC_RCAs_wide_simplified <- IPC_RCAs_Top4 %>% pivot_wider(id_cols = c(ctry_code, techn_field_nr, Label), 
+    names_from = Period_sim,
+    values_from = c(RCA_AI_Period, Total_RCA_2, RCA_Gen, RCA_AI, Round_general, Round_AI, Total_RCA), 
+    names_glue = "{.value}_Period_{Period_sim}" )
+
+  g_tech_AI %N>% left_join(IPC_RCAs_wide_simplified %>%
+                             filter(ctry_code == country_select[i]) %>%
+                             select(-ctry_code), by = c("name" = "techn_field_nr")) %>%
+  mutate(Shape_Group_P1_Factor = factor(
+    ifelse(is.na(Total_RCA_2_Period_1), "NA_Value", as.character(Total_RCA_2_Period_1)),
+    levels = c("0", "1", "2", "3", "NA_Value"))) %>% ggraph(layout = coords_tech_AI) +
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC", show.legend = FALSE) + 
+  geom_node_point(aes(shape = Shape_Group_P1_Factor, 
+                      size = 5, stroke = ifelse(Total_RCA_2_Period_1 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#FF3300", show.legend = c(shape=TRUE, size=FALSE, stroke=FALSE, alpha=FALSE, color=FALSE)) + 
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_2),
+                      size = 5.5, stroke = ifelse(Total_RCA_2_Period_2 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#3399FF", show.legend = FALSE) +
+  geom_node_point(aes(shape = factor(Total_RCA_2_Period_3), 
+                      size = 6.5,stroke = ifelse(Total_RCA_2_Period_3 == 3, 2.5, 1.3),
+                      alpha = 1), color = "#009900", show.legend = FALSE) +
+  scale_shape_manual(name = "Type of specialisation",
+                     values = c("0" = 4, "1" = 1, "2" = 5, "3" = 2, "NA_Value" = 16), breaks = c("0", "1", "2", "3"),                                
+                     labels = c("0" = "No specialisation", "1" = "General specialisation", 
+                                "2" = "Break-through specialisation", "3" = "Break-in specialisation"), 
+                     na.translate = FALSE, drop = FALSE) + scale_size("Degree", range = c(7, 18))+ 
+  scale_alpha(guide = "none") + 
+  #geom_node_label(aes(label = name), size = 2, repel = F) + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_1 > .99, x = x, y = y, fill = "Period 1", group = "Period 1"), 
+                 concavity = .1, alpha = .11, linetype = "dotted",expand = unit(2, "mm"), size = .5, color = "#FF3300") + 
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_2 > .99, x = x, y = y, fill = "Period 2", group = "Period 2"),
+                 concavity = .1, alpha = .11, linetype = "longdash",expand = unit(2, "mm"), size = .5, color = "#3399FF") +
+  geom_mark_hull(aes(filter = Total_RCA_2_Period_3 > .99, x = x, y = y, fill = "Period 3", group = "Period 3"),
+                 concavity = .1, alpha = .02, expand = unit(2, "mm"), size = 1, color = "#009900") +
+  scale_fill_manual(name = "Interval colour (same for \nboth nodes and cluster)", # New legend for fill
+                    values = c("Period 1" = "#FF3300", "Period 2" = "#3399FF", "Period 3" = "#009900"),
+                    labels = c("Interval 1 (1974-1988)", "Interval 2 (1989-2003)", "Interval 3 (2004-2018)")) +
+  theme_graph(base_family = "sans") +  theme(legend.position = "bottom", #right
+                                             legend.box = "vertical", legend.title = element_text(size = 12, face = "bold"), 
+                                             legend.text = element_text(size = 10), legend.key.size = unit(0.7, "cm") ) +
+  ggtitle("d) Global technological space: China (1974-2018)") +
+  geom_node_text(aes(label = name), size = 5, repel = TRUE) +  #field_name or name
+  guides(shape = guide_legend(title.position = "top", 
+                              override.aes = list(size = 5, stroke = 1.5, color = "black") ),
+         colour = guide_legend(title.position = "top", 
+                               override.aes = list(linetype = c("solid", "longdash", "dotted"), 
+                                                   alpha = 1, size = 1, shape = NA) ))
+  
+  bar_plot_China <- bar_plot_China <- IPC_RCAs_Top4[IPC_RCAs_Top4$ctry_code == country_select[i],] %>%                                   
+  arrange(Label, Period) %>%  group_by(Label) %>%                          
+  mutate( general = Total_RCA_2 == 1,    
+          break_in              = Total_RCA_2 == 2,            
+          break_through         = Total_RCA_2 == 3,            
+          sustained_general    = general  & lag(general, 1, default = FALSE),
+          sustained_break_in    = break_in  & lag(break_in, 1, default = FALSE),
+          sustained_break_through    = break_through & lag(break_through, 1, default = FALSE)) %>% 
+  ungroup()
+
+bar_plot_China <- bar_plot_China %>% 
+  group_by(Period) %>% summarise(`General case`                 = sum(general,           na.rm = TRUE),
+                                 `Break-through case`                 = sum(break_in,           na.rm = TRUE),
+                                 `Break-in case`            = sum(break_through,      na.rm = TRUE),
+                                 `Sustained General case`       = sum(sustained_general, na.rm = TRUE),
+                                 `Sustained break-through case`       = sum(sustained_break_in, na.rm = TRUE),
+                                 `Sustained break-in case`  = sum(sustained_break_through, na.rm = TRUE),
+                                 .groups = "drop") %>% arrange(Period)
+
+plot_long_China <- bar_plot_China |>  rename(Period = Period) |>
+  pivot_longer(cols= -Period,names_to= "Indicator",values_to = "Count")
+
+#order labels
+plot_long_China$Indicator <- factor(plot_long_China$Indicator, levels = rev(c("General case", "Break-through case",  "Break-in case", 
+                                                              "Sustained General case", "Sustained break-through case", "Sustained break-in case")))
+plot_long_China$Period <- factor(plot_long_China$Period, levels = c("2004-2018", "1989-2003", "1974-1988"))
+
+legend_order <- c(
+  "General case", "Break-through case", "Break-in case",
+  "Sustained General case", "Sustained break-through case", "Sustained break-in case"
+)
+
+  ggplot(plot_long_China, aes(x = factor(Period),y = Count, fill = Indicator)) +
+  geom_col(position = position_dodge(width = .8), width = .7) +
+  scale_fill_manual(values = c("General case"  = "#FF3300",
+    "Sustained General case"  = "#993333",
+    "Break-in case"                 = "#009900", #3399FF
+    "Sustained break-in case"       = "#006633", #3333CC
+    "Break-through case"            = "#3399FF",  #009900
+    "Sustained break-through case"  = "#3333CC"),
+    breaks = legend_order) + #006633
+  guides(fill = guide_legend(nrow = 2, byrow = TRUE)) +
+  labs(x = "Interval",y = "Number of cases", fill = NULL, title = NULL)+
+  ggtitle("Summary of specialisations China") +
+  theme_classic(base_size = 11) + theme(legend.position = "bottom")+ coord_flip()
+```
+The code is the basically the same for the remaining countries in interval. The countries and intervals are selected by varying the variables i (for countries), and p (for intervals). The figures are generated and combined by country using the custom function "multiplot". The files are saved at "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_d_China.jpg", "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_b_USA.jpg", "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_a_Japan.jpg", and "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_c_SouthKorea.jpg".
+
+### 1.3.2. AI-specific technological space (ATS)
+Next, we create the ATS. We follow very similar steps: load the AI data, separate the patents that are specific to each interval, calculate the network and it's coordinates, and plot one technological space per interval. The difference now is that the ATS is dynamic, meaning that we calculate the network every time for each interval. Starting with the first interval, the calculated degree for the top 10 most connected codes is:
+```{r, include=FALSE}
+rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
+gc()
+# ATS First interval
+patents_AI_specific_1st <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/AI_ALL_patents.csv", sep = ";", header = TRUE, dec=",")
+
+a = 1973
+b = 1989
+
+patents_AI_specific_1st <- patents_AI_specific_1st[patents_AI_specific_1st$priority_year < b,]
+patents_AI_specific_1st <- patents_AI_specific_1st[patents_AI_specific_1st$priority_year > a,]
+
+length(unique(patents_AI_specific_1st$appln_id)) #436
+patents_AI_specific_1st <- patents_AI_specific_1st[is.na(patents_AI_specific_1st$appln_id)==F,]
+
+mat_tech_AI <- create_sparse_matrix(i = patents_AI_specific_1st %>% pull(appln_id),
+                                    j = patents_AI_specific_1st %>% pull(techn_field_nr))
+
+mat_tech_AI %<>%   crossprod() %>%   as.matrix() 
+
+mat_tech_rel_AI <- mat_tech_AI %>%   relatedness(method = "cosine")
+
+IPC_names <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE)%>%
+  select(techn_field_nr, sector, field_name, Category) %>%  distinct(techn_field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = techn_field_nr) %>%  arrange(techn_field_nr)
+
+g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
+  left_join(IPC_names %>% mutate(techn_field_nr = techn_field_nr %>% as.character()), by = c("name" = "techn_field_nr")) %>%
+  mutate(dgr = centrality_eigen(weights = weight)) %E>%  filter(weight >= mean(weight))
+
+#Create the Coordinates
+coords_tech_AI <- g_tech_AI %>% igraph::layout.fruchterman.reingold() %>% as_tibble()
+colnames(coords_tech_AI) <- c("x", "y")
+```
+```{r}
+g_tech_AI %N>%   arrange(desc(dgr)) %>%  as_tibble() %>%  slice(1:10)
+```
+The dataset with the AI-specific specialisations (named AI_RCA), saved previously in the file "Specializations_All_periods_IPC.csv" (together with the specialisations of countries), looks like this:
+```{r, include=FALSE}
+AI_RCA <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE, dec=",")
+AI_RCA$Period_sim <- as.numeric(factor(AI_RCA$Period,levels=unique(AI_RCA$Period)))
+AI_RCA <- AI_RCA[,c(2,9,13)]
+AI_RCA$techn_field_nr <- as.character(AI_RCA$techn_field_nr)
+names(AI_RCA) <- c("techn_field_nr", "RCA_AI_Period", "Period_sim")
+AI_RCA$Binary <- ifelse(AI_RCA$RCA_AI_Period < 1, 0,1)
+```
+```{r}
+head(AI_RCA)
+```
+Where "RCA_AI_Period" refers to the specific RTA of each code for each interval (which in turn is shown in the column Period_sim). We then plot the ATS for the first interval:
+```{r, fig.width=14, fig.height=10}
+AI_RCA1 <- AI_RCA[AI_RCA$Period_sim == 1,]
+p=1
+  g_tech_AI %N>%
+  left_join(AI_RCA1 %>% filter(Period_sim == p), by = c("name" = "techn_field_nr")) %>%
+  ggraph(layout = coords_tech_AI) + 
+  geom_edge_link(aes(width = weight), alpha = 0.2, colour = "#CCCCCC") +
+  geom_node_point(aes(fill = sector, size = 1000^dgr, shape= sector)) +
+  scale_shape_manual(values=c(21, 22, 23, 24, 25)) + labs(color   = "RCA")+ scale_size("Degree", range = c(2, 12)) +
+  geom_node_text(aes(filter=Binary > .99, label = field_name), size = 6, repel = TRUE) +
+  theme_graph(base_family = "sans") + guides(colour = guide_legend(override.aes = list(size=5)))+
+  ggtitle("AI-specific technological space (1974-1988)") #
+```
+
+
+We do the same for the 2 other intervals, and combine the three figures again using the multiplot custom function. The resulting figure is saved at "Files_created_with_the_code/figures/Figure_2_ATS_and_AI_core_technologies_3_intervals.jpg"
+
+# 2. Other figures 
+
+Next, we create the 3 remaining figures shown in the paper (namely Figures 1, 6, and 7).
+
+## 2.1. Share of Break-in specialisations (Fig 6 and 7)
+We create this figure by reading all the summary files we already separated before. We start by reading and combining files
+RCA_4countries_detailed.csv and Specializations_All_periods_IPC.csv into a new file named IPC_RCAs. Then, we summarize its main results, in the following way:
+```{r, include=FALSE}
+rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
+gc()
+
+IPC_RCAs_Top4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv", sep = ";", header = TRUE, dec=",")
+IPC_RCAs_Top4$Total_RCA <- as.factor(IPC_RCAs_Top4$Total_RCA)
+IPC_RCAs_Top4$Period_sim <- as.numeric(factor(IPC_RCAs_Top4$Period,levels=unique(IPC_RCAs_Top4$Period)))
+IPC_RCAs_Top4$techn_field_nr <- as.character(IPC_RCAs_Top4$techn_field_nr)
+
+#replace names:
+IPC_RCAs_Top4$ctry_code <- gsub("US", "USA", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("CN", "China", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("JP", "Japan", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("KR", "South Korea", str_trim(IPC_RCAs_Top4$ctry_code))
+
+AI_RCA <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE, dec=",")
+AI_RCA$Period_sim <- as.numeric(factor(AI_RCA$Period,levels=unique(AI_RCA$Period)))
+AI_RCA <- AI_RCA[,c(2,9,13)]
+AI_RCA$techn_field_nr <- as.character(AI_RCA$techn_field_nr)
+names(AI_RCA) <- c("techn_field_nr", "RCA_AI_Period", "Period_sim")
+IPC_RCAs_Top4 <- left_join(IPC_RCAs_Top4, AI_RCA, by = c("techn_field_nr", "Period_sim"))
+#fix Total_RCA:
+IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$Round_general + 2*IPC_RCAs_Top4$Round_AI
+rm(AI_RCA)
+
+IPC_RCAs_Top4$Coiciding <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==3,1,0)
+IPC_RCAs_Top4$justGeneral <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==1,1,0)
+IPC_RCAs_Top4$OnlyAI <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==2,1,0)
+
+#now, create a file per country per interval, where I sum over the 3 columns;
+IPC_RCAs <- IPC_RCAs_Top4
+IPC_RCAs %<>% 
+  group_by(ctry_code,Period) %>%   mutate(Share_coinciding = sum(Coiciding)/(sum(Coiciding)+sum(justGeneral))) %>% 
+  mutate(Share_OnlyAI = sum(OnlyAI)/(sum(OnlyAI)+sum(Coiciding))) %>% 
+  mutate(sum_coinciding = sum(Coiciding)) %>%   mutate(sum_justGeneral = sum(justGeneral)) %>%
+  mutate(sum_OnlyAI = sum(OnlyAI)) %>%  ungroup()
+```
+```{r}
+SummaryAllData<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
+colnames(SummaryAllData)[1] <- "Country"
+head(SummaryAllData)
+```
+This file is all we need to create Figure 6, shown below (and saved in file "Files_created_with_the_code/figures/Figure_6_Share_coinciding_specialisations_techn_field.jpg")
+```{r, fig.width=12, fig.height=4}
+  ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country), size=8) +   scale_shape_manual(values=c(21, 22, 24, 23)) +
+  xlab("Interval") +  ylab("Share of break-in specialisations (%)") +
+  theme_classic() +  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) +
+  scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A"))
+```
+
+Next, we do the same for the subclass-based Figure 7, which is shown belown and saved as "Files_created_with_the_code/figures/Figure_7_Share_coinciding_specialisations_subclass.jpg".
+```{r, include=FALSE}
+IPC_RCAs <- read.csv("Files_created_with_the_code/data/files_code_4-digits_analysis/IPC_RCAs_subclass.csv", sep = ";", header = TRUE, dec=",")
+#Select the 4 countries we want
+IPC_RCAs_Top4 <- IPC_RCAs[IPC_RCAs$ctry_code == "CN" | IPC_RCAs$ctry_code == "KR"| 
+                            IPC_RCAs$ctry_code == "US"|IPC_RCAs$ctry_code == "JP", ]
+rm(IPC_RCAs)
+
+#replace names:
+IPC_RCAs_Top4$ctry_code <- gsub("US", "USA", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("CN", "China", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("JP", "Japan", str_trim(IPC_RCAs_Top4$ctry_code))
+IPC_RCAs_Top4$ctry_code <- gsub("KR", "South Korea", str_trim(IPC_RCAs_Top4$ctry_code))
+
+IPC_RCAs_Top4$Period_sim <- as.numeric(factor(IPC_RCAs_Top4$Period,levels=unique(IPC_RCAs_Top4$Period)))
+
+#replace NAs by 0:
+#replace NAs, so we don't have problems when summing:
+IPC_RCAs_Top4[is.na(IPC_RCAs_Top4)] <- 0
+
+#make the numbers binary
+IPC_RCAs_Top4$RCA_Gen2 <- ifelse(IPC_RCAs_Top4$RCA_Gen >=1,1,0)
+IPC_RCAs_Top4$RCA_AI2 <- ifelse(IPC_RCAs_Top4$RCA_AI >=1,1,0)
+
+#fix Total_RCA:
+IPC_RCAs_Top4$Total_RCA_2 <- IPC_RCAs_Top4$RCA_Gen2 + 2*IPC_RCAs_Top4$RCA_AI2
+
+IPC_RCAs_Top4$Coiciding <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==3,1,0)
+IPC_RCAs_Top4$justGeneral <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==1,1,0)
+IPC_RCAs_Top4$OnlyAI <- ifelse(IPC_RCAs_Top4$Total_RCA_2 ==2,1,0)
+
+#now, create a file per country per interval, where I sum over the 3 columns;
+IPC_RCAs <- IPC_RCAs_Top4
+IPC_RCAs %<>% 
+  group_by(ctry_code,Period) %>% 
+  mutate(Share_coinciding = sum(Coiciding)/(sum(Coiciding)+sum(justGeneral))) %>% 
+  mutate(Share_OnlyAI = sum(OnlyAI)/(sum(OnlyAI)+sum(Coiciding))) %>% 
+  mutate(sum_coinciding = sum(Coiciding)) %>% 
+  mutate(sum_justGeneral = sum(justGeneral)) %>%
+  mutate(sum_OnlyAI = sum(OnlyAI)) %>%
+  ungroup()
+
+SummaryAllData4dig<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
+colnames(SummaryAllData4dig)[1] <- "Country"
+```
+```{r, fig.width=12, fig.height=4}
+  ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country), size=8) + 
+  scale_shape_manual(values=c(21, 22, 24, 23)) +
+  xlab("Interval") +
+  ylab("Share of break-in specialisations (%)") +
+  theme_classic() +
+  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
+  scale_y_continuous(labels = scales::percent) +
+  scale_fill_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) +
+  scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) 
+```
+
+## 2.2. Log 10 of the number of AI patents by Japan, the USA, South Korea, and China
+
+Next, we create Figure 1. Not much data is needed for this one (the only dataset needed is other_files/IPCs_AI.csv), and just simple commands used to process this data to get a summarized number. The produced figure is saved as "Files_created_with_the_code/figures/Figure_1_Log_10_AI_patents_per_country.jpg", and also shown below.
+```{r, include=FALSE}
+patents_AI_specific <- read.csv("other_files/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
+patents_AI_specific <- patents_AI_specific[,c((1), (3:4))]
+
+patents_AI_specific %<>%  mutate(DistinctOwnerInf = !duplicated(appln_id)) %>%  ungroup()
+
+patents_AI_specific %<>%   group_by(appln_id) %>% 
+  mutate(DistinctpatentOffice = !duplicated(patent_office)) %>%  ungroup()
+
+patents_AI_specific %<>%  group_by(appln_id) %>% 
+  mutate(DistinctpatentOffice = n_distinct(patent_office, na.rm = T)) %>%  ungroup()
+
+table(patents_AI_specific$DistinctpatentOffice)
+test<- patents_AI_specific[1,]
+
+test$patent_office <- gsub("CN", "US", str_trim(test$patent_office))
+
+patents_AI_specific2 <- rbind(patents_AI_specific, test)
+
+patents_AI_specific2 %<>% group_by(appln_id) %>% 
+  mutate(DistinctpatentOffice = n_distinct(patent_office, na.rm = T)) %>% ungroup()
+
+patents_AI_specific2[patents_AI_specific2$appln_id == "475222998",]
+table(patents_AI_specific2$DistinctpatentOffice)
+#thus, there is no patent with inventors from distinct patent offices in our dataset;
+
+patents_AI_specific_simplified <- patents_AI_specific[patents_AI_specific$DistinctOwnerInf == T,]
+patents_AI_specific_simplified2 <- patents_AI_specific2[patents_AI_specific2$DistinctOwnerInf == T,]
+
+patents_AI_specific_simplified_4<- patents_AI_specific_simplified[patents_AI_specific_simplified$patent_office == "CN" |
+                                                                    patents_AI_specific_simplified$patent_office == "US"|
+                                                                    patents_AI_specific_simplified$patent_office == "KR"|
+                                                                    patents_AI_specific_simplified$patent_office == "JP", ]
+
+patents_AI_specific_simplified_4$patent_office <- gsub("US", "USA", str_trim(patents_AI_specific_simplified_4$patent_office))
+patents_AI_specific_simplified_4$patent_office <- gsub("CN", "China", str_trim(patents_AI_specific_simplified_4$patent_office))
+patents_AI_specific_simplified_4$patent_office <- gsub("JP", "Japan", str_trim(patents_AI_specific_simplified_4$patent_office))
+patents_AI_specific_simplified_4$patent_office <- gsub("KR", "South Korea", str_trim(patents_AI_specific_simplified_4$patent_office))
+
+table(patents_AI_specific_simplified_4$patent_office)
+Data <- as.data.frame(table(patents_AI_specific_simplified_4$patent_office, patents_AI_specific_simplified_4$priority_year))
+names(Data) <- c("Country", "Year", "Number_of_AI_patents")
+
+Data$Year <- as.Date(paste(Data$Year, 1, 1, sep = "-")) # beginning of year
+Data$Year <- as.Date(paste(Data$Year, 12, 31, sep = "-"))
+Data$Year <- as.numeric(format(Data$Year, "%Y"))
+
+Data$Period <- ifelse(Data$Year >= 1974 & Data$Year <= 1988, "First Period (1974-1988)",
+                      ifelse(Data$Year > 1988 & Data$Year <= 2003, "Second Period (1989-2003)",
+                             ifelse(Data$Year >= 2004 & Data$Year < 2019, "Third Period (2004-2018)", "No period")))
+test <- Data[Data$Period != "No period",]  
+```
+```{r, fig.width=12, fig.height=8}
+  ggplot(data=test, aes(x=Year, y=log10(Number_of_AI_patents), group=Country, colour=Country, shape=Country)) +
+  geom_line(size=1.2, aes(linetype=Country)) +
+  geom_point(size=4) +  xlab("Year") +  ylab("Number of new AI registers [Log10]") + theme_classic() +
+  scale_linetype_manual(values=c("twodash", "longdash", "solid", "solid")) +
+  scale_shape_manual(values=c(16, 15, 17, 18)) + theme(legend.position="bottom") +
+  theme(text = element_text(size = 15)) +  scale_y_continuous(limits=c(0,4)) + 
+  geom_vline(data=test, aes(xintercept=c(1988),  colour=Period), linetype="dashed", size=1, color = "grey") +  
+  geom_vline(data=test, aes(xintercept=c(2003),  colour=Period), linetype="dashed", size=1, color = "grey") +  
+  scale_x_continuous(breaks = c(1974, 1988, 2003, 2018), limits=c(1974, 2018)) + scale_color_brewer(palette="Dark2") + 
+  annotate("rect", xmin = 1974, xmax=1988, ymin = 3.6, ymax = 4, alpha = .01, color = "black") +
+  annotate("text", x = 1981, y = 3.8, label = c("First Interval \n(1974-1988)"), size=4)+
+  annotate("rect", xmin = 1988, xmax=2003, ymin = 3.6, ymax = 4, alpha = .01, color = "black") +
+  annotate("text", x = 1996, y = 3.8, label = c("Second Interval \n(1989-2003)"), size=4) +
+  annotate("rect", xmin = 2003, xmax=2018, ymin = 3.6, ymax = 4, alpha = .01, color = "black") +
+  annotate("text", x = 2011, y = 3.8, label = c("Third Interval \n(2004-2018)"), size=4)
+```
+
+# 3. Permutations for technological fields
+
+## 3.1. Permutate the AI dataset
+
+Load the raw data, separate the interval (the first one for this example, from 1974 to 1988), and calculate the fractional count of each country in each considered field as done before.
+
+```{r, include=FALSE}
+#### Main Code
+# Load required libraries
+library(tidyverse)
+library(magrittr)
+library(tidygraph)
+library(ggraph)
+library(EconGeo)
+library(data.table)
+library(netrankr)
+library(dplyr)
+library(tidyr)
+library(ggrepel)
+library(scales)
+library(patchwork)
+library(RColorBrewer)
+library(janitor) #also used in the clean_names() function
+library(ggforce)
+library(stringr)
+library(openxlsx)
+library(gridExtra) #for grid.arrange
+library(readxl) #for reading the xlsx files
+library(lmtest) #for LM analysis and robustness econometric test
+library(sandwich) 
+library(stargazer) #for generating nice econometric tables
+
+rm(list=ls())
+#set the working directory to where you saved the R code:
+setwd(dirname(rstudioapi::getActiveDocumentContext()$path))
+
+#4.1.First part: Technological Spaces based on Technological field 
+group_by_applnID <- function(data){
+  data %>%
+    group_by(appln_id) %>%
+    mutate(field_weight = 1 / n()) %>%
+    ungroup()
+}
+
+# This function aggregates the weighted fields at the country-technology field level.
+group_by_ctry_and_techn_field <- function(data){
+  data %<>%
+    group_by(ctry_code, techn_field_nr) %>%
+    summarise(n_tech_reg = sum(field_weight)) %>%
+    ungroup() %>%
+    drop_na() 
+}
+
+
+##1.1. Calculate Specializations for Different Time intervals
+###1.1.1 Read and prepare big files
+# Reading large files in parts to avoid memory issues
+rows_part2 <- 45182803 - 40000000
+ipc_all_patents_part2_chunk1_df <- fread("large_files/All_patents_and_IPCs_Part2.csv", 
+                                         header = FALSE, nrow = 20000000)
+ipc_all_patents_part2_chunk2_df <- fread("large_files/All_patents_and_IPCs_Part2.csv", 
+                                         header = FALSE, nrow = 20000000, skip = 20000000)
+ipc_all_patents_part2_chunk3_df <- fread("large_files/All_patents_and_IPCs_Part2.csv", 
+                                         header = FALSE, nrow = rows_part2, skip = 40000000)
+
+ipc_all_patents_part2_df <- rbind(ipc_all_patents_part2_chunk1_df, 
+                                  ipc_all_patents_part2_chunk2_df, ipc_all_patents_part2_chunk3_df)
+
+rm(ipc_all_patents_part2_chunk1_df, ipc_all_patents_part2_chunk2_df, ipc_all_patents_part2_chunk3_df)
+
+setnames(ipc_all_patents_part2_df, c("appln_id", "ctry_code", "techn_field_nr", "weight", "priority_year"))
+
+# Load AI-specific data
+ai_patents_df <- fread("other_files/IPCs_AI.csv", sep=";", dec=",", header=TRUE)
+ai_patents_df$ctry_code <- "AI_pat"
+
+# Load IPC technology names for labeling
+ipc_names_df <- read.csv("other_files/ipc_technology.csv", sep = ";", header = TRUE) %>%
+  select(field_nr, sector, field_name) %>% distinct(field_nr, .keep_all = TRUE) %>%
+  mutate(techn_field_nr = field_nr) %>% arrange(techn_field_nr)
+
+###1.1.2.Calculate per interval
+####1.1.2.1. Interval 1 (1974 - 1988)
+# Define Time Interval
+start_year <- 1973
+end_year   <- 1989
+
+###Filter Data for Interval 1 
+ipc_all_patents_first_period_df <- ipc_all_patents_part2_df[priority_year > start_year & priority_year < end_year]
+ipc_all_patents_first_period_df <- ipc_all_patents_first_period_df[, .(appln_id, ctry_code, techn_field_nr)]
+# Compute weighted values at country-technology field level
+region_tech_fields_1_df <- group_by_applnID(ipc_all_patents_first_period_df)
+region_tech_fields_1_df <- group_by_ctry_and_techn_field(region_tech_fields_1_df)
+```
+
+The resulting count of techn_fields per country is:
+```{r}
+head(region_tech_fields_1_df)
+```
+Now we load the AI patents, select the ones from the first interval, define target countries (the four main ones), and define the number of permutations. To avoid that it takes it too long, I'll use 10 permutations (num_permutations = 10; in the paper, this number is set to 1000).
+```{r, include=FALSE}
+ai_patents_df <- fread("other_files/IPCs_AI.csv", sep=";", dec=",", header=TRUE)
+ai_patents_period_1_df <- ai_patents_df[ai_patents_df$priority_year > start_year & ai_patents_df$priority_year < end_year,]
+# Define target countries
+target_countries <- c("CN", "JP", "US", "KR") 
+num_permutations <- 10 # Or the desired number
+```
+```{r}
+
+list_of_permuted_dfs <- vector("list", length = num_permutations)
+
+for (p in 1:num_permutations) {
+  if (p %% 100 == 0) print(paste("Permutation number:", p)) # Progress indicator
+  
+  # This dataframe will hold the permuted AI patents for target countries ONLY for THIS iteration
+  permuted_ai_for_target_countries_iter <- data.frame()
+  
+  for (country in target_countries) {
+    # 1. Identify and Count ACTUAL AI patents for the current country from the original AI dataset
+    actual_ai_appln_ids_country <- ai_patents_period_1_df %>%
+      filter(ctry_code == country) %>%
+      distinct(appln_id) %>%
+      pull(appln_id)
+    
+    n_ai_country <- length(actual_ai_appln_ids_country)
+    
+    if (n_ai_country == 0) {
+      # print(paste("No AI patents found for", country, "in original AI data. Skipping for perm", p))
+      next # Skip to the next country if no AI patents to replace
+    }
+    
+    # 2. Prepare the pool of ALL patents for the current country from the general dataset
+    country_all_patents_pool <- ipc_all_patents_first_period_df %>%
+      filter(ctry_code == country) %>%
+      distinct(appln_id)
+    
+    if (nrow(country_all_patents_pool) == 0) {
+      # print(paste("No patents in general pool for", country, ". Skipping for perm", p))
+      next
+    }
+    
+    # Handle cases where the pool is smaller than the number of AI patents to sample
+    # This is unlikely if ipc_all_patents_first_period_df is complete, but good for robustness
+    sample_size <- min(n_ai_country, nrow(country_all_patents_pool))
+    replace_sampling <- FALSE
+    if (n_ai_country > nrow(country_all_patents_pool)) {
+      # print(paste("Warning: For country", country, "in perm", p,
+      #             "not enough unique patents in pool. Sampling", nrow(country_all_patents_pool),
+      #             "instead of", n_ai_country, "OR consider sampling with replacement."))
+      # Decide: either sample fewer (as done with min()), or sample with replacement.
+      # If sampling with replacement is desired:
+      # sample_size <- n_ai_country
+      # replace_sampling <- TRUE
+      # For now, we sample up to the available pool size without replacement.
+      # Or, if strict adherence to n_ai_country is needed and pool is too small WITH replace=FALSE:
+      if(nrow(country_all_patents_pool) < n_ai_country && !replace_sampling){
+        # print(paste("Strict N_AI needed, but pool too small for", country, "in perm", p, ". Skipping country for this perm."))
+        next # Skip this country for this permutation if not enough patents
+      }
+    }
+    
+    
+    # 3. Randomly select an equivalent number of unique appln_ids from this country's general pool
+    random_appln_ids_country <- sample(country_all_patents_pool$appln_id,
+                                       size = sample_size, # Use adjusted sample_size
+                                       replace = replace_sampling) # Use replace_sampling flag
+    
+    # 4. Get all rows for these randomly selected patents from the ipc_all_patents_first_period_df
+    randomly_selected_patents_df_country <- ipc_all_patents_first_period_df %>%
+      filter(appln_id %in% random_appln_ids_country & ctry_code == country)
+    
+    # 5. Add these randomly selected patents for the current country to the iteration's df
+    if (nrow(randomly_selected_patents_df_country) > 0) {
+      permuted_ai_for_target_countries_iter <- bind_rows(
+        permuted_ai_for_target_countries_iter,
+        randomly_selected_patents_df_country
+      )
+    }
+  } # End of country loop
+  
+  # Add the permutation number to all rows of this iteration's dataframe
+  if (nrow(permuted_ai_for_target_countries_iter) > 0) {
+    permuted_ai_for_target_countries_iter$permutation_number <- p
+  }
+  
+  # Store the dataframe for this iteration in the list
+  list_of_permuted_dfs[[p]] <- permuted_ai_for_target_countries_iter
+  
+} # End of permutation loop
+
+# Combine all permuted dataframes from the list into one large dataframe
+final_permuted_dataset <- bind_rows(list_of_permuted_dfs)
+```
+The resulting permuted dataset looks like this for the 5 initial and 5 last lines:
+```{r}
+head(final_permuted_dataset)
+tail(final_permuted_dataset)
+```
+Or, in summary, it looks like this (please don't forget that just Japan and the USA from the 4 selected countries had patents in the first interval):
+```{r}
+final_permuted_dataset %>%
+  filter(permutation_number <= 5) %>%
+  group_by(permutation_number, ctry_code) %>%
+  summarise(unique_appln_ids = n_distinct(appln_id), .groups = 'drop') %>%
+  print(n=20)
+```
+Next, we separate the list of NOT-targeted countries with AI patents, create a list to hold the replicated dataframes, and loop these countries according to the number of permutations selected (10 in this example), so that we also have these 'extra' AI-players on every permutation.  
+```{r, include=FALSE}
+'%notin%' <- Negate('%in%')
+not_selected_AI <- ai_patents_period_1_df[ai_patents_period_1_df$ctry_code %notin% target_countries, c("appln_id", "ctry_code")]
+list_of_replicated_not_selected_ai <- vector("list", length = num_permutations + 1)
+# Loop from 0 to num_permutations
+for (i in 0:num_permutations) {
+  # Create a copy of the not_selected_AI dataframe for this iteration
+  temp_df <- not_selected_AI
+  
+  # Add the permutation_number column
+  temp_df$permutation_number <- i
+  
+  # Store it in the list (adjust index because list is 1-based, i is 0-based)
+  list_of_replicated_not_selected_ai[[i + 1]] <- temp_df
+  
+  if (i %% 100 == 0) print(paste("Replicating not_selected_AI for permutation_number:", i))
+}
+
+# Combine all replicated dataframes from the list into one large dataframe
+replicated_not_selected_ai_final <- bind_rows(list_of_replicated_not_selected_ai)
+```
+The resulting dataset looks like this for the first and last 6 observations
+```{r}
+head(replicated_not_selected_ai_final)
+tail(replicated_not_selected_ai_final)
+```
+We merge this back into the "target" dataset, name the country_code of it as "AI_pat" to be able to trace it back, and merge everything.
+```{r, include=FALSE}
+original_selected_AI <- ai_patents_period_1_df[ai_patents_period_1_df$ctry_code %in% target_countries, c("appln_id", "ctry_code")]
+table(original_selected_AI$ctry_code)
+#table(original_selected_AI$priority_year) #it's correct, so I can exclude this
+original_selected_AI$permutation_number <- 0
+final_permuted_dataset <- subset(final_permuted_dataset, select = -c(techn_field_nr) )
+#rbind it with the original dataset:
+final_permuted_dataset <- rbind(original_selected_AI,final_permuted_dataset) #kind of strange and suspicious
+table(final_permuted_dataset$permutation_number)
+#rbind with the original dataset of NOT SELECTED COUNTRIES
+final_permuted_dataset <- rbind(final_permuted_dataset,replicated_not_selected_ai_final)
+final_permuted_dataset$ctry_code <- "AI_pat"
+# Join technological fields info to AI patents
+final_permuted_dataset <- distinct(final_permuted_dataset, appln_id, .keep_all = TRUE)[, c("appln_id", "permutation_number")]
+final_permuted_dataset <- left_join(final_permuted_dataset, ipc_all_patents_first_period_df, by = "appln_id")
+```
+The result looks like this:
+```{r}
+table(final_permuted_dataset$permutation_number)
+```
+
+## 3.2. Calculate AI-specific specialisations
+
+Now we calculate the AI-specific specialisations based on these Permuted dataset:
+```{r, include=FALSE}
+group_by_applnID_perm <- function(data){
+  # No change needed here if field_weight is per appln_id irrespective of permutation
+  # However, if an appln_id could theoretically appear in multiple permutations
+  # (which it shouldn't if you sampled unique appln_ids per permutation for target countries,
+  # and replicated non-target countries correctly), this function is fine as is.
+  # The grouping is on appln_id itself.
+  data %>%
+    group_by(appln_id, permutation_number) %>% # Add permutation_number if an appln_id might exist across permutations
+    # If appln_id is unique within each permutation, then just appln_id is fine
+    mutate(field_weight = 1 / n()) %>%
+    ungroup()
+}
+
+group_by_ctry_techn_field_perm <- function(data){
+  data %>% # Removed %<>% as it's better to assign explicitly in the main flow
+    group_by(permutation_number, ctry_code, techn_field_nr) %>% # Add permutation_number
+    summarise(n_tech_reg = sum(field_weight), .groups = 'drop') %>% # Use .groups = 'drop'
+    # ungroup() %>% # .groups = 'drop' handles this
+    drop_na()
+}
+region_tech_fields_perm_df <- group_by_applnID_perm(final_permuted_dataset)
+region_tech_fields_perm_df <- group_by_ctry_techn_field_perm(region_tech_fields_perm_df)
+```
+```{r}
+list_of_rca_dfs <- region_tech_fields_perm_df %>%
+  group_by(permutation_number) %>%
+  group_split() %>% # This splits the df into a list of dfs, one for each permutation
+  purrr::map(~{
+    current_permutation_number <- unique(.x$permutation_number)
+    print(paste("Processing RCA for permutation_number:", current_permutation_number))
+    
+    # Matrix creation for the current permutation's data
+    mat_reg_tech_perm_AI <- .x %>%
+      select(-permutation_number) %>% # Temporarily remove for pivot if it causes issues
+      arrange(techn_field_nr, ctry_code) %>%
+      pivot_wider(names_from = techn_field_nr,
+                  values_from = n_tech_reg,
+                  values_fill = 0) # Changed from list(n_tech_reg = 0) for simplicity
+    
+    # Check if ctry_code column exists and is not empty
+    if (!"ctry_code" %in% names(mat_reg_tech_perm_AI) || nrow(mat_reg_tech_perm_AI) == 0 || all(is.na(mat_reg_tech_perm_AI$ctry_code))) {
+      print(paste("Skipping permutation", current_permutation_number, "due to missing ctry_code or empty data after pivot."))
+      return(NULL) # Return NULL or an empty tibble
+    }
+    
+    # Check for duplicate ctry_codes which would prevent rownames_to_column
+    if (any(duplicated(mat_reg_tech_perm_AI$ctry_code))) {
+      print(paste("Warning: Duplicate ctry_code found for permutation", current_permutation_number, ". Aggregating or handling needed."))
+      return(tibble(permutation_number = current_permutation_number, error="duplicate ctry_code"))
+    }
+    
+    
+    mat_reg_tech_perm_AI <- mat_reg_tech_perm_AI %>%
+      remove_rownames() %>%
+      column_to_rownames(var = "ctry_code") %>%
+      as.matrix() %>%  round()# No rounding here, location_quotient might prefer raw numbers
+    
+    # RCA calculation
+    # Ensure matrix is suitable (e.g., no NA/NaN/Inf that location_quotient can't handle)
+    if (nrow(mat_reg_tech_perm_AI) == 0 || ncol(mat_reg_tech_perm_AI) == 0) {
+      print(paste("Skipping RCA for permutation", current_permutation_number, "due to empty matrix."))
+      return(NULL)
+    }
+    
+    # Ensure there are at least two columns for location_quotient (ctry_code was one)
+    if (ncol(mat_reg_tech_perm_AI) < 1) { # If only ctry_code was present and now it's rownames
+      print(paste("Skipping RCA for permutation", current_permutation_number, "due to insufficient columns in matrix."))
+      return(NULL)
+    }
+    
+    
+    # Check for all zero rows/columns if location_quotient is sensitive
+    # For example, if a row sum is 0, RCA might be NaN or Inf.
+    # The location_quotient function might handle this, or you might need pre-filtering.
+    
+    rca_results_perm <- tryCatch({
+      mat_reg_tech_perm_AI %>%
+        location_quotient(binary = FALSE) %>% 
+        as.data.frame() %>%
+        rownames_to_column("ctry_code") %>%
+        as_tibble() %>%
+        gather(key = "techn_field_nr", value = "RCA", -ctry_code) %>%
+        arrange(ctry_code, techn_field_nr) %>%
+        mutate(permutation_number = current_permutation_number) # Add back permutation number
+    }, error = function(e) {
+      print(paste("Error in location_quotient for permutation", current_permutation_number, ":", e$message))
+      return(tibble(permutation_number = current_permutation_number, ctry_code=NA, techn_field_nr=NA, RCA=NA, error_message = e$message)) # Return an empty or error-marked tibble
+    })
+    
+    return(rca_results_perm)
+  })
+
+# Combine the list of RCA dataframes into one final dataframe
+final_rca_all_permutations_df <- bind_rows(list_of_rca_dfs)
+```
+The new AI-specific RTAs look like this:
+```{r}
+head(final_rca_all_permutations_df)
+tail(final_rca_all_permutations_df)
+```
+This file (or better said, the relevant file with 1000 permutations) is saved as "final_rca_all_permutations_df_1st_Period.csv". The other two intervals are saved with similar names, i.e., "final_rca_all_permutations_df_2nd_Period.csv" and "final_rca_all_permutations_df_3rd_Period.csv", in Files_created_with_the_code/data/files_code_Fields_analysis/robustness/
+
+# 4. Econometrics
+
+Read the files calculated in the "3.Robustness" code, and calculate the first three models.
+```{r, include=FALSE}
+options(scipen = 999) #deactivate scientific notation
+rm(list=ls())
+Rel_density <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness/Rel_density_5y.csv", 
+                        sep = ";", header = TRUE, dec=",")
+target_countries <- c("CN", "JP", "US", "KR") 
+Rel_density <-  Rel_density[Rel_density$ctry_code %in% target_countries,] 
+
+Periods_5y <- c("1974-1978","1979-1983","1984-1988","1989-1993","1994-1998","1999-2003","2004-2008","2009-2013","2014-2018")
+
+Per_1 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1974-1978.csv", 
+                 sep = ";", header = TRUE, dec=",")
+Per_2 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1979-1983.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_3 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1984-1988.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1989-1993.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_5 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1994-1998.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_6 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1999-2003.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_7 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_2004-2008.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_8 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_2009-2013.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_9 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_2014-2018.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_all <- rbind(Per_1, Per_2, Per_3, Per_4, Per_5, Per_6, Per_7, Per_8, Per_9)
+rm(Per_1, Per_2, Per_3, Per_4, Per_5, Per_6, Per_7, Per_8, Per_9)
+unique(Per_all$Period)
+
+Per_all[is.na(Per_all)] <- 0
+Per_all <- Per_all[Per_all$ctry_code %in% target_countries,] 
+Per_all$Round_general <- ifelse(Per_all$RCA_Gen < 1, 0, 1)
+Per_all$Round_AI <- ifelse(Per_all$RCA_AI < 1, 0, 1)
+Per_all$Total_RCA_2 <- Per_all$Round_general + 2*Per_all$Round_AI
+
+Specializations_data <- as.data.frame(table(Per_all$Total_RCA_2, Per_all$ctry_code, Per_all$Period))
+Specializations_data$Var1 <- gsub("0", "No specialization", str_trim(Specializations_data$Var1))
+Specializations_data$Var1 <- gsub("1", "General specialization", str_trim(Specializations_data$Var1))
+Specializations_data$Var1 <- gsub("2", "AI-specific specialization", str_trim(Specializations_data$Var1))
+Specializations_data$Var1 <- gsub("3", "Coinciding specialization", str_trim(Specializations_data$Var1))
+
+names(Specializations_data) <- c("Var1","ctry_code", "Period", "N_spec")
+# Pivot the data
+Specializations_wide <- Specializations_data %>%
+  pivot_wider(names_from = Var1,
+              values_from = N_spec)
+
+Rel_density <- left_join(Rel_density, Specializations_wide, by = c("ctry_code", "Period"))
+
+actual_shares_5_years <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness/actual_shares_5_years.csv", 
+                                   sep = ";", header = TRUE, dec=",")
+Rel_density <- left_join(Rel_density, actual_shares_5_years, by = c("ctry_code", "Period"))
+Rel_density %<>%  clean_names()
+Rel_density$total_general_specializations <- Rel_density$general_specialization + Rel_density$coinciding_specialization
+Rel_density$double_check <- Rel_density$total_general_specializations + Rel_density$no_specialization + Rel_density$ai_specific_specialization
+Rel_density$total_specializations <- Rel_density$total_general_specializations + Rel_density$ai_specific_specialization #which should be the same as
+#total_general_specializations - no_specialization; pay attention that this includes AI
+Rel_density$total_AI_specializations <- Rel_density$coinciding_specialization + Rel_density$ai_specific_specialization
+
+regression_data <- Rel_density %>%
+  mutate(Share_Coinciding =  coinciding_specialization/(total_general_specializations),
+         # Ensure Period is a factor for the regression
+         Period = factor(period, levels = c("1974-1978","1979-1983","1984-1988","1989-1993","1994-1998","1999-2003",
+                                            "2004-2008","2009-2013","2014-2018"), ordered = FALSE), # Not ordered for lm factor
+         ctry_code = factor(ctry_code))
+rm(Specializations_wide, Specializations_data)
+
+# Model 1: Predicting Share_Coinciding with Period fixed effects
+model1 <- lm(Share_Coinciding ~ rel_density + total_general_specializations + Period + 
+               total_AI_specializations, data = regression_data) 
+summary(model1)
+
+model2 <- lm(Share_Coinciding ~ rel_density + total_general_specializations + Period + ctry_code + 
+               total_AI_specializations, data = regression_data)
+summary(model2)
+
+# Model 3: A simpler model if degrees of freedom are a major concern for Model 2
+model3 <- lm(Share_Coinciding ~ rel_density + Period, data = regression_data) 
+summary(model3)
+```
+The dataset looks like this
+```{r}
+head(regression_data)
+```
+The results for the first three models are:
+```{r}
+stargazer(model3, model1, model2, title="Effects on the share of break-ins", ci.level=0.95, single.row=TRUE, ci=F, type="text") 
+```
+For the remaining 3 models, the results are:
+```{r, include=FALSE}
+newmodel4 <- lm(actual_persistent_coinciding ~ rel_density + Period+ actual_persistent_general_all + 
+                  actual_n_persistent_round_ai, 
+             data = regression_data)
+summary(newmodel4)
+
+newmodel5 <- lm(actual_persistent_coinciding ~ rel_density + Period+ total_general_specializations + coinciding_specialization +
+                  total_AI_specializations, 
+             data = regression_data)
+summary(newmodel5)
+
+newmodel6 <- lm(actual_n_persistent_round_ai ~ rel_density + Period+ total_general_specializations +
+               actual_persistent_coinciding+coinciding_specialization+total_AI_specializations, data = regression_data)
+summary(newmodel6)
+```
+```{r}
+stargazer(newmodel4, newmodel5, newmodel6, title="Effects on persisting specialisations", ci.level=0.95, single.row=TRUE, ci=F, type="text") 
+```
