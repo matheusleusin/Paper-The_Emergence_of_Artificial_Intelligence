@@ -1,49 +1,76 @@
-# Paper: Breaking in or Breaking Through? How Local Specialisations Shape the Integration  of AI Technologies
+# Replication Code for "Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"
 
-This repository relates to the **working paper** entitled *"Breaking in or Breaking Through? How Local Specialisations Shape the Integration  of AI Technologies"*, which was submitted to Economics of Innovation and New Technology. 
-The repository contains files that can be used to reproduce and to check all of the calculations and figures presented in the paper. It includes three R codes (one that reproduces the main figures, named *"1.Main_code.R"*, and one that reproduces the figures presented in the appendix, named *"2.Figures_appendix.R"*, and one that presents additional robustness analyses presented in the paper, named *"3.Robustness_analysis.R"*). There is also a markdown implementation file (named *"0.Markdown_overview_codes.Rmd"*) that explains step-by-step all of the analyses included in the main R code, and some of the robustness calculations. This markdown is also offered as a [pdf](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/0.Markdown_overview_codes.pdf) file to facilitade visualizing its step-by-step reproduction.
+This repository contains the full R implementation for the analysis presented in the working paper: *"Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"*.
 
-The folders named **"large_files"** and **"other_files"** are used as input to run all codes. The first folder, **"large_files"**, contains data about patent and inventors' location information for all priority patents available in PATSTAT 2019 (spring edition) for the period from 1974 to 2018. Due to Intellectual Property rights of PATSTAT (and size limitations), these files are not made available here (the whole repository is set to be ignored via .gitignore). However, a similar dataset, linking patents to inventors location using the same strategy, is made publically available at: https://doi.org/10.7910/DVN/OTTBDX. These large files are divided into two different files (one used for technological fields analysis, and one for subclasses analysis), and each of these types of files is divided in two parts (due to size). One part (always named Part1) contains data for the period from 1974 to 2003 (both years included), and the other (always named Part2) contains data for the period from 2004 to 2018 (also both years included). A small sample of these files is available in the folder **"other_files"**. 
+The code and supporting files can be used to reproduce all calculations, figures, and robustness analyses presented in the paper.
 
-The file *"All_patents_and_IPCs_Part1_SmallSampleWithHeader"* contains a sample of the files used to build the technological fields-based analysis, whereas the file *"All_patents_and_IPC_codes_Part1_SmallSampleWithHeader"* contains a sample of the files used to build the subclass-based analysis. If you want to run the code completely, you must generate the complete files by applying the strategy presented in De Rassenfosse et al., 2019 (https://doi.org/10.1038/s41597-019-0264-6) for identifying first filings and the geolocation of their respective inventors to PATSTAT 2019 spring version. These files must be saved in the aforementioned **"large_files"** folder. An overview of these files inside their respective folder is shown below:
+---
 
+## Quick Start & How to Run
+
+1.  **Step-by-step Guide**: For a detailed, step-by-step walkthrough of the main analysis, please see the R Markdown file `0.Markdown_overview_codes.Rmd` or the pre-compiled [**`0.Markdown_overview_codes.pdf`**](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/0.Markdown_overview_codes.pdf). This file explains the entire analytical pipeline, from data preparation to the generation of the main figures.
+
+2.  **Running the Scripts**: The analysis is divided into three main R scripts that should be run in order:
+    *   `1.Main_code.R`: Generates the primary results and main figures of the paper.
+    *   `2.Figures_appendix.R`: Reproduces the figures presented in the appendices.
+    *   `3.Robustness_analysis.R`: Conducts the additional robustness checks, such as varying time intervals and RTA thresholds.
+
+---
+
+## Data Requirements
+
+Running the code in this repository requires two sets of input data, organized into the `large_files` and `other_files` folders.
+
+### ⚠️ Required Proprietary Data (`large_files`)
+
+The `large_files` folder is designed to contain the complete patent and inventor location data from the **PATSTAT 2019 (spring edition)** database for the period 1974–2018.
+
+**Important:** Due to PATSTAT's intellectual property restrictions and large file sizes, this raw data is **not provided** in this repository (the folder is ignored by `.gitignore`).
+
+**For users without a PATSTAT license:** A similar, publicly available dataset that links patents to inventor locations can be accessed here: [https://doi.org/10.7910/DVN/OTTBDX](https://doi.org/10.7910/DVN/OTTBDX).
+
+**For users with a PATSTAT license wishing to perform a full replication:** You will need to generate the input files following the geolocational strategy presented in De Rassenfosse et al. (2019) and structure them as follows:
+*   The data should be split into two categories for the two levels of analysis: **technological fields** and **IPC subclasses**.
+*   Due to their size, each category must be further divided into two parts:
+    *   `Part1`: containing data from 1974 to 2003 (inclusive).
+    *   `Part2`: containing data from 2004 to 2018 (inclusive).
+
+### ✅ Provided Supporting Files (`other_files`)
+
+The `other_files` folder **is included** in this repository and contains all other necessary input files. Crucially, this folder also includes small **data samples** (e.g., `All_patents_and_IPCs_Part1_SmallSampleWithHeader.csv`) to illustrate the exact format, column names, and structure required for the proprietary data.
+
+---
+
+## Repository Structure
+
+*   **`large_files/` (User-provided):** Destination for large, proprietary PATSTAT data files. This folder is listed in `.gitignore`. An overview of these files inside their respective folder is shown below:
+  
 ![image](https://github.com/user-attachments/assets/70388ae2-e728-40f0-b586-4fbada2a2351)
 
-A subfolder named *"Files_created_with_the_code/data/files_code_4-digits_analysis/robustness"* is also set to be ignored due to the large size of its files (1GB+). This folder has the permutations used for one part of the robustness analysis based on IPC subclasses.
 
-Conversely, all files from the other folder, **"other_files"**, are made completely available.
+*   **`other_files/` (Included):** Contains all necessary supporting data and samples of the proprietary files to show the required format.
+*   **`Files_created_with_the_code/` (Generated):** This is the output directory where all generated data and figures are saved. It is organized into two subfolders:
+    *   **`data/`**: Contains all processed datasets and analytical results. It is further subdivided into `files_code_Fields_analysis/` and `files_code_4-digits_analysis/`.
+    *   **`figures/`**: Contains all figures generated by the R scripts.
 
-All files generated by the codes are saved within the folder **"Files_created_with_the_code"**. This folder contains a subfolder named **"data"** and a subfolder named **"figures"**, on which the generated files are saved accordingly. The data subfolder contains two other subfolders: one that saves files linked to technological fields data (named **"files_code_Fields_analysis"**), and one that saves files linked to subclass data (named **"files_code_4-digits_analysis"**).
+**Note on `.gitignore`**: In addition to `large_files/`, a subfolder for the permutation data (`Files_created_with_the_code/data/files_code_4-digits_analysis/robustness/`) is also ignored due to its large size (>1GB). The code will generate these files if run.
 
-In short, the main data files saved in the **"files_code_Fields_analysis"** folder are:
+---
 
-* **AI_ALL_patents.csv**: Contains detailed information on all patents identified as AI-related across the dataset. It serves as the primary dataset for analyzing AI technological development.
-* **Data1period_RTA_techn_field.csv**: Captures RTA (Revealed Technological Advantage) values for technological fields linked to countries during the first interval (1974–1988). It highlights country-level specializations in each technological field during this interval.
-* **Data2period_RTA_techn_field.csv**: Captures RTA values for technological fields linked to countries during the second interval (1989–2003). 
-* **Data3period_RTA_techn_field.csv**: Captures RTA values for technological fields linked to countries during the third interval (2004–2018).
-* **IPC_RTAs.csv**: Captures RTA values specifically calculated for technological fields. 
-* **Matrix_IPC.csv**: Presents a matrix of IPC codes showing their co-occurrence in the dataset. It is used to identify relationships between technological fields.
-* **Metrics_First_period.csv**: It contains the calculated metrics of RTA for each of the four main considered leading countries (China, Japan, South Korea, and the USA) in technological fields, as well as for AI technologies, in the first interval (1974–1988).
-* **Metrics_Second_period.csv**: Contains the same metrics as the one mentioned above, but for the second interval (1989–2003).
-* **Metrics_Third_period.csv**: Contains the same metrics as the one mentioned above, but for the third interval (2004–2018).
-* **RTA_4countries_detailed.csv**: Also contains detailed RTA values for the four leading AI countries (China, Japan, South Korea, and the USA) in technological fields, but across all intervals. It contains the RTA values of these countries for the 3 considered types of specialisations (i.e., general, AI-specific, and coinciding) 
-* **reg_techAI_FirstPeriod.csv**: Contains a list of the number of registers per technological field for ALL considered countries regarding *AI PATENTS* registered in the first interval (1974–1988).
-* **reg_techAI_SecondPeriod.csv**: Similar to the file above, but for the second interval (1989–2003).
-* **reg_techAI_ThirdPeriod.csv**: Similar to the file above, but for the third interval (2004–2018). 
-* **reg_tech_FirstPeriod.csv**: Contains a list of the number of registers per technological field for ALL considered countries regarding *ALL PATENTS* (i.e., not only AI) registered in the first interval (1974–1988).
-* **reg_tech_SecondPeriod.csv**: Similar to the file above, but for the second interval (1989–2003).
-* **reg_tech_ThirdPeriod.csv**: Similar to the file above, but for the third interval (2004–2018). 
-* **Specializations_All_periods_IPC.csv**: Combines the files Metrics_First_period, Metrics_Second_period, and Metrics_Third_period to produce interval-specific specialisation-metrics for the whole period (1974–1988) at the technological field level.
-* **Table_appendix.xlsx**: Contains supplementary tables used for the paper's appendices. It includes data supporting additional analyses presented for the four countries and types of specialisations considered.
+## Description of Key Generated Data Files
 
-The main data files saved in the **"files_code_4-digits_analysis"** folder are:
+The R scripts will generate a number of intermediate and final data files. The most important outputs saved in `Files_created_with_the_code/data/` include:
 
-* **Data1period_RTA_subclass.csv**: Provides  calculated RTA values for specific IPC subclasses during the first interval (1974–1988). Thus, it is similar to the file Data1period_RTA_techn_field.csv, but for subclasses instead of technological fields. 
-* **Data2period_RTA_subclass.csv**: Similar to the file above, but for the second interval (1989–2003).
-* **Data3period_RTA_subclass.csv**: Similar to the file above, but for the third interval (2004–2018). 
-* **RTA_1st_AI.csv**: Contains RTA values for subclasses specifically calculated based on *AI PATENTS* registered during the first interval (1974–1988).
-* **RTA_2nd_AI.csv**: Similar to the file above, but for the second interval (1989–2003).
-* **RTA_3rd_AI.csv**: Similar to the file above, but for the third interval (2004–2018). 
-* **IPC_RTAs_subclass.csv**: It combines the 6 files presented above to summarize in one table all general and AI-specific specialisations per interval for the whole period (1974–2018) for IPC subclasses.
+### Technological Fields Analysis (`files_code_Fields_analysis/`)
 
-In addition to these main files, there are many other files used in the robustness analyses. They recalculate some of the mentioned files, but considering distinct intervals (e.g., 10-year, 5-year, and 1-year intervals) and distinct classification levels (subclass level).
+*   **`reg_tech_*.csv` & `reg_techAI_*.csv`**: These files contain the foundational patent counts per country, per technological field, for each of the three main time intervals, for both 'general' (all patents) and 'AI-specific' patents.
+*   **`Data*period_RTA_techn_field.csv`**: Contains the calculated RTA values for all countries and technological fields for each of the three main intervals.
+*   **`RTA_4countries_detailed.csv`**: A summary file containing the detailed RTA values and specialization types ('general', 'AI-specific', 'coinciding') for the four leading countries across all periods.
+
+### IPC Subclass Analysis (`files_code_4-digits_analysis/`)
+
+*   **`Data*period_RTA_subclass.csv`**: The equivalent of the RTA files above, but at the more granular IPC subclass level.
+*   **`RTA_*_AI.csv`**: Contains the RTA values for subclasses calculated using only AI patents for each of the three intervals.
+*   **`IPC_RTAs_subclass.csv`**: A summary file combining the general and AI-specific subclass specializations for all intervals.
+
+Many other files are generated, particularly for the robustness analyses, which typically recalculate these core datasets under different time intervals or RTA thresholds.
