@@ -2252,8 +2252,8 @@ plot <- ggplot(NULL, aes()) +  coord_fixed() +
   geom_segment(aes(x = 0, y = 0, xend = 10, yend = 0)) +  geom_segment(aes(x = 0, y = 5, xend = 10, yend = 5)) +
   geom_segment(aes(x = 5, y = 0, xend = 5, yend = 10)) +  geom_segment(aes(x = 0, y = 10, xend = 10, yend = 10)) +
   annotate("text", x = 2.5, y = 4.5, alpha = 2, label = "Foundational Buildup", fontface = "bold") +
-  annotate("text", x = 2.5, y = 9.5, alpha = 2, label = "Further Digitalization/Laggard's Opportunity", fontface = "bold") +
-  annotate("text", x = 7.5, y = 4.5, alpha = 2, label = "Technology Push/'Break-through' Risk", fontface = "bold") +
+  annotate("text", x = 2.5, y = 9.5, alpha = 2, label = "Further Digitalisation", fontface = "bold") +
+  annotate("text", x = 7.5, y = 4.5, alpha = 2, label = "Technology Push/Break-through Risk", fontface = "bold") +
   annotate("text", x = 7.5, y = 9.5, alpha = 2, label = "Synergistic Leadership", fontface = "bold") +
   
   annotate("text", x = 2.5, y = 3.5, alpha = 2, label = "\n \nCountries:\nDeveloping nations") +
@@ -2262,8 +2262,8 @@ plot <- ggplot(NULL, aes()) +  coord_fixed() +
   annotate("text", x = 7.5, y = 8.5, alpha = 2, label = "\n \nCountries:\nUSA, Japan, South Korea") +
   
   annotate("text", x = 2.5, y = 2.0, alpha = 2, label = "\n \nStrategy:\nFocus on foundational education, \ndigital infrastructure, and developing niche strengths.") +
-  annotate("text", x = 7.5, y = 2.0, alpha = 2, label = "\n \nStrategy:\nBuild industrial absorptive capacity. Create \nnew markets to commercialize research.") +
-  annotate("text", x = 2.5, y = 7.0, alpha = 2, label = "\n \nStrategy:\n1. Digitize hub industries.\n2. Foster targeted AI 'break-ins' to build capabilities.") +
+  annotate("text", x = 7.5, y = 2.0, alpha = 2, label = "\n \nStrategy:\nBuild industrial absorptive capacity. Create \nnew markets to commercialise research.") +
+  annotate("text", x = 2.5, y = 7.0, alpha = 2, label = "\n \nStrategy:\n1. Digitise hub industries.\n2. Foster targeted AI 'break-ins' to build capabilities.") +
   annotate("text", x = 7.5, y = 7.0, alpha = 2, label = "\n \nStrategy:\nStrategic Anchoring. Focus on 'break-in' \nopportunities in highly connected hub sectors.") +
   
   annotate("segment", x = 0, xend = 10, y = -.9, yend = -.9,colour = "black",
@@ -2283,6 +2283,6 @@ plot <-
   annotate("rect", xmin = 5, xmax = 10, ymin = 5, ymax = 10, fill= "#009900", alpha = .6)
 plot
 
-jpeg("Files_created_with_the_code/figures/Figure_13a.jpg", width = 9.5, height = 9.5, units = 'in', res = 500)
+jpeg("Files_created_with_the_code/figures/Figure_13.jpg", width = 9.5, height = 9.5, units = 'in', res = 500)
 plot
 dev.off()
