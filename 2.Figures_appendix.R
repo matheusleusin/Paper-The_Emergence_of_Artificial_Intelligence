@@ -571,7 +571,7 @@ jpeg("Files_created_with_the_code/figures/Extra/Appendix_A_AI_relatedness_and_sp
 multiplot(AI_RCA_1st, AI_RCA_2nd, AI_RCA_3rd, cols=1) 
 dev.off()
 
-#2.Figure Appendix D-----
+#2.Appendix D - RTA exploration of main subclasses -----
 rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
 options(scipen = 999) #deactivate scientific notation
 Data_RCA_1st <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Data1period_Raw_Info.csv", 
@@ -752,7 +752,35 @@ ggsave("Files_created_with_the_code/figures/Extra/Appendix_D.jpg",
                legend.title = element_text(size = 11), # Adjust legend title font size
                legend.text = element_text(size = 10)),   # Adjust legend text font size,
        width = 10, height = 8, dpi = 300, units = "in", bg = "white") 
-#3. Appendix E - Visualisation RCAs subclasses ----
+
+#3.Appendix E - Relatedness density-----
+rm(list=ls())
+Rel_density <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness/Rel_density_5y.csv", 
+                        sep = ";", header = TRUE, dec=",")
+target_countries <- c("CN", "JP", "US", "KR") 
+Rel_density <-  Rel_density[Rel_density$ctry_code %in% target_countries,] 
+
+Rel_density$ctry_code <- gsub("US", "USA", str_trim(Rel_density$ctry_code))
+Rel_density$ctry_code <- gsub("CN", "China", str_trim(Rel_density$ctry_code))
+Rel_density$ctry_code <- gsub("JP", "Japan", str_trim(Rel_density$ctry_code))
+Rel_density$ctry_code <- gsub("KR", "South Korea", str_trim(Rel_density$ctry_code))
+
+Rel_density$Country <- Rel_density$ctry_code
+
+Rel_density_plot<-
+  ggplot(data=Rel_density, aes(x=Period, y=Rel_density, group=Country, shape = Country, color=Country)) +
+  geom_point(aes(fill = Country), size=8) +   scale_shape_manual(values=c(21, 22, 24, 23)) +
+  xlab("Interval") +  ylab("Technological relatedness density ") +
+  theme_classic() +  geom_line(aes(color=Country), linetype = "dashed", size=1.5)+
+  scale_y_continuous() +
+  scale_fill_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) +
+  scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A"))  #"#99CC00", "#66CC33", "#336600", "#66FF66"
+
+jpeg("Files_created_with_the_code/figures/Extra/Appendix_E.jpg", width = 10, height = 6, units = 'in', res = 300)
+Rel_density_plot 
+dev.off()
+
+#3. Appendix F - Visualisation RCAs subclasses ----
 # Remove all non-function objects in the global environment and clean memory
 rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
 gc()
@@ -822,6 +850,6 @@ FigAI_Colour2 <-
   ylab(NULL) + theme(text = element_text(size = 14)) +
   labs(color = "Interval", fill = "Interval")
 
-jpeg("Files_created_with_the_code/figures/Extra/Appendix_E.jpg", width = 19, height = 11, units = 'in', res = 300)
+jpeg("Files_created_with_the_code/figures/Extra/Appendix_F.jpg", width = 19, height = 11, units = 'in', res = 300)
 multiplot(FigGen_Colour2, FigAI_Colour2, cols=1)
 dev.off()
