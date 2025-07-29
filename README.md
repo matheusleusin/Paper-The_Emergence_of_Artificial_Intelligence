@@ -8,7 +8,7 @@ The code and supporting files can be used to reproduce all calculations, figures
 
 ## Quick Start & How to Run
 
-1.  **Step-by-step Guide**: For a detailed, step-by-step walkthrough of the main analysis, please see the R Markdown file `0.Markdown_overview_codes.Rmd` or the pre-compiled [pdf](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/0.Markdown_overview_codes.pdf) or [html](https://htmlpreview.github.io/?https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/0.Markdown_overview_codes.html). This file explains the entire analytical pipeline, from data preparation to the generation of the main figures and econometric analyses.
+1.  **Step-by-step Guide**: For a detailed, step-by-step walkthrough of the main analysis, please see the R Markdown file `0.Markdown_overview_codes.Rmd` or the pre-compiled [pdf](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/0.Markdown_overview_codes.pdf) or [html*](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/0.Markdown_overview_codes.html). This file explains the entire analytical pipeline, from data preparation to the generation of the main figures and econometric analyses. * *Please note that the html version is anonymized for now, during the peer-review process. You have to create this file manually by copying the content, and saving it in a notepad or alike file with an ".hmtl" at the ending, so it can be opened (html provides the best visualization).* 
 
 2.  **Running the Scripts**: The analysis is divided into three main R scripts that should be run in order:
     *   `1.Main_code.R`: Generates the primary results and main figures of the paper.
