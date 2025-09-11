@@ -1,48 +1,48 @@
 
 <table style="text-align:center"><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="3"><em>Dependent variable:</em></td></tr>
 <tr><td></td><td colspan="3" style="border-bottom: 1px solid black"></td></tr>
-<tr><td style="text-align:left"></td><td colspan="3">Share_Coinciding</td></tr>
+<tr><td style="text-align:left"></td><td colspan="3">`Share of ‘break-in’ spec.`</td></tr>
 <tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
-<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">rel_density</td><td>0.001</td><td>0.001</td><td>-0.001</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">`Country’s technological relatedness density`</td><td>0.001</td><td>0.001</td><td>-0.001</td></tr>
 <tr><td style="text-align:left"></td><td>(0.005)</td><td>(0.006)</td><td>(0.006)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">total_general_specializations</td><td></td><td>-0.010</td><td>0.002</td></tr>
-<tr><td style="text-align:left"></td><td></td><td>(0.016)</td><td>(0.018)</td></tr>
-<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period1979-1983</td><td>0.004</td><td>-0.012</td><td>-0.013</td></tr>
+<tr><td style="text-align:left">`Interval `1979-1983</td><td>0.004</td><td>-0.012</td><td>-0.013</td></tr>
 <tr><td style="text-align:left"></td><td>(0.132)</td><td>(0.074)</td><td>(0.075)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period1984-1988</td><td>0.164</td><td>-0.016</td><td>-0.045</td></tr>
+<tr><td style="text-align:left">`Interval `1984-1988</td><td>0.164</td><td>-0.016</td><td>-0.045</td></tr>
 <tr><td style="text-align:left"></td><td>(0.132)</td><td>(0.079)</td><td>(0.084)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period1989-1993</td><td>0.348<sup>**</sup></td><td>0.019</td><td>-0.005</td></tr>
+<tr><td style="text-align:left">`Interval `1989-1993</td><td>0.348<sup>**</sup></td><td>0.019</td><td>-0.005</td></tr>
 <tr><td style="text-align:left"></td><td>(0.131)</td><td>(0.085)</td><td>(0.089)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period1994-1998</td><td>0.405<sup>***</sup></td><td>0.005</td><td>-0.002</td></tr>
+<tr><td style="text-align:left">`Interval `1994-1998</td><td>0.405<sup>***</sup></td><td>0.005</td><td>-0.002</td></tr>
 <tr><td style="text-align:left"></td><td>(0.131)</td><td>(0.093)</td><td>(0.095)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period1999-2003</td><td>0.455<sup>***</sup></td><td>-0.007</td><td>-0.034</td></tr>
+<tr><td style="text-align:left">`Interval `1999-2003</td><td>0.455<sup>***</sup></td><td>-0.007</td><td>-0.034</td></tr>
 <tr><td style="text-align:left"></td><td>(0.136)</td><td>(0.098)</td><td>(0.103)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period2004-2008</td><td>0.535<sup>***</sup></td><td>0.080</td><td>0.048</td></tr>
+<tr><td style="text-align:left">`Interval `2004-2008</td><td>0.535<sup>***</sup></td><td>0.080</td><td>0.048</td></tr>
 <tr><td style="text-align:left"></td><td>(0.132)</td><td>(0.095)</td><td>(0.100)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period2009-2013</td><td>0.534<sup>***</sup></td><td>0.065</td><td>0.042</td></tr>
+<tr><td style="text-align:left">`Interval `2009-2013</td><td>0.534<sup>***</sup></td><td>0.065</td><td>0.042</td></tr>
 <tr><td style="text-align:left"></td><td>(0.131)</td><td>(0.096)</td><td>(0.101)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">Period2014-2018</td><td>0.666<sup>***</sup></td><td>0.118</td><td>0.093</td></tr>
+<tr><td style="text-align:left">`Interval `2014-2018</td><td>0.666<sup>***</sup></td><td>0.118</td><td>0.093</td></tr>
 <tr><td style="text-align:left"></td><td>(0.132)</td><td>(0.105)</td><td>(0.110)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">ctry_codeJP</td><td></td><td></td><td>-0.018</td></tr>
+<tr><td style="text-align:left">`Country `Japan</td><td></td><td></td><td>-0.018</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td>(0.055)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">ctry_codeKR</td><td></td><td></td><td>0.063</td></tr>
+<tr><td style="text-align:left">`Country `South Korea</td><td></td><td></td><td>0.063</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td>(0.054)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">ctry_codeUS</td><td></td><td></td><td>0.049</td></tr>
+<tr><td style="text-align:left">`Country `US</td><td></td><td></td><td>0.049</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td>(0.051)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
-<tr><td style="text-align:left">total_AI_specializations</td><td></td><td>0.036<sup>***</sup></td><td>0.038<sup>***</sup></td></tr>
+<tr><td style="text-align:left">`No. of ‘general’ spec.`</td><td></td><td>-0.010</td><td>0.002</td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.016)</td><td>(0.018)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`No. of ‘AI-specific’ spec.`</td><td></td><td>0.036<sup>***</sup></td><td>0.038<sup>***</sup></td></tr>
 <tr><td style="text-align:left"></td><td></td><td>(0.005)</td><td>(0.005)</td></tr>
 <tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
 <tr><td style="text-align:left">Constant</td><td>-0.036</td><td>0.100</td><td>0.017</td></tr>

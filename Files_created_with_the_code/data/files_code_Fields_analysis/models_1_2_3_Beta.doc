@@ -1,0 +1,55 @@
+
+<table style="text-align:center"><tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"></td><td colspan="3"><em>Dependent variable:</em></td></tr>
+<tr><td></td><td colspan="3" style="border-bottom: 1px solid black"></td></tr>
+<tr><td style="text-align:left"></td><td colspan="3">`Share of ‘break-in’ spec.`</td></tr>
+<tr><td style="text-align:left"></td><td>(1)</td><td>(2)</td><td>(3)</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">`Country’s technological relatedness density`</td><td>0.018</td><td>0.015</td><td>-0.004</td></tr>
+<tr><td style="text-align:left"></td><td>(0.020)</td><td>(0.025)</td><td>(0.023)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `1979-1983</td><td>-0.046</td><td>-0.156</td><td>-0.317</td></tr>
+<tr><td style="text-align:left"></td><td>(0.675)</td><td>(0.582)</td><td>(0.564)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `1984-1988</td><td>0.442</td><td>0.355</td><td>0.216</td></tr>
+<tr><td style="text-align:left"></td><td>(0.654)</td><td>(0.536)</td><td>(0.508)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `1989-1993</td><td>2.031<sup>***</sup></td><td>0.882<sup>*</sup></td><td>0.707</td></tr>
+<tr><td style="text-align:left"></td><td>(0.604)</td><td>(0.513)</td><td>(0.492)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `1994-1998</td><td>2.199<sup>***</sup></td><td>0.696</td><td>0.588</td></tr>
+<tr><td style="text-align:left"></td><td>(0.605)</td><td>(0.538)</td><td>(0.514)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `1999-2003</td><td>2.553<sup>***</sup></td><td>0.677</td><td>0.442</td></tr>
+<tr><td style="text-align:left"></td><td>(0.629)</td><td>(0.553)</td><td>(0.535)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `2004-2008</td><td>2.867<sup>***</sup></td><td>1.091<sup>**</sup></td><td>0.883<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.611)</td><td>(0.545)</td><td>(0.522)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `2009-2013</td><td>2.784<sup>***</sup></td><td>0.968<sup>*</sup></td><td>0.797</td></tr>
+<tr><td style="text-align:left"></td><td>(0.608)</td><td>(0.545)</td><td>(0.522)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Interval `2014-2018</td><td>3.201<sup>***</sup></td><td>1.082<sup>*</sup></td><td>0.923<sup>*</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(0.622)</td><td>(0.586)</td><td>(0.561)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Country `Japan</td><td></td><td></td><td>-0.004</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.230)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Country `South Korea</td><td></td><td></td><td>0.324</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.250)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`Country `US</td><td></td><td></td><td>0.526<sup>**</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td>(0.220)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`No. of ‘general’ spec.`</td><td></td><td>-0.088</td><td>-0.041</td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.069)</td><td>(0.072)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">`No. of ‘AI-specific’ spec.`</td><td></td><td>0.188<sup>***</sup></td><td>0.208<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td></td><td>(0.023)</td><td>(0.023)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td style="text-align:left">Constant</td><td>-3.342<sup>***</sup></td><td>-2.609<sup>***</sup></td><td>-2.769<sup>***</sup></td></tr>
+<tr><td style="text-align:left"></td><td>(1.052)</td><td>(0.762)</td><td>(0.818)</td></tr>
+<tr><td style="text-align:left"></td><td></td><td></td><td></td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left">Observations</td><td>36</td><td>36</td><td>36</td></tr>
+<tr><td style="text-align:left">R<sup>2</sup></td><td>0.735</td><td>0.895</td><td>0.895</td></tr>
+<tr><td style="text-align:left">Log Likelihood</td><td>28.419</td><td>48.647</td><td>52.027</td></tr>
+<tr><td colspan="4" style="border-bottom: 1px solid black"></td></tr><tr><td style="text-align:left"><em>Note:</em></td><td colspan="3" style="text-align:right"><sup>*</sup>p<0.1; <sup>**</sup>p<0.05; <sup>***</sup>p<0.01</td></tr>
+</table>

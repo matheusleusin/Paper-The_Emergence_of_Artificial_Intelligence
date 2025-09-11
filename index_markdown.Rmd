@@ -1,14 +1,24 @@
 ---
 title: "Markdown - Breaking in or Breaking Through? How Local Specialisations Shape the Integration  of AI Technologies"
-output:
-  pdf_document: default
-  word_document: default
-  html_document:
-    toc: true
-    toc_float: true # This makes it a floating sidebar in HTML
-    theme: united
-    df_print: paged
+author: "Matheus E. Leusin"
+date: "2024-09-12"
+output: html_document
 ---
+
+<br>
+
+> 💡 **Welcome to the Methodological Appendix!**
+>
+> This file provides a fully transparent and reproducible account of the data analysis performed for the paper, *'Breaking in or Breaking Through? How Local Specialisations Shape the Integration  of AI Technologies'* (doi: https://doi.org/10.1080/10438599.2025.2558626). Its goal is to offer a clear roadmap of the methodological steps, from initial data sourcing to the final regression analysis.
+
+<br>
+
+This document details the complete analytical pipeline, structured into the following key parts:
+
+1.  **Calculating Technological Specializations:** Describes how raw patent data is processed to calculate **Revealed Technological Advantage (RTA)** for different countries and for AI as a whole. This is performed across three distinct time intervals to capture technological evolution.
+2.  **Constructing and Visualizing Technological Spaces:** Explains the creation of the **Global Technological Space (GTS)**, based on the co-occurrence of technological fields in patents, and the dynamic **AI-specific Technological Space (ATS)**. This section also covers the visualization of national trajectories within these spaces.
+3.  **Generating Supporting Figures:** Outlines the code used to create the descriptive figures presented in the paper, such as the growth of AI patents and the share of specialized fields.
+4.  **Econometric Analysis:** Details the permutation-based robustness checks and the final regression models used to test our hypotheses, including the setup and interpretation of the results.
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE, error = FALSE)
@@ -19,9 +29,11 @@ knitr::opts_chunk$set()
 
 ## 1.1. Calculate Specializations for Different Time intervals
 
-In this first part, we load the very large datasets containing patent data and inventor's location, and use them to calculate specialisations and ultimately create the Global technological space (GTS) and the AI-specific technological space (ATS). We calculate specialisations per interval.
+This section details the foundational step of our analysis: calculating the technological specializations of countries and of AI itself. We begin by loading extensive patent datasets and defining several custom functions to streamline the process. The end goal is to compute Revealed Technological Advantage (RTA) scores for three distinct time intervals, which will later serve as the basis for constructing our technological spaces.
 
-We start by defining custom functions and loading the first part of the large patent dataset with inventors' location.
+**Data Loading and Initial Setup**
+
+We start by loading the necessary R libraries and defining a set of custom functions that will be used repeatedly for data aggregation and weighting. The primary dataset is a large file containing patent applications and their associated inventor locations, which is loaded in manageable chunks to optimize memory usage.
 
 ```{r, include=FALSE}
 #### Main Code
@@ -43,6 +55,7 @@ library(janitor)
 library(ggforce)
 library(stringr)
 library(openxlsx)
+library(knitr)
 
 rm(list=ls())
 #set the working directory to where you saved the R code:
@@ -149,25 +162,30 @@ ipc_names_df <- read.csv("other_files/ipc_technology.csv", sep = ";", header = T
   mutate(techn_field_nr = field_nr) %>% arrange(techn_field_nr)
 ```
 
-The patent file with inventors' location looks like this:
+A preview of the primary patent data (`ipc_all_patents_part2_df`) is shown below. Each row represents a patent application (`appln_id`) linked to an inventor's country (`ctry_code`) and a technological field (`techn_field_nr`).
 
 ```{r}
-head(ipc_all_patents_part2_df)
+kable(as.data.frame(ipc_all_patents_part2_df[1:6,]))
 ```
+Note that the original `weight` column from PATSTAT is disregarded in our analysis. We recalculate a fractional weight internally to ensure that each patent application has a total weight of 1, distributed equally among its assigned technological fields.
 
-The weight column was downloaded from patstat, but it it's totally irrelevant and it will be calculated again later. We load next the data on AI patents (file "other_files/IPCs_AI.csv"). It looks like this:
+Next, we load two supplementary datasets:
 
+1. **AI Patent Data** (`other_files/IPCs_AI.csv`): A curated list of patent applications identified as being related to Artificial Intelligence.
+
+2. **IPC Technology Names** (`other_files/ipc_technology.csv`): A reference file that maps technological field numbers to their descriptive names and sectors.
 ```{r}
 head(ai_patents_df)
 ```
 
-We also load the IPC file with information about technological fields (file "other_files/ipc_technology.csv"), which after processing looks like this:
-
 ```{r}
-head(ipc_names_df)
+kable(as.data.frame(ipc_names_df[1:6,]))
 ```
+**Calculating Specializations for Interval 1 (1974-1988)** 
 
-Now we'll start calculating the specialisations of countries and AI technologies per interval. We have three intervals, the first being from 1974 to 1988, the second from 1989 to 2003, and the third from 2004 to 2018. We start by breaking the large patent file into it's corresponding interval, and applying the two custom functions over it (group_by_applnID and group_by_ctry_and_techn_field).
+The core of this section involves calculating the specialization scores for our first time interval, 1974-1988. This process is repeated identically for the subsequent two intervals.
+
+The first step is to filter the main patent dataset for the specified period. We then apply our custom functions, `group_by_applnID()` and `group_by_ctry_and_techn_field()`, to fractionally count patent activities.
 
 ```{r, include=FALSE}
 ####1.1.2.1. Interval 1 (1974 - 1988)
@@ -184,23 +202,23 @@ ipc_all_patents_first_period_df <- ipc_all_patents_first_period_df[, .(appln_id,
 region_tech_fields_1_df <- group_by_applnID(ipc_all_patents_first_period_df)
 ```
 
-The first function (group_by_applnID) groups data by application ID, and within each group, calculates a field-specific weight equal to 1 divided by the number of technological fields in that group. After applying this function over our interval-specific patent data, it looks like this:
+The `group_by_applnID()` function assigns an equal weight to each technological field within a single patent. For instance, if a patent is classified under four fields, each field receives a weight of 0.25. The result is a weighted dataset:
 
 ```{r}
-head(region_tech_fields_1_df)
+kable(as.data.frame(region_tech_fields_1_df[1:6,]))
 ```
 
-Next we apply the second function (group_by_ctry_and_techn_field), which aggregates the weighted fields at the country-technology field level. After applying it, the data looks like this:
+Next, `group_by_ctry_and_techn_field()` aggregates these weights, summing them up for each country-technology pair. This yields the total fractional count of patents for each country in each technological field.
 
 ```{r, include=FALSE}
 region_tech_fields_1_df <- group_by_ctry_and_techn_field(region_tech_fields_1_df)
 ```
 
 ```{r}
-head(region_tech_fields_1_df)
+kable(as.data.frame(region_tech_fields_1_df[1:6,]))
 ```
 
-This file is saved as a csv for being used later (for this first interval, the name and location of the file is "Files_created_with_the_code/data/files_code_Fields_analysis/reg_tech_FirstPeriod.csv"). We use this file in the next calculation, in which we create a matrix from this aggregated data. The matrix counts the name of registers of each country in which possible technological field. It looks like this:
+This aggregated data, saved as `reg_tech_FirstPeriod.csv`, is transformed into a country-technology matrix. The matrix rows represent countries, columns represent technological fields, and the values are the fractional patent counts.
 
 ```{r, include=FALSE}
 mat_reg_tech1 <- region_tech_fields_1_df %>% arrange(techn_field_nr, ctry_code) %>%
@@ -210,10 +228,10 @@ mat_reg_tech1 %<>% remove_rownames %>% column_to_rownames(var="ctry_code") %>%
 ```
 
 ```{r}
-print(as.matrix(mat_reg_tech1[1:20, 1:12]))
+kable(as.matrix(mat_reg_tech1[1:20, 1:12]), caption = "Sample of the Country-technology matrix")
 ```
 
-We finally use this matrix to calculate the general specialisations (RTA indexes, which stands for Revealed Technological Advantage) of countries in this first interval. The RTA is set to be non-binary, and the data looks like this after this calculation:
+Finally, we use this matrix to calculate the **Revealed Technological Advantage (RTA)** for each country in each field. RTA is a non-binary index that measures whether a country has a greater share of patents in a specific technology compared to the global average. An RTA value greater than or equal to 1 indicates a specialization.
 
 ```{r, include=FALSE}
 ## Calculate RCA (relative comparative advantage) for general technologies
@@ -222,10 +240,10 @@ reg_RCA1_df <- mat_reg_tech1 %>% location_quotient(binary = FALSE) %>% as.data.f
 ```
 
 ```{r}
-head(reg_RCA1_df)
+kable(as.data.frame(reg_RCA1_df[1:6,]))
 ```
 
-We do the same for the specialisations of countries in AI considering the AI patents in this interval. The steps are pretty much the same: we separate the AI data into this specific interval (ai_patents_df), apply the two custom functions (group_by_applnID and group_by_ctry_and_techn_field), save the file ("Files_created_with_the_code/data/files_code_Fields_analysis/Data1period_RCA_techn_field.csv"), create a matrix, and use it to calculate countries' specialisations in AI for this period. The AI-related specialisations data looks like this:
+This entire process is then repeated, this time using only the AI-related patents from the first interval to calculate **AI-specific RTAs** for each country.
 
 ```{r, include=FALSE}
 # Calculate AI-Specific RCA for Interval 1
@@ -252,11 +270,10 @@ reg_RCA1_AI_df <- mat_reg_tech1_AI %>% location_quotient(binary = FALSE) %>%
 ```
 
 ```{r}
-head(reg_RCA1_AI_df)
+kable(as.data.frame(reg_RCA1_AI_df[1:6,]))
 ```
 
-We merge this data with the "general" specialisations calculated earlier. The resulting file and an additional example for the case of Japan look like this:
-
+The general and AI-specific RTA dataframes are then merged. The resulting file for the first interval shows, for each country and technological field, both its general specialization (`RCA_Gen`) and its AI-specific specialization (`RCA_AI`).
 ```{r, include=FALSE}
 # Merge general and AI-specific RCA data for Interval 1
 rca_data_period_1_df <- merge(reg_RCA1_df, reg_RCA1_AI_df, all = TRUE, by = c("ctry_code", "techn_field_nr"))
@@ -266,12 +283,12 @@ names(rca_data_period_1_df) <- c("ctry_code", "techn_field_nr", "RCA_Gen", "RCA_
 
 ```{r}
 #Resulting file:
-head(rca_data_period_1_df)
+kable(as.data.frame(rca_data_period_1_df[1:6,]))
 #Example Japan:
-head(rca_data_period_1_df[rca_data_period_1_df$ctry_code == "JP",])
+kable(as.data.frame(rca_data_period_1_df[rca_data_period_1_df$ctry_code == "JP",][1:6,]))
 ```
 
-We save this data for later usage ("Files_created_with_the_code/data/files_code_Fields_analysis/Data1period_RCA_techn_field.csv"). Next, we turn to the AI-specific specialisations of this interval. We pick our AI data for this interval and replace their country codes by a new "AI-specific" fake code named AI_pat. This allows us to calculate specialisations for AI as it were a country exploring distinct technologies. We apply the same two custom functions over it (group_by_applnID and group_by_ctry_and_techn_field), and get the following resulting file with the AI specialisations:
+A key methodological step follows: we treat the entire corpus of AI patents as if it belonged to a single, hypothetical 'country' named `AI_pat`. This novel approach allows us to calculate the RTA for AI itself across all technological fields, providing a benchmark against which national specializations can be compared. The resulting data is saved for later use.
 
 ```{r, include=FALSE}
 # Regional Tech for AI - Interval 1
@@ -283,10 +300,12 @@ region_tech_ai_1_df <- group_by_ctry_and_techn_field(region_tech_ai_1_df)
 ```
 
 ```{r}
-head(region_tech_ai_1_df[region_tech_ai_1_df$ctry_code == "AI_pat",])
+kable(as.data.frame(region_tech_ai_1_df[region_tech_ai_1_df$ctry_code == "AI_pat",][1:6,]))
 ```
 
-We also save this file for later usage ("Files_created_with_the_code/data/files_code_Fields_analysis/reg_techAI_FirstPeriod.csv"). We do the exact same thing for the two remaining intervals (namely Interval 2 [1989-2003], and Interval 3 [2004-2018]), saving corresponding interval-specific files throughout the process. At the end, we combine the three interval-specific files with countries' general and AI-specific specialisations (namely rca_data_period_1_df, rca_data_period_2_df, rca_data_period_3_df) into a single file named ipc_rcas_df, which we also save ("Files_created_with_the_code/data/files_code_Fields_analysis/IPC_RCAs.csv"). Using again the case of Japan as an example and considering each of the three intervals, the combined and saved ipc_rcas_df file looks like this:
+**Consolidating Data Across All Intervals**
+
+The calculation process detailed above is repeated for the remaining two intervals: **1989-2003** and **2004-2018**. After processing all periods, the three interval-specific RTA files are combined into a single, comprehensive dataset named `ipc_rcas_df` and saved to disk. This file contains the complete history of general and AI-specific specializations for all countries across the three time periods.
 
 ```{r, include=FALSE}
 # Clean up
@@ -295,12 +314,12 @@ IPC_RCAs <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysi
 ```
 
 ```{r}
-head(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "1974-1988",])
-head(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "1989-2003",])
-head(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "2004-2018",])
+kable(as.data.frame(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "1974-1988",][1:6,]))
+kable(as.data.frame(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "1989-2003",][1:6,]))
+kable(as.data.frame(IPC_RCAs[IPC_RCAs$ctry_code == "JP" & IPC_RCAs$Period == "2004-2018",][1:6,]))
 ```
 
-Next, we create additional interval-specific files that combine the specialisations of the four considered countries with the specialisations of AI in a more user-friendly format. One file is created and saved per interval. For the first interval, the file created is named "First_period", and it is saved as "Files_created_with_the_code/data/files_code_Fields_analysis/Metrics_First_period.csv". The file looks like this:
+To facilitate further analysis and visualization, we create consolidated summary files for each interval. These files combine the RTA scores of the four focus countries (US, CN, KR, JP) and the `AI_pat` entity into a single, wide-format table.
 
 ```{r, include=FALSE}
 ###1.1.2.4.  Create a Specializations Summary
@@ -361,10 +380,10 @@ names(First_period) <- c("techn_field_nr", "sector", "field_name", "RCA_US", "RC
 ```
 
 ```{r}
-head(First_period)
+kable(as.data.frame(First_period[1:6,]))
 ```
 
-The same is done for the remaining two intervals. Finally, we combine these 3 interval-specific files into a single file, adding some additional labels to the technological fields considering their visual location around the GTS. These additional labels are just information for analysis, which is not really used or mentioned in the paper. The file is named "All_periods" and saved at "Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv". It looks like this:
+Finally, these three interval-specific summary files are merged into a master file named `All_periods`. This file includes additional labels for analytical purposes, though these are not central to the paper's main findings.
 
 ```{r, include=FALSE}
 IPC_names <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", 
@@ -375,7 +394,7 @@ IPC_names <- read.csv("Files_created_with_the_code/data/files_code_Fields_analys
 head(IPC_names)
 ```
 
-In the last step, we use the previously saved file named "Files_created_with_the_code/data/files_code_Fields_analysis/IPC_RCAs.csv" to create a file summarizing the number of general (column Round_general), AI-specific (column Round_AI), and coinciding specialisations (column Total_RCA) of each country over each interval. The previously calculated general and AI-specific specialisations are made binary, and their sum composes the number of coinciding specialisations. The resulting file IPC_RCAs_Top4 is saved at "Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv" and looks like this:
+In the last step of this sub-section, we use the `IPC_RCAs.csv` file to generate a summary table (`IPC_RCAs_Top4`). Here, the non-binary RTA values are binarized, where any RTA ≥ 1 is considered a specialization (value of 1) and any RTA < 1 is not (value of 0). We then sum these binary indicators to count the number of general specializations, AI-specific specializations, and coinciding specializations (where a country is specialized in both the general field and its AI-specific application) for each country and interval.
 
 ```{r, include=FALSE}
 IPC_RCAs_Top4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/RCA_4countries_detailed.csv", 
@@ -383,12 +402,16 @@ IPC_RCAs_Top4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_an
 ```
 
 ```{r}
-head(IPC_RCAs_Top4)
+kable(as.data.frame(IPC_RCAs_Top4[1:6,]))
 ```
 
-## 1.2. Create Sparse Matrix of relatedness between technological fields
+## 1.2. Building the Global Technological Space (GTS)
 
-This section creates a large sparse matrix from patent-techn_field data and computes their co-occurrence (cross-product). Finally, it saves the resulting technology-relatedness matrix. We start again by reading the very large files containing patent and inventors' location data. But this time, we apply the function "create_sparse_matrix", which creates a sparse matrix of co-occurences of technological fields in patents. The result of applying the function is a matrix that shows in lines each unique application id of patents, and in columns all of the 35 possible technological fields containing information about the respective technological field being used in the respective patent or not (0s for not, above this value for the number of times that the code appears in each individual patent). Because the files are too big and a bit problematic computational-wise, they are split into smaller files that are summed up after everything is calculated. The first file resulting from applying the create_sparse_matrix function, named mat_tech_AI1, looks like this:
+The next step is to construct the backbone of our analysis: the **Global Technological Space (GTS)**. This space is a network where nodes represent technological fields, and the links between them signify their relatedness. We measure this relatedness based on the principle that technologies that frequently appear together within the same patent are likely to be related.
+
+### 1.2.1. From Patents to a Co-occurrence Matrix
+
+To quantify this relationship, we must first count how often every possible pair of technologies co-occurs across the entire patent dataset. We start by loading the complete patent database (which, due to its size, is again handled in chunks) and applying the `create_sparse_matrix` function. This function generates a very large matrix where rows are unique patents and columns are the 35 technological fields.
 
 ```{r, include=FALSE}
 c <- 58841893 - 40000000
@@ -404,22 +427,21 @@ names(IPC_all_patents_Part3) <- c("appln_id", "ctry_code", "techn_field_nr", "we
 mat_tech_AI1 <- create_sparse_matrix(i = IPC_all_patents_Part1 %>% pull(appln_id),
                                      j = IPC_all_patents_Part1 %>% pull(techn_field_nr)) #
 ```
-
+The resulting sparse matrix, `mat_tech_AI1`, indicates the presence of a technology in a given patent.
 ```{r}
-print(as.matrix(mat_tech_AI1[1:20, 1:12]))
+kable(as.matrix(mat_tech_AI1[1:20, 1:12]), caption = "Sample of the Sparse AI matrix")
 ```
 
-This file is transformed in a square matrix of co-occurrences, which captures all possible combinations between two distinct technological fields. This square matrix looks like this:
-
+By calculating the cross-product of this matrix (`t(M) %*% M`), we transform it into a 35x35 square **co-occurrence matrix**. Each cell (`i, j`) in this new matrix contains a count of how many patents simultaneously list technology `i` and technology `j`.
 ```{r, include=FALSE}
 mat_tech_AI1 %<>%   crossprod() %>%  as.matrix() 
 ```
 
 ```{r}
-print(as.matrix(mat_tech_AI1[1:35, 1:35]))
+kable(as.matrix(mat_tech_AI1[1:35, 1:35]), caption = "Sample of the co-occurrence matrix")
 ```
 
-Six small co-occurrence matrices are calculated, and then they are summed up in a file named mat_tech_AI_Final, which is saved at "Files_created_with_the_code/data/files_code_Fields_analysis/Matrix_IPC.csv". This final file of co-occurrences between technological fields looks like this:
+After processing all data chunks, the individual co-occurrence matrices are summed to create a final, comprehensive matrix, which is then saved as `Matrix_IPC.csv`.
 
 ```{r, include=FALSE}
 matrix2 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Matrix_IPC.csv", 
@@ -433,10 +455,12 @@ mat_tech_AI_Final <- matrix
 ```
 
 ```{r}
-print(mat_tech_AI_Final[1:35, 1:35])
+kable(as.matrix(mat_tech_AI_Final[1:35, 1:35]))
 ```
 
-This matrix is used for calculating the relatedness between all technological fields, which is at the core of the GTS. The matrix is normalised to prevent overestimating knowledge links associated with ubiquitously used technological fields through the cosine index. This normalised matrix is then used as an input for calculating relatedness. Both relatedness and the normalisation are made using the function "relatedness" provided by the EconGeo package. The resulting matrix of relatedness looks like this:
+### 1.2.2. Calculating Relatedness and Defining the Network
+
+Raw co-occurrence counts can be misleading, as highly prevalent technologies will naturally co-occur more often with others, inflating their apparent relatedness. To correct for this, we normalize the matrix using the `relatedness()` function from the `EconGeo` package, which employs a cosine similarity index. The result is a relatedness matrix, where each value represents the strength of the relationship between two technologies.
 
 ```{r, include=FALSE}
 # Calculate relatedness using cosine similarity
@@ -444,10 +468,10 @@ mat_tech_rel_AI <- mat_tech_AI_Final %>% relatedness(method = "cosine")
 ```
 
 ```{r}
-print(mat_tech_rel_AI[1:35, 1:35])
+kable(as.matrix(mat_tech_rel_AI[1:35, 1:35]))
 ```
 
-Next, the matrix is turned into a network (file g_tech_AI). The degree of centrality of nodes is calculated using the Eigenvector centrality of vertices (centrality_eigen), which also calculates the width of the links between nodes (i.e., technological fields). Links that have below average width are excluded for better visualisation. Then, a network layout is calculated based on this network (coords_tech_AI). The resulting coordinates look like this for the top 10 technological fields:
+With the relatedness matrix complete, we can now treat it as an adjacency matrix to build a network graph (`g_tech_AI`). The nodes' centrality (**Eigenvector centrality**) is calculated to determine their importance in the network. For visual clarity in later plots, links with below-average weight (relatedness) are filtered out. Finally, a Fruchterman-Reingold layout algorithm is applied to determine the spatial coordinates (`coords_tech_AI`) of each node for visualization.
 
 ```{r, include=FALSE}
 # Load IPC names and categories
@@ -470,10 +494,12 @@ coords_tech_AI <- read.csv("other_files/coords_tech_AI_layout1.csv", sep = ";", 
 ```
 
 ```{r}
-coords_tech_AI[1:10,]
+kable(as.data.frame(coords_tech_AI[1:10,]))
 ```
 
-Then, the previously file with general, AI-specific and coinciding country specialisations (from the file "RCA_4countries_detailed.csv") and the file with AI-specific specialisations (file "Specializations_All_periods_IPC.csv") are loaded. The resulting file is processed for facilitating the plotting later. A new category is created, reflecting the types of specialisations used in the paper (Var1, which goes from 0 to 3; 0 stands for no specialisation, 1 for general specialisation, 2 for AI-specific specialization, and 3 for coinciding specialization). This new dataset named Newtable is saved at "Files_created_with_the_code/data/files_code_Fields_analysis/Table_appendix.xlsx" and looks like this:
+### 1.2.3. Preparing Data for Visualization
+
+In the final step of this section, we prepare the specialization data (calculated in Section 1.1) for plotting onto the GTS. We load the summary file (`RCA_4countries_detailed.csv`) and create a new categorical variable (`Var1`) that classifies each country-technology pair into one of four states: no specialization (0), general specialization (1), AI-specific (break-through) specialization (2), or coinciding (break-in) specialization (3). This will allow us to map the countries' technological trajectories directly onto the GTS structure in the next section.
 
 ```{r, include=FALSE}
 # Load top 4 countries RCA details
@@ -505,16 +531,17 @@ Newtable$Var1 <- gsub("3", "Coinciding specialization", str_trim(Newtable$Var1))
 ```
 
 ```{r}
-Newtable[1:10,]
+kable(as.data.frame(Newtable[1:10,]))
 ```
 
 ## 1.3. Plotting technological spaces
 
-Next, we use the loaded information to plot technological spaces. For now, we have only calculated the coordinates and network for the GTS and not yet for the ATS, so we'll start with this one.
+Now that the underlying data and network structures are in place, this section focuses on their visualization. We will generate the key plots presented in the paper, illustrating both the static, global structure of technology and the dynamic, evolving space of AI.
 
 ### 1.3.1. Global technological space (GTS)
 
-The first figure from the GTS doesn't have any information linked to specialisations. The command below uses the general network created before to plot this geography-agnostic GTS. The figure produced is saved at "Files_created_with_the_code/figures/Figure_3_GTS_for_IPC_fields.jpg"
+We begin by plotting the fundamental structure of the Global Technological Space. This initial visualization is **geography-agnostic**, meaning it shows the inherent relatedness between technological fields without any country-specific data. The node size corresponds to its centrality (degree), and nodes are clustered and colored by their broader technological sector. This plot serves as the canvas upon which we will later map national trajectories.
+
 
 ```{r, fig.width=14, fig.height=10}
   g_tech_AI %>%  ggraph(layout =  coords_tech_AI) + 
@@ -530,7 +557,7 @@ The first figure from the GTS doesn't have any information linked to specialisat
 
 ```
 
-Next, this very same technological space is used to plot the technological trajectories of the selected countries, through plotting their specialisations information. Thus, the commands for color and size of the nodes are adapted to reflected the previously calculated 3 types of specialisations. Three technological spaces are plotted for each country (one for each interval). Using again the case of Japan as an example, in the first interval:
+Next, we overlay the country-specific specialization data onto the static GTS canvas. This allows us to visualize the technological trajectory of each country over the three time intervals. The shape of each node indicates the type of specialization (general, break-through, or break-in), while hulls are drawn to highlight the clusters of specialization for each period. This composite visualization reveals how each nation's technological focus has evolved within the global structure.
 
 ```{r, fig.width=14, fig.height=10}
 #GTS with specialisations per country
@@ -632,11 +659,11 @@ legend_order <- c(
   theme_classic(base_size = 11) + theme(legend.position = "bottom")+ coord_flip()
 ```
 
-The code is the basically the same for the remaining countries in interval. The countries and intervals are selected by varying the variables i (for countries), and p (for intervals). The figures are generated and combined by country using the custom function "multiplot". The files are saved at "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_d_China.jpg", "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_b_USA.jpg", "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_a_Japan.jpg", and "Files_created_with_the_code/figures/Figure_5_Specialisations_techn_space_3_periods_4_countries_c_SouthKorea.jpg".
+The plotting code is structured to iterate through each of the four focus countries by changing the `i` variable. The resulting figures, each depicting a single country's trajectory over three periods alongside a summary bar chart, are then saved to disk.
 
 ### 1.3.2. AI-specific technological space (ATS)
 
-Next, we create the ATS. We follow very similar steps: load the AI data, separate the patents that are specific to each interval, calculate the network and it's coordinates, and plot one technological space per interval. The difference now is that the ATS is dynamic, meaning that we calculate the network every time for each interval. Starting with the first interval, the calculated degree for the top 10 most connected codes is:
+Unlike the static GTS, the **AI-specific Technological Space (ATS)** is dynamic. Its structure is recalculated for each time interval, reflecting the rapid evolution of AI technology. Here, the relatedness between fields is based only on their co-occurrence within AI patents for that specific period. This approach allows us to observe which technological fields form the core of AI innovation at different points in time.
 
 ```{r, include=FALSE}
 rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
@@ -672,12 +699,12 @@ g_tech_AI <- mat_tech_rel_AI %>% as_tbl_graph(directed = FALSE) %N>%
 coords_tech_AI <- g_tech_AI %>% igraph::layout.fruchterman.reingold() %>% as_tibble()
 colnames(coords_tech_AI) <- c("x", "y")
 ```
-
+Starting with the first interval (1974-1988), the top 10 most central technological fields in the AI space are:
 ```{r}
 g_tech_AI %N>%   arrange(desc(dgr)) %>%  as_tibble() %>%  slice(1:10)
 ```
 
-The dataset with the AI-specific specialisations (named AI_RCA), saved previously in the file "Specializations_All_periods_IPC.csv" (together with the specialisations of countries), looks like this:
+We use the previously calculated AI specialization data (`AI_RCA`) to highlight the core technologies in each period. A binary flag indicates whether AI has an RTA ≥ 1 in a given field.
 
 ```{r, include=FALSE}
 AI_RCA <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Specializations_All_periods_IPC.csv", sep = ";", header = TRUE, dec=",")
@@ -689,10 +716,10 @@ AI_RCA$Binary <- ifelse(AI_RCA$RCA_AI_Period < 1, 0,1)
 ```
 
 ```{r}
-head(AI_RCA)
+kable(as.data.frame(AI_RCA[1:6,]))
 ```
 
-Where "RCA_AI_Period" refers to the specific RTA of each code for each interval (which in turn is shown in the column Period_sim). We then plot the ATS for the first interval:
+The following code generates the ATS for the first interval (1974-1988). The nodes with labels are those where AI is specialized (RTA ≥ 1).
 
 ```{r, fig.width=14, fig.height=10}
 AI_RCA1 <- AI_RCA[AI_RCA$Period_sim == 1,]
@@ -708,15 +735,16 @@ p=1
   ggtitle("AI-specific technological space (1974-1988)") #
 ```
 
-We do the same for the 2 other intervals, and combine the three figures again using the multiplot custom function. The resulting figure is saved at "Files_created_with_the_code/figures/Figure_2_ATS_and_AI_core_technologies_3_intervals.jpg"
+We do the same for the 2 other intervals, and combine the three figures again using the multiplot custom function. The resulting figure is saved at "Files_created_with_the_code/figures/Figure_2_ATS_and_AI_core_technologies_3_intervals.jpg".
 
-# 2. Other figures
+# 2. Generating Descriptive Figures
 
-Next, we create the 3 remaining figures shown in the paper (namely Figures 1, 6, and 7).
+This section details the creation of the paper's descriptive figures. These visualizations provide essential context, illustrating key trends in AI patenting and the evolution of national specialization strategies that motivate our main analysis.
 
 ## 2.1. Share of Break-in specialisations (Fig 6 and 7)
 
-We create this figure by reading all the summary files we already separated before. We start by reading and combining files RCA_4countries_detailed.csv and Specializations_All_periods_IPC.csv into a new file named IPC_RCAs. Then, we summarize its main results, in the following way:
+Here, we generate the plots showing the share of 'break-in' specializations for each country over time. This metric is central to our paper's narrative and is calculated as the ratio of **coinciding specializations** (specialized in both the general field and its AI application) to the country's total number of **general specializations**. A higher share indicates that a larger portion of a country's established technological strengths is being integrated with AI. We first perform this analysis at the technological field level.
+
 
 ```{r, include=FALSE}
 rm(list = ls()[!sapply(ls(), function(x) is.function(get(x)))])
@@ -755,14 +783,13 @@ IPC_RCAs %<>%
   mutate(sum_coinciding = sum(Coiciding)) %>%   mutate(sum_justGeneral = sum(justGeneral)) %>%
   mutate(sum_OnlyAI = sum(OnlyAI)) %>%  ungroup()
 ```
-
+The data is processed to count the number of 'coinciding', 'general only', and 'AI only' specializations for each country and period. From these counts, the `Share_coinciding` is calculated. The resulting summary table is shown below.
 ```{r}
 SummaryAllData<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
 colnames(SummaryAllData)[1] <- "Country"
 head(SummaryAllData)
 ```
-
-This file is all we need to create Figure 6, shown below (and saved in file "Files_created_with_the_code/figures/Figure_6_Share_coinciding_specialisations_techn_field.jpg")
+This summarized data is then used to plot the evolution of the break-in share for the four focus countries (Figure 6).
 
 ```{r, fig.width=12, fig.height=4}
   ggplot(data=SummaryAllData, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
@@ -774,7 +801,7 @@ This file is all we need to create Figure 6, shown below (and saved in file "Fil
   scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A"))
 ```
 
-Next, we do the same for the subclass-based Figure 7, which is shown belown and saved as "Files_created_with_the_code/figures/Figure_7_Share_coinciding_specialisations_subclass.jpg".
+To ensure the robustness of our findings, we repeat the analysis at a more granular level of technological classification: the **4-digit IPC subclass**. This serves as a check to confirm that the observed trends are not an artifact of the broader 35-field aggregation.
 
 ```{r, include=FALSE}
 IPC_RCAs <- read.csv("Files_created_with_the_code/data/files_code_4-digits_analysis/IPC_RCAs_subclass.csv", sep = ";", header = TRUE, dec=",")
@@ -820,7 +847,7 @@ IPC_RCAs %<>%
 SummaryAllData4dig<-distinct(IPC_RCAs, ctry_code, Period, .keep_all = TRUE) 
 colnames(SummaryAllData4dig)[1] <- "Country"
 ```
-
+The resulting plot (Figure 7) confirms that the trends observed at the field level are consistent at the more detailed subclass level.
 ```{r, fig.width=12, fig.height=4}
   ggplot(data=SummaryAllData4dig, aes(x=Period, y=Share_coinciding, group=Country, shape = Country, color=Country)) +
   geom_point(aes(fill = Country), size=8) + 
@@ -834,9 +861,9 @@ colnames(SummaryAllData4dig)[1] <- "Country"
   scale_color_manual(values = c("#1B9E77", "#D95F02", "#7570B3", "#E7298A")) 
 ```
 
-## 2.2. Log 10 of the number of AI patents by Japan, the USA, South Korea, and China
+## 2.2. Growth of AI Patents (Fig 1)
 
-Next, we create Figure 1. Not much data is needed for this one (the only dataset needed is other_files/IPCs_AI.csv), and just simple commands used to process this data to get a summarized number. The produced figure is saved as "Files_created_with_the_code/figures/Figure_1_Log_10_AI_patents_per_country.jpg", and also shown below.
+This section reproduces Figure 1 from the paper, which illustrates the dramatic growth in AI patenting since the 1970s. We use the raw AI patent data, aggregating the number of unique patent applications per country for each year. A **log-10** scale is used for the y-axis to accommodate the exponential increase in patent counts and allow for a clearer comparison of growth trajectories between the four focus countries.
 
 ```{r, include=FALSE}
 patents_AI_specific <- read.csv("other_files/IPCs_AI.csv", sep = ";", header = TRUE, dec=",")
@@ -909,11 +936,21 @@ test <- Data[Data$Period != "No period",]
   annotate("text", x = 2011, y = 3.8, label = c("Third Interval \n(2004-2018)"), size=4)
 ```
 
-# 3. Permutations for technological fields
+# 3. Robustness Checks: Permutation Analysis
+
+To ensure that our findings are statistically robust and not merely the result of random chance, we conduct a permutation analysis. The core idea is to create a "null model" by generating thousands of randomized AI patent datasets. By comparing our actual results to the distribution of results from these random datasets, we can assess the statistical significance of our observations. This section details the creation of these permuted datasets and the subsequent recalculation of specialization metrics.
 
 ## 3.1. Permutate the AI dataset
 
-Load the raw data, separate the interval (the first one for this example, from 1974 to 1988), and calculate the fractional count of each country in each considered field as done before.
+The first step is to generate the randomized, or **permuted**, datasets. For each of the four focus countries and for each time interval, we follow a specific procedure:
+
+1.  Count the number of **actual** AI patents the country has in that interval.
+2.  Randomly select the **same number** of patents from that country's **entire pool** of patents (both AI and non-AI) for that interval.
+3.  Treat this random sample as the new, 'permuted' AI dataset for that country.
+
+This process is repeated 1,000 times (note: `num_permutations` is set to 10 in this example for faster execution) to create 1,000 counterfactual scenarios where 'AI' patents are just random draws from a country's overall technological portfolio.
+
+We begin by reloading the patent data for the first interval (1974-1988) to establish the pool from which random patents will be drawn.
 
 ```{r, include=FALSE}
 #### Main Code
@@ -940,6 +977,7 @@ library(readxl) #for reading the xlsx files
 library(lmtest) #for LM analysis and robustness econometric test
 library(sandwich) 
 library(stargazer) #for generating nice econometric tables
+library(kableExtra)
 
 rm(list=ls())
 #set the working directory to where you saved the R code:
@@ -1004,13 +1042,13 @@ region_tech_fields_1_df <- group_by_applnID(ipc_all_patents_first_period_df)
 region_tech_fields_1_df <- group_by_ctry_and_techn_field(region_tech_fields_1_df)
 ```
 
-The resulting count of techn_fields per country is:
+The resulting count of technological fields per country is:
 
 ```{r}
-head(region_tech_fields_1_df)
+kable(as.data.frame(region_tech_fields_1_df[1:6,]))
 ```
 
-Now we load the AI patents, select the ones from the first interval, define target countries (the four main ones), and define the number of permutations. To avoid that it takes it too long, I'll use 10 permutations (num_permutations = 10; in the paper, this number is set to 1000).
+The following loop executes the permutation logic. For each of the 10 iterations, it samples a new set of random 'AI' patents for the target countries.
 
 ```{r, include=FALSE}
 ai_patents_df <- fread("other_files/IPCs_AI.csv", sep=";", dec=",", header=TRUE)
@@ -1107,14 +1145,14 @@ for (p in 1:num_permutations) {
 final_permuted_dataset <- bind_rows(list_of_permuted_dfs)
 ```
 
-The resulting permuted dataset looks like this for the 5 initial and 5 last lines:
+The resulting permuted dataset looks like this for the 6 initial and 6 last lines:
 
 ```{r}
-head(final_permuted_dataset)
+kable(as.data.frame(final_permuted_dataset[1:6,]))
 tail(final_permuted_dataset)
 ```
 
-Or, in summary, it looks like this (please don't forget that just Japan and the USA from the 4 selected countries had patents in the first interval):
+This process creates a long-format dataframe where each `permutation_number` represents a complete, unique, randomized AI dataset.
 
 ```{r}
 final_permuted_dataset %>%
@@ -1123,8 +1161,7 @@ final_permuted_dataset %>%
   summarise(unique_appln_ids = n_distinct(appln_id), .groups = 'drop') %>%
   print(n=20)
 ```
-
-Next, we separate the list of NOT-targeted countries with AI patents, create a list to hold the replicated dataframes, and loop these countries according to the number of permutations selected (10 in this example), so that we also have these 'extra' AI-players on every permutation.
+A crucial step is to handle the non-target countries. Since our hypothesis is not about them, their actual AI patents are kept constant and are simply replicated across all 1,000 permutations. This ensures that the global context remains stable while only the composition of AI within our focus countries is randomized.
 
 ```{r, include=FALSE}
 '%notin%' <- Negate('%in%')
@@ -1148,14 +1185,14 @@ for (i in 0:num_permutations) {
 replicated_not_selected_ai_final <- bind_rows(list_of_replicated_not_selected_ai)
 ```
 
-The resulting dataset looks like this for the first and last 6 observations
+The resulting dataset looks like this for the first and last 6 observations:
 
 ```{r}
-head(replicated_not_selected_ai_final)
+kable(as.data.frame(replicated_not_selected_ai_final[1:6,]))
 tail(replicated_not_selected_ai_final)
 ```
 
-We merge this back into the "target" dataset, name the country_code of it as "AI_pat" to be able to trace it back, and merge everything.
+Finally, the permuted data for the target countries is combined with the replicated data for non-target countries. We also add the original, non-permuted AI dataset, labeling it as `permutation_number = 0`. This allows for direct comparison. The entire collection is then joined with the technological field information to prepare for the RTA calculation.
 
 ```{r, include=FALSE}
 original_selected_AI <- ai_patents_period_1_df[ai_patents_period_1_df$ctry_code %in% target_countries, c("appln_id", "ctry_code")]
@@ -1174,7 +1211,7 @@ final_permuted_dataset <- distinct(final_permuted_dataset, appln_id, .keep_all =
 final_permuted_dataset <- left_join(final_permuted_dataset, ipc_all_patents_first_period_df, by = "appln_id")
 ```
 
-The result looks like this:
+The result is a single dataframe containing the original AI data (permutation 0) and 10 random variations.
 
 ```{r}
 table(final_permuted_dataset$permutation_number)
@@ -1182,7 +1219,7 @@ table(final_permuted_dataset$permutation_number)
 
 ## 3.2. Calculate AI-specific specialisations
 
-Now we calculate the AI-specific specialisations based on these Permuted dataset:
+With the 11 datasets (1 actual + 10 permuted) assembled, we now repeat the exact same **Revealed Technological Advantage (RTA)** calculation performed in Section 1.1. This is done for each permutation, allowing us to generate a distribution of RTA scores for each technological field under the null hypothesis (i.e., when 'AI' is random).
 
 ```{r, include=FALSE}
 group_by_applnID_perm <- function(data){
@@ -1208,7 +1245,7 @@ group_by_ctry_techn_field_perm <- function(data){
 region_tech_fields_perm_df <- group_by_applnID_perm(final_permuted_dataset)
 region_tech_fields_perm_df <- group_by_ctry_techn_field_perm(region_tech_fields_perm_df)
 ```
-
+The code below iterates through each `permutation_number`, calculates the AI-specific RTAs for that dataset, and stores the results.
 ```{r}
 list_of_rca_dfs <- region_tech_fields_perm_df %>%
   group_by(permutation_number) %>%
@@ -1281,19 +1318,21 @@ list_of_rca_dfs <- region_tech_fields_perm_df %>%
 # Combine the list of RCA dataframes into one final dataframe
 final_rca_all_permutations_df <- bind_rows(list_of_rca_dfs)
 ```
-
-The new AI-specific RTAs look like this:
+The final output is a comprehensive dataframe containing the calculated RTA scores for every country, technology, and permutation.
 
 ```{r}
-head(final_rca_all_permutations_df)
+kable(as.data.frame(final_rca_all_permutations_df[1:6,]))
 tail(final_rca_all_permutations_df)
 ```
 
-This file (or better said, the relevant file with 1000 permutations) is saved as "final_rca_all_permutations_df_1st_Period.csv". The other two intervals are saved with similar names, i.e., "final_rca_all_permutations_df_2nd_Period.csv" and "final_rca_all_permutations_df_3rd_Period.csv", in Files_created_with_the_code/data/files_code_Fields_analysis/robustness/
+This process is repeated for all three time intervals, and the resulting dataframes are saved to disk. These files form the basis for the statistical tests in our econometric analysis.
 
-# 4. Econometrics
+# 4. Regression Analysis
 
-Read the files calculated in the "3.Robustness" code, and calculate the first three models.
+This final section presents the econometric analysis designed to formally test our paper's hypotheses. Using the data prepared in the previous steps, we construct a panel dataset covering our four focus countries across nine 5-year intervals (from 1974-1978 to 2014-2018). We then run a series of regression models to investigate the factors influencing the emergence and persistence of different types of technological specializations.
+
+The following code block handles the final data preparation, loading the pre-calculated metrics for relative density and specializations, and merging them into a single dataframe ready for regression.
+
 
 ```{r, include=FALSE}
 options(scipen = 999) #deactivate scientific notation
@@ -1365,50 +1404,191 @@ regression_data <- Rel_density %>%
          ctry_code = factor(ctry_code))
 rm(Specializations_wide, Specializations_data)
 
+regression_data <- regression_data %>%
+  mutate(ctry_code = case_when(
+    ctry_code == "JP" ~ "Japan",
+    ctry_code == "US" ~ "US",
+    ctry_code == "KR" ~ "South Korea",
+    ctry_code == "CN" ~ "China",
+    TRUE ~ ctry_code # This keeps any other codes as they are
+  ))
+
+#redefine names:
+regression_data_renamed <- regression_data %>%
+  rename(
+    "Country’s techn. rel. dens." = rel_density,
+    "Interval " = Period,
+    "No. of ‘general’ spec." = total_general_specializations,
+    "Share of ‘break-in’ spec." = Share_Coinciding,
+    "No. of ‘AI-specific’ spec." = total_AI_specializations,
+    "No. of sustained ‘break-in’ spec." = actual_persistent_coinciding,
+    "No. of sustained ‘general’ spec." = actual_persistent_general_all,
+    "No. of sustained ‘AI-specific’ spec." = actual_n_persistent_round_ai,
+    "No. of ‘break-in’ spec." = coinciding_specialization,
+    "Country "= ctry_code
+  )
+
+desired_order_model1_to_3 <- c("`Country’s techn. rel. dens.`", "`Interval `", "`Country `", "`No. of ‘general’ spec.`",
+                   "`No. of ‘AI-specific’ spec.`")
+
 # Model 1: Predicting Share_Coinciding with Period fixed effects
-model1 <- lm(Share_Coinciding ~ rel_density + total_general_specializations + Period + 
-               total_AI_specializations, data = regression_data) 
+model1 <- lm(`Share of ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `, 
+             data = regression_data_renamed) 
 summary(model1)
 
-model2 <- lm(Share_Coinciding ~ rel_density + total_general_specializations + Period + ctry_code + 
-               total_AI_specializations, data = regression_data)
+model2 <- lm(`Share of ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `No. of ‘general’ spec.` + `Interval ` + 
+               `No. of ‘AI-specific’ spec.`, 
+             data = regression_data_renamed) 
 summary(model2)
 
 # Model 3: A simpler model if degrees of freedom are a major concern for Model 2
-model3 <- lm(Share_Coinciding ~ rel_density + Period, data = regression_data) 
+model3 <- lm(`Share of ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `No. of ‘general’ spec.` + `Interval ` + `Country ` + 
+               `No. of ‘AI-specific’ spec.`,
+             data = regression_data_renamed)
 summary(model3)
 ```
 
-The dataset looks like this
-
+The final dataset for regression looks like this:
 ```{r}
-head(regression_data)
+head(regression_data_renamed) %>%
+  knitr::kable(
+    caption = "Preview of the Final Regression Dataset",
+    booktabs = TRUE # A style option for prettier tables
+  ) %>%
+  kable_styling(
+    bootstrap_options = c("striped", "hover", "condensed"),
+    full_width = FALSE
+  )
 ```
 
-The results for the first three models are:
+## 4.1. Main models (i.e., the ones from the paper) 
 
-```{r}
-stargazer(model3, model1, model2, title="Effects on the share of break-ins", ci.level=0.95, single.row=TRUE, ci=F, type="text") 
+Our main analysis consists of two sets of Ordinary Least Squares (OLS) models. The first set (Table 3) examines the factors that influence a country's **share of 'break-in' specializations**. The second set (Table 4) investigates the determinants of the **persistence of specializations over time**.
+
+The first three models test the effect of technological relatedness density on the share of break-in specializations. Model 1 provides a baseline, Model 2 adds control variables for the number of general and AI-specific specializations, and Model 3 includes country fixed effects.
+
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+stargazer(model1, model2, model3, order = desired_order_model1_to_3, title="Effects on the share of break-ins - OLS regression", ci.level=0.95, single.row=TRUE, ci=F, type="html") 
 ```
 
-For the remaining 3 models, the results are:
+The next set of models shifts the focus to persistence. The dependent variable is now the count of specializations of a certain type that are sustained from the previous period. These models help us understand what factors contribute to the durability of a country's technological advantages.
 
 ```{r, include=FALSE}
-newmodel4 <- lm(actual_persistent_coinciding ~ rel_density + Period+ actual_persistent_general_all + 
-                  actual_n_persistent_round_ai, 
-             data = regression_data)
+newmodel4 <- lm(`No. of sustained ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of sustained ‘general’ spec.` + 
+                  `No. of sustained ‘AI-specific’ spec.`, data = regression_data_renamed)
 summary(newmodel4)
 
-newmodel5 <- lm(actual_persistent_coinciding ~ rel_density + Period+ total_general_specializations + coinciding_specialization +
-                  total_AI_specializations, 
-             data = regression_data)
+#Model 5 - persistent break-ins
+newmodel5 <- lm(`No. of sustained ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of ‘general’ spec.` + `No. of ‘break-in’ spec.` +
+                  `No. of ‘AI-specific’ spec.`, 
+                data = regression_data_renamed)
 summary(newmodel5)
 
-newmodel6 <- lm(actual_n_persistent_round_ai ~ rel_density + Period+ total_general_specializations +
-               actual_persistent_coinciding+coinciding_specialization+total_AI_specializations, data = regression_data)
+#Model 6 persistent AI-specific
+newmodel6 <- lm(`No. of sustained ‘AI-specific’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of ‘general’ spec.` +
+                  `No. of sustained ‘break-in’ spec.`+`No. of ‘break-in’ spec.`+`No. of ‘AI-specific’ spec.`, 
+                data = regression_data_renamed)
 summary(newmodel6)
+
+desired_order_model4_to_6 <- c("`Country’s techn. rel. dens.`", "`Interval `", 
+                               "`No. of ‘break-in’ spec.`", "`No. of ‘general’ spec.`", "`No. of ‘AI-specific’ spec.`",
+                               "`No. of sustained ‘break-in’ spec.`", "`No. of sustained ‘general’ spec.`", 
+                               "`No. of sustained ‘AI-specific’ spec.`")
 ```
 
-```{r}
-stargazer(newmodel4, newmodel5, newmodel6, title="Effects on persisting specialisations", ci.level=0.95, single.row=TRUE, ci=F, type="text") 
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+stargazer(newmodel5, newmodel4,newmodel6, order = desired_order_model4_to_6, title="Effects on persisting specialisations - OLS regression", ci.level=0.95, single.row=TRUE, ci=F, type="html") 
 ```
+
+## 4.2. Extensions (i.e., models used for additional robustness, not included in the paper) 
+
+To ensure the robustness of our results, we re-estimate our models using specifications better suited to the nature of our dependent variables.
+
+- For the models predicting the **share** of break-ins (a value between 0 and 1), we use **Beta regression**.
+
+- For the models predicting the **count** of persistent specializations, we use **Poisson** and **Negative Binomial regressions**, which are designed for count data.
+
+The Beta regression results for the share of break-ins are presented below.
+```{r, include=FALSE}
+library(betareg)
+library(MASS)
+library(statmod)
+regression_data_renamed$`Share of ‘break-in’ spec.` <- ifelse(regression_data_renamed$`Share of ‘break-in’ spec.` ==0,0.01, regression_data_renamed$`Share of ‘break-in’ spec.`)
+table(regression_data_renamed$`Share of ‘break-in’ spec.`)
+
+# Model 1 - The simplest model
+model1_beta <- betareg(`Share of ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `, 
+                       data = regression_data_renamed) 
+summary(model1_beta)
+
+# Model 2 - adding number of general specialisations
+model2_beta <- betareg(`Share of ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `No. of ‘general’ spec.` + `Interval ` + 
+                         `No. of ‘AI-specific’ spec.`, 
+                       data = regression_data_renamed) 
+summary(model2_beta)
+
+# Model 3 - controlling for country
+model3_beta <- betareg(`Share of ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `No. of ‘general’ spec.` + `Interval ` + `Country ` + 
+                         `No. of ‘AI-specific’ spec.`,
+                       data = regression_data_renamed)
+summary(model3_beta)
+
+```
+
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+stargazer(model1_beta, model2_beta, model3_beta, order = desired_order_model1_to_3, title="Effects on the share of break-ins - Beta regression", ci.level=0.95, single.row=TRUE, ci=F, type="html") 
+```
+Compared to the OLS-based Table 3, the estimations from the Beta regression are highly consistent. The main differences are minor shifts in significance levels for some time intervals and the US country dummy. Importantly, the main variable of interest, "Country's techn. rel. dens.", retains its significance and sign, confirming the robustness of our primary finding.
+
+Next, we test the robustness of the persistence models. The results from the **Poisson regression** are shown first, followed by the **Negative Binomial models**, which can be more appropriate if the count data is over-dispersed.
+  
+```{r, include=FALSE}
+model4_poisson <- glm(`No. of sustained ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of sustained ‘general’ spec.` + 
+                        `No. of sustained ‘AI-specific’ spec.`,
+                      family = poisson(link = "log"),
+                      data = regression_data_renamed)
+summary(model4_poisson)
+
+#Model 5 - persistent break-ins
+model5_poisson <- glm(`No. of sustained ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of ‘general’ spec.` + `No. of ‘break-in’ spec.` +
+                        `No. of ‘AI-specific’ spec.`, 
+                      family = poisson(link = "log"),
+                      data = regression_data_renamed)
+summary(model5_poisson)
+
+#Model 6 persistent AI-specific
+model6_poisson <- glm(`No. of sustained ‘AI-specific’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of ‘general’ spec.` +
+                        `No. of sustained ‘break-in’ spec.`+`No. of ‘break-in’ spec.`+`No. of ‘AI-specific’ spec.`, 
+                      family = poisson(link = "log"),
+                      data = regression_data_renamed)
+summary(model6_poisson)
+```
+
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+stargazer(model5_poisson, model4_poisson,  model6_poisson, order = desired_order_model4_to_6, title="Effects on persisting specialisations - Poisson regression", ci.level=0.95, single.row=TRUE, ci=F, type="html") 
+```
+
+For the **Negative binomial**, the results look like this:
+```{r, include=FALSE}
+model4_negbin <- glm.nb(`No. of sustained ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of sustained ‘general’ spec.` + 
+                          `No. of sustained ‘AI-specific’ spec.`,
+                        data = regression_data_renamed)
+summary(model4_negbin)
+
+#Model 5 - persistent break-ins
+model5_negbin <- glm.nb(`No. of sustained ‘break-in’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of ‘general’ spec.` + `No. of ‘break-in’ spec.` +
+                          `No. of ‘AI-specific’ spec.`, 
+                        data = regression_data_renamed)
+summary(model5_negbin)
+
+#Model 6 persistent AI-specific
+model6_negbin <- glm.nb(`No. of sustained ‘AI-specific’ spec.` ~ `Country’s techn. rel. dens.` + `Interval `+ `No. of ‘general’ spec.` +
+                          `No. of sustained ‘break-in’ spec.`+`No. of ‘break-in’ spec.`+`No. of ‘AI-specific’ spec.`, 
+                        data = regression_data_renamed)
+summary(model6_negbin)
+```
+
+```{r, results='asis', echo=FALSE, warning=FALSE, message=FALSE}
+stargazer(model5_negbin, model4_negbin,  model6_negbin, order = desired_order_model4_to_6, title="Effects on persisting specialisations - Negative binomial regression", ci.level=0.95, single.row=TRUE, ci=F, type="html") 
+```
+The results from both the Poisson and Negative Binomial regressions are nearly identical to each other and largely consistent with the OLS models. While some variables with marginal significance in the OLS models lose significance here, the main relationships of interest hold. This confirms that our findings regarding the persistence of specializations are not sensitive to the choice of a linear versus a count data model specification.

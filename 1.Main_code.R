@@ -18,6 +18,7 @@ library(janitor)
 library(ggforce)
 library(stringr)
 library(openxlsx)
+library(stargazer) #for generating nice econometric tables
 
 rm(list=ls())
 #set the working directory to where you saved the R code:
@@ -2286,3 +2287,610 @@ plot
 jpeg("Files_created_with_the_code/figures/Figure_13.jpg", width = 9.5, height = 9.5, units = 'in', res = 500)
 plot
 dev.off()
+
+#4. FOURTH PART: Econometrics-----
+##4.1.Calculate density matrix for 5-years intervals and techn field level-----
+rm(list=ls())
+options(scipen = 999) #deactivate scientific notation
+#Create Matrix
+matrix2 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/Matrix_IPC.csv", 
+                    sep = ";", header = FALSE)
+
+matrix2 <- matrix2 %>%  row_to_names(row_number = 1)
+matrix <- matrix2[,-1]
+rownames(matrix) <- matrix2[,1]
+matrix <- as.matrix(matrix)
+mat_tech_AI_Final <- matrix #this is a matrix of co-occurrences between techn fields, i.e., industry x
+#industry matrix (for the 35 techn fields)
+
+# Calculate relatedness using cosine similarity
+mat_tech_rel_AI <- mat_tech_AI_Final %>% relatedness(method = "cosine") #this is literally the relatedness part
+#of the relatedness_density_int_avg(mat, relatedness) function; now I need the mat (which is one per period) 
+rm(mat_tech_AI_Final,matrix,matrix2)
+
+Periods_5y <- c(
+  "1974-1978",
+  "1979-1983",
+  "1984-1988",
+  "1989-1993",
+  "1994-1998",
+  "1999-2003",
+  "2004-2008",
+  "2009-2013",
+  "2014-2018"
+)
+
+Periods_5y[1]
+#for the first period (1974-1978)
+reg_tech1_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_1974-1978.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech1_countries <- reg_tech1_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech1_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech1_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech1_countries$ctry_code <- as.character(mat_reg_tech1_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech1_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech1_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech1_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period1 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period1) <- "Rel_density"
+Period1$Period <- paste(Periods_5y[1])
+Period1 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[2]
+#for the second period (1979-1983)
+reg_tech2_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_1979-1983.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech2_countries <- reg_tech2_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech2_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech2_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech2_countries$ctry_code <- as.character(mat_reg_tech2_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech2_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech2_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech2_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period2 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period2) <- "Rel_density"
+Period2$Period <- paste(Periods_5y[2])
+Period2 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[3]
+#for the third period (1984-1988)
+reg_tech3_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_1984-1988.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech3_countries <- reg_tech3_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech3_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech3_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech3_countries$ctry_code <- as.character(mat_reg_tech3_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech3_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech3_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech3_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period3 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period3) <- "Rel_density"
+Period3$Period <- paste(Periods_5y[3])
+Period3 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[4]
+#for the fourth period (1989-1993)
+reg_tech4_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_1989-1993.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech4_countries <- reg_tech4_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech4_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech4_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech4_countries$ctry_code <- as.character(mat_reg_tech4_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech4_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech4_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech4_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period4 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period4) <- "Rel_density"
+Period4$Period <- paste(Periods_5y[4])
+Period4 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[5]
+#for the fifth period (1994-1998)
+reg_tech5_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_1994-1998.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech5_countries <- reg_tech5_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech5_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech5_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech5_countries$ctry_code <- as.character(mat_reg_tech5_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech5_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech5_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech5_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period5 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period5) <- "Rel_density"
+Period5$Period <- paste(Periods_5y[5])
+Period5 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[6]
+#for the sixth period (1999-2003)
+reg_tech6_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_1999-2003.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech6_countries <- reg_tech6_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech6_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech6_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech6_countries$ctry_code <- as.character(mat_reg_tech6_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech6_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech6_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech6_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period6 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period6) <- "Rel_density"
+Period6$Period <- paste(Periods_5y[6])
+Period6 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[7]
+#for the seventh period (2004-2008)
+reg_tech7_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_2004-2008.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech7_countries <- reg_tech7_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech7_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech7_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech7_countries$ctry_code <- as.character(mat_reg_tech7_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech7_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech7_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech7_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period7 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period7) <- "Rel_density"
+Period7$Period <- paste(Periods_5y[7])
+Period7 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[8]
+#for the eighth period (2009-2013)
+reg_tech8_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_2009-2013.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech8_countries <- reg_tech8_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech8_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+if (!is.matrix(mat_reg_tech8_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech8_countries$ctry_code <- as.character(mat_reg_tech8_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech8_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech8_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech8_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period8 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period8) <- "Rel_density"
+Period8$Period <- paste(Periods_5y[8])
+Period8 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Periods_5y[9]
+#for the ninth period (2014-2018)
+reg_tech9_countries <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/reg_tech_5_years_2014-2018.csv", 
+                                sep = ";", header = TRUE, dec=",")
+
+# Create a wide matrix of technology fields for the first interval
+mat_reg_tech9_countries <- reg_tech9_countries %>%  arrange(techn_field_nr, ctry_code) %>%
+  pivot_wider(names_from = techn_field_nr, values_from = n_tech_reg, values_fill = list(n_tech_reg = 0))
+
+mat_reg_tech9_countries %<>%   remove_rownames %>% 
+  column_to_rownames(var="ctry_code") %>%  as.matrix() %>%    round()
+
+# Compute RCA for the first interval (general)
+
+if (!is.matrix(mat_reg_tech9_countries)) {
+  # Ensure the country code column is character for rownames
+  mat_reg_tech9_countries$ctry_code <- as.character(mat_reg_tech9_countries$ctry_code)
+  # Check for duplicate country codes before setting rownames
+  if (any(duplicated(mat_reg_tech9_countries$ctry_code))) {
+    stop("Duplicate country codes found. Rownames must be unique.")
+  }
+  temp_matrix <- mat_reg_tech9_countries %>%
+    column_to_rownames(var = "ctry_code") %>% # Set first column as rownames
+    as.matrix()
+} else {
+  temp_matrix <- mat_reg_tech9_countries # If it's already a matrix with rownames
+}
+
+# Now, calculate the binary RCA matrix (this will be the 'mat' for relatedness.density.int.avg)
+binary_specialization_matrix <- location_quotient(temp_matrix, binary = TRUE)
+
+Period9 <- as.data.frame(relatedness_density_int_avg(binary_specialization_matrix, mat_tech_rel_AI))
+names(Period9) <- "Rel_density"
+Period9$Period <- paste(Periods_5y[9])
+Period9 %<>%
+  rownames_to_column(var = "ctry_code")
+
+Rel_density <- rbind(Period1, Period2, Period3, Period4, Period5, Period6, Period7, Period8, Period9 )
+length(unique(Rel_density$Period)) #9, which is correct
+unique(Rel_density$Period)
+write.csv2(Rel_density, 
+           file = "Files_created_with_the_code/data/files_code_Fields_analysis/robustness/Rel_density_5y.csv", 
+           row.names = FALSE)
+
+##4.2.Put it all together in the models----
+options(scipen = 999) #deactivate scientific notation
+rm(list=ls())
+Rel_density <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness/Rel_density_5y.csv", 
+                        sep = ";", header = TRUE, dec=",")
+target_countries <- c("CN", "JP", "US", "KR") 
+Rel_density <-  Rel_density[Rel_density$ctry_code %in% target_countries,] 
+
+Periods_5y <- c("1974-1978","1979-1983","1984-1988","1989-1993","1994-1998","1999-2003","2004-2008","2009-2013","2014-2018")
+
+Per_1 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1974-1978.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_2 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1979-1983.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_3 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1984-1988.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_4 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1989-1993.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_5 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1994-1998.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_6 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_1999-2003.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_7 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_2004-2008.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_8 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_2009-2013.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_9 <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness_automated/Data_RCA_techn_field_5_years_2014-2018.csv", 
+                  sep = ";", header = TRUE, dec=",")
+Per_all <- rbind(Per_1, Per_2, Per_3, Per_4, Per_5, Per_6, Per_7, Per_8, Per_9)
+rm(Per_1, Per_2, Per_3, Per_4, Per_5, Per_6, Per_7, Per_8, Per_9)
+unique(Per_all$Period)
+
+Per_all[is.na(Per_all)] <- 0
+Per_all <- Per_all[Per_all$ctry_code %in% target_countries,] 
+Per_all$Round_general <- ifelse(Per_all$RCA_Gen < 1, 0, 1)
+Per_all$Round_AI <- ifelse(Per_all$RCA_AI < 1, 0, 1)
+Per_all$Total_RCA_2 <- Per_all$Round_general + 2*Per_all$Round_AI
+
+Specializations_data <- as.data.frame(table(Per_all$Total_RCA_2, Per_all$ctry_code, Per_all$Period))
+Specializations_data$Var1 <- gsub("0", "No specialization", str_trim(Specializations_data$Var1))
+Specializations_data$Var1 <- gsub("1", "General specialization", str_trim(Specializations_data$Var1))
+Specializations_data$Var1 <- gsub("2", "AI-specific specialization", str_trim(Specializations_data$Var1))
+Specializations_data$Var1 <- gsub("3", "Coinciding specialization", str_trim(Specializations_data$Var1))
+
+names(Specializations_data) <- c("Var1","ctry_code", "Period", "N_spec")
+# Pivot the data
+Specializations_wide <- Specializations_data %>%
+  pivot_wider(names_from = Var1,
+              values_from = N_spec)
+
+Rel_density <- left_join(Rel_density, Specializations_wide, by = c("ctry_code", "Period"))
+
+actual_shares_5_years <- read.csv("Files_created_with_the_code/data/files_code_Fields_analysis/robustness/actual_shares_5_years.csv", 
+                                  sep = ";", header = TRUE, dec=",")
+#variables from the actual_shares_5_years file:
+#Actual_n_persistent_Round_AI = n_persistent_Round_AI, # Is it persistently Round_AI?
+#Actual_n_AI_prev_coinciding = n_AI_prev_coinciding, # Was it coinciding and then justAI?
+#Actual_n_coinciding_prev_AI = n_coinciding_prev_AI, # Was it justAI and then coinciding?
+#Actual_n_AI_prev_gen = n_AI_prev_gen, #Was it justGeneral and then justAI?
+#Actual_n_persistent_core_fields = n_persistent_core_fields, #sustains AI in core fields?
+#Actual_n_persistent_NOT_core_fields = n_persistent_NOT_core_fields,#sustains AI in NOT core fields?
+#Actual_n_persistent_coin_core_fields = n_persistent_coin_core_fields, # persistent coinciding in AI core fields? 
+#Actual_n_persistent_coin_NOT_core_fields = n_persistent_coin_NOT_core_fields# persistent coinciding in NOT AI core fields? 
+
+Rel_density <- left_join(Rel_density, actual_shares_5_years, by = c("ctry_code", "Period"))
+
+Rel_density %<>%  clean_names()
+Rel_density$total_general_specializations <- Rel_density$general_specialization + Rel_density$coinciding_specialization
+Rel_density$double_check <- Rel_density$total_general_specializations + Rel_density$no_specialization + Rel_density$ai_specific_specialization
+Rel_density$total_specializations <- Rel_density$total_general_specializations + Rel_density$ai_specific_specialization #which should be the same as
+#total_general_specializations - no_specialization; pay attention that this includes AI
+Rel_density$total_AI_specializations <- Rel_density$coinciding_specialization + Rel_density$ai_specific_specialization
+
+regression_data <- Rel_density %>%
+  mutate(Share_Coinciding =  coinciding_specialization/(total_general_specializations),
+         # Ensure Period is a factor for the regression
+         Period = factor(period, levels = c("1974-1978","1979-1983","1984-1988","1989-1993","1994-1998","1999-2003",
+                                            "2004-2008","2009-2013","2014-2018"), ordered = FALSE), # Not ordered for lm factor
+         ctry_code = factor(ctry_code))
+rm(Specializations_wide, Specializations_data)
+
+regression_data <- regression_data %>%
+  mutate(ctry_code = case_when(
+    ctry_code == "JP" ~ "Japan",
+    ctry_code == "US" ~ "US",
+    ctry_code == "KR" ~ "South Korea",
+    ctry_code == "CN" ~ "China",
+    TRUE ~ ctry_code # This keeps any other codes as they are
+  ))
+
+#redefine names:
+regression_data_renamed <- regression_data %>%
+  rename(
+    "Country’s technological relatedness density" = rel_density,
+    "Interval " = Period,
+    "No. of ‘general’ spec." = total_general_specializations,
+    "Share of ‘break-in’ spec." = Share_Coinciding,
+    "No. of ‘AI-specific’ spec." = total_AI_specializations,
+    "No. of sustained ‘break-in’ spec." = actual_persistent_coinciding,
+    "No. of sustained ‘general’ spec." = actual_persistent_general_all,
+    "No. of sustained ‘AI-specific’ spec." = actual_n_persistent_round_ai,
+    "No. of ‘break-in’ spec." = coinciding_specialization,
+    "Country "= ctry_code
+  )
+
+###4.2.1.Main Models----
+# Model 1 - The simplest model
+model1 <- lm(`Share of ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `, 
+             data = regression_data_renamed) 
+summary(model1)
+
+# Model 2 - adding number of general specialisations
+model2 <- lm(`Share of ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `No. of ‘general’ spec.` + `Interval ` + 
+               `No. of ‘AI-specific’ spec.`, 
+             data = regression_data_renamed) 
+summary(model2)
+
+# Model 3 - controlling for country
+model3 <- lm(`Share of ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `No. of ‘general’ spec.` + `Interval ` + `Country ` + 
+               `No. of ‘AI-specific’ spec.`,
+             data = regression_data_renamed)
+summary(model3)
+
+desired_order_model1_to_3 <- c("`Country’s technological relatedness density`", "`Interval `", "`Country `", "`No. of ‘general’ spec.`",
+                   "`No. of ‘AI-specific’ spec.`")
+
+stargazer(model1, model2, model3, type = "html", order = desired_order_model1_to_3, out = "Files_created_with_the_code/data/files_code_Fields_analysis/models_1_2_3.doc")
+
+#Next models: looking at sustained specialisations
+#Model 4 - persistent break-ins
+newmodel4 <- lm(`No. of sustained ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of sustained ‘general’ spec.` + 
+                  `No. of sustained ‘AI-specific’ spec.`, data = regression_data_renamed)
+summary(newmodel4)
+
+#Model 5 - persistent break-ins
+newmodel5 <- lm(`No. of sustained ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of ‘general’ spec.` + `No. of ‘break-in’ spec.` +
+                  `No. of ‘AI-specific’ spec.`, 
+                data = regression_data_renamed)
+summary(newmodel5)
+
+#Model 6 persistent AI-specific
+newmodel6 <- lm(`No. of sustained ‘AI-specific’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of ‘general’ spec.` +
+                  `No. of sustained ‘break-in’ spec.`+`No. of ‘break-in’ spec.`+`No. of ‘AI-specific’ spec.`, 
+                data = regression_data_renamed)
+summary(newmodel6)
+
+desired_order_model4_to_6 <- c("`Country’s technological relatedness density`", "`Interval `", 
+                               "`No. of ‘break-in’ spec.`", "`No. of ‘general’ spec.`", "`No. of ‘AI-specific’ spec.`",
+                               "`No. of sustained ‘break-in’ spec.`", "`No. of sustained ‘general’ spec.`", 
+                               "`No. of sustained ‘AI-specific’ spec.`")
+
+stargazer(newmodel5, newmodel4,newmodel6, type = "html", order = desired_order_model4_to_6, out = "Files_created_with_the_code/data/files_code_Fields_analysis/modelsnew_4_to_6.doc")
+
+
+###4.2.3. Additional models------
+####4.2.3.1. Beta regression for Table 3-----
+library(betareg)
+library(MASS)
+library(statmod)
+
+#The dependent variable "Share of break-in specialisations" is a proportion (ranging from 0 to 1). For such data, 
+#Beta regression is generally preferred over OLS, as it directly models the mean of a variable that follows a Beta 
+#distribution. 
+table(regression_data_renamed$`Share of ‘break-in’ spec.`)
+#Ensure the "Share of break-in specialisations" variable is strictly between 0 and 1. If there are 0s or 1s, one needs to transform 
+#them slightly (e.g., (y * (n - 1) + 0.5) / n where n is the sample size, or using a small epsilon).
+regression_data_renamed$`Share of ‘break-in’ spec.` <- ifelse(regression_data_renamed$`Share of ‘break-in’ spec.` ==0,0.01, regression_data_renamed$`Share of ‘break-in’ spec.`)
+table(regression_data_renamed$`Share of ‘break-in’ spec.`)
+
+# Model 1 - The simplest model
+model1_beta <- betareg(`Share of ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `, 
+                       data = regression_data_renamed) 
+summary(model1_beta)
+
+# Model 2 - adding number of general specialisations
+model2_beta <- betareg(`Share of ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `No. of ‘general’ spec.` + `Interval ` + 
+                         `No. of ‘AI-specific’ spec.`, 
+                       data = regression_data_renamed) 
+summary(model2_beta)
+
+# Model 3 - controlling for country
+model3_beta <- betareg(`Share of ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `No. of ‘general’ spec.` + `Interval ` + `Country ` + 
+                         `No. of ‘AI-specific’ spec.`,
+                       data = regression_data_renamed)
+summary(model3_beta)
+
+stargazer(model1_beta, model2_beta, model3_beta, type = "html",  order = desired_order_model1_to_3, out = "Files_created_with_the_code/data/files_code_Fields_analysis/models_1_2_3_Beta.doc")
+
+####4.2.3.2. Poisson regression and Negative Binomial regression for Table 4-----
+#The dependent variables "No. of sustained 'break-in' Spec." and "No. of sustained 'Al-specific' Spec." are counts. 
+#For count data, Poisson regression or Negative Binomial regression are appropriate. Negative Binomial regression 
+#is often preferred when there's evidence of overdispersion (variance > mean) in the count data, which is very 
+#common.
+#Let's start with poisson
+#Model 4 - persistent break-ins
+model4_poisson <- glm(`No. of sustained ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of sustained ‘general’ spec.` + 
+                        `No. of sustained ‘AI-specific’ spec.`,
+                      family = poisson(link = "log"),
+                      data = regression_data_renamed)
+summary(model4_poisson)
+
+#Model 5 - persistent break-ins
+model5_poisson <- glm(`No. of sustained ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of ‘general’ spec.` + `No. of ‘break-in’ spec.` +
+                        `No. of ‘AI-specific’ spec.`, 
+                      family = poisson(link = "log"),
+                      data = regression_data_renamed)
+summary(model5_poisson)
+
+#Model 6 persistent AI-specific
+model6_poisson <- glm(`No. of sustained ‘AI-specific’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of ‘general’ spec.` +
+                        `No. of sustained ‘break-in’ spec.`+`No. of ‘break-in’ spec.`+`No. of ‘AI-specific’ spec.`, 
+                      family = poisson(link = "log"),
+                      data = regression_data_renamed)
+summary(model6_poisson)
+stargazer(model5_poisson, model4_poisson,  model6_poisson, type = "html",  order = desired_order_model4_to_6, out = "Files_created_with_the_code/data/files_code_Fields_analysis/modelsnew_4_to_6_poisson.doc")
+
+#now we do negative binomial
+#Model 4 - persistent break-ins
+model4_negbin <- glm.nb(`No. of sustained ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of sustained ‘general’ spec.` + 
+                          `No. of sustained ‘AI-specific’ spec.`,
+                        data = regression_data_renamed)
+summary(model4_negbin)
+
+#Model 5 - persistent break-ins
+model5_negbin <- glm.nb(`No. of sustained ‘break-in’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of ‘general’ spec.` + `No. of ‘break-in’ spec.` +
+                          `No. of ‘AI-specific’ spec.`, 
+                        data = regression_data_renamed)
+summary(model5_negbin)
+
+#Model 6 persistent AI-specific
+model6_negbin <- glm.nb(`No. of sustained ‘AI-specific’ spec.` ~ `Country’s technological relatedness density` + `Interval `+ `No. of ‘general’ spec.` +
+                          `No. of sustained ‘break-in’ spec.`+`No. of ‘break-in’ spec.`+`No. of ‘AI-specific’ spec.`, 
+                        data = regression_data_renamed)
+summary(model6_negbin)
+stargazer(model5_negbin, model4_negbin,  model6_negbin, type = "html",  order = desired_order_model4_to_6, out = "Files_created_with_the_code/data/files_code_Fields_analysis/modelsnew_4_to_6_negbin.doc")
