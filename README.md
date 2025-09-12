@@ -8,7 +8,7 @@ The code and supporting files can be used to reproduce all calculations, figures
 
 ## Quick Start & How to Run
 
-1.  **Step-by-step Guide**: For a detailed, step-by-step walkthrough of the main analysis, please see the R Markdown file `index_markdown.Rmd` or the compiled [html](https://matheusleusin.github.io/Paper-The_Emergence_of_Artificial_Intelligence/index_markdown.html). This file explains the entire analytical pipeline, from data preparation to the generation of the main figures and econometric analyses. It also contains the additional regressions performed for Table 3 and Table 4, which are briefly mentioned in the footnotes of the paper.
+1.  **Step-by-step Guide**: For a detailed, step-by-step walkthrough of the main analysis, please see the R Markdown file `index.Rmd` or the compiled [html](https://matheusleusin.github.io/Paper-The_Emergence_of_Artificial_Intelligence/index.html). This file explains the entire analytical pipeline, from data preparation to the generation of the main figures and econometric analyses. It also contains the additional regressions performed for Table 3 and Table 4, which are briefly mentioned in the footnotes of the paper.
 
 5.  **Running the Scripts**: The analysis is divided into three main R scripts that should be run in order:
     *   `1.Main_code.R`: Generates the primary results and main figures of the paper.
