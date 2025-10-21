@@ -1,6 +1,6 @@
 # Replication Code for "Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"
 
-This repository contains the full R implementation for the analysis presented in the working paper: *"Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"*.
+This repository contains the full R implementation for the analysis presented in the paper: *"Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"* (https://www.tandfonline.com/doi/full/10.1080/10438599.2025.2558626).
 
 The code and supporting files can be used to reproduce all calculations, figures, and robustness analyses presented in the paper.
 
