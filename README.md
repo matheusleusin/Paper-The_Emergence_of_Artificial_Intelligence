@@ -7,7 +7,7 @@ The code and supporting files can be used to reproduce all calculations, figures
 ---
 
 ### 🎥 Research Video Summary
-[![Watch the Video](https://img.shields.io/badge/▶_Play_Video-Summary-blue?style=for-the-badge)]([https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/master/media/overview.mp4?raw=true](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/media/overview.mp4)
+[![Watch the Video](https://img.shields.io/badge/▶_Play_Video-Summary-blue?style=for-the-badge)](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/media/overview.mp4)
 
 ## Quick Start & How to Run
 
