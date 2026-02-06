@@ -6,8 +6,10 @@ The code and supporting files can be used to reproduce all calculations, figures
 
 ---
 
+testing
+
 <p align="center">
-  <video src="The_Emergence_of_Artificial_Intelligence/releases/download/v1.0-media/0206.mp4" width="100%" controls>
+  <video src="https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/releases/download/light_video/overview.mp4" width="100%" controls>
     Your browser does not support the video tag.
   </video>
 </p>
