@@ -6,9 +6,6 @@ The code and supporting files can be used to reproduce all calculations, figures
 
 ---
 
-[![Watch the Research Summary](https://raw.githubusercontent.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/master/infographic.png)](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/raw/master/media/overview.mp4)
-*Click the infographic above to view the video summary.*
-
 ## Quick Start & How to Run
 
 1.  **Step-by-step Guide**: For a detailed, step-by-step walkthrough of the main analysis, please see the R Markdown file `index.Rmd` or the compiled [html](https://matheusleusin.github.io/Paper-The_Emergence_of_Artificial_Intelligence/). This file explains the entire analytical pipeline, from data preparation to the generation of the main figures and econometric analyses. It also contains the additional regressions performed for Table 3 and Table 4, which are briefly mentioned in the footnotes of the paper.
