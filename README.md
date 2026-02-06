@@ -6,8 +6,8 @@ The code and supporting files can be used to reproduce all calculations, figures
 
 ---
 
-### 🎥 Research Video Summary
-[![Watch the Video](https://img.shields.io/badge/▶_Play_Video-Summary-blue?style=for-the-badge)](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/blob/master/media/overview.mp4?raw=true)
+[![Watch the Research Summary](https://raw.githubusercontent.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/master/infographic.png)](https://github.com/matheusleusin/Paper-The_Emergence_of_Artificial_Intelligence/raw/master/media/overview.mp4)
+*Click the infographic above to view the video summary.*
 
 ## Quick Start & How to Run
 
