@@ -1,12 +1,13 @@
 # Replication Code for "Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"
 
-This repository contains the full R implementation for the analysis presented in the paper: *"Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"* (https://www.tandfonline.com/doi/full/10.1080/10438599.2025.2558626).
+This repository contains the full R implementation for the analysis presented in the paper: *"Breaking in or Breaking Through? How Local Specialisations Shape the Integration of AI Technologies"*. The published paper can be accessed [here](https://www.tandfonline.com/doi/full/10.1080/10438599.2025.2558626/).
 
-The code and supporting files can be used to reproduce all calculations, figures, and robustness analyses presented in the paper.
+The code and supporting files can be used to reproduce all calculations, figures, and robustness analyses presented in the paper. For a user-friendly overview of the code and the main estimations, please see the supplementary [html](https://matheusleusin.github.io/Paper-The_Emergence_of_Artificial_Intelligence/) summary file (also available as index.html in this repository).
 
 ## Documentation Map
 
 The remainder of this README is structured to guide you from high-level concepts to technical implementation:
+
     *   🎥 Video & Visual Abstract: A multimedia summary of the paper's core findings (Video + Infographic).
     *   🗂️ Repository & Documentation Overview
     *   ⚡ Quick Start: Step-by-step instructions on how to reproduce the analysis using the R scripts.
@@ -23,7 +24,7 @@ To make the findings accessible to a broader audience (as well as give a quick o
 [![Watch the Video Summary](https://img.youtube.com/vi/slwnt5D534Q/maxresdefault.jpg)](https://www.youtube.com/watch?v=slwnt5D534Q)
 
 ### 🗺️ Visualize: The Mechanics of AI Integration
-*The fluxogram below illustrates the two distinct pathways for national AI integration identified in the paper: anchoring AI to historical industrial strengths vs. developing frontier specialization.*
+The image below illustrates the two distinct pathways for national AI integration identified in the paper: anchoring AI to historical industrial strengths vs. developing frontier specialization.
 
 <img width="2752" height="1536" alt="infographic" src="https://github.com/user-attachments/assets/1faef602-1c27-42f4-822c-a72a5b2967bc" />
 
